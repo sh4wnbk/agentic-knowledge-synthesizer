@@ -268,7 +268,7 @@ Export the following slides as PNG and place them in `assets/`:
 - CISA (2025) NIFOG v2.02
 - USGS (2024) Circular 1509: Induced Seismicity Strategic Vision
 - USGS (2025) Emergency Management Resources
-- CDC Social Vulnerability Index (2020)
+- CDC Social Vulnerability Index (2022)
 - Blackman, S. (2025) Mapping Disparate Risk: Disposal Well-Induced Seismicity and Social Vulnerability in OK and OH
 - IBM (2018) Enterprise Design Thinking Framework
 

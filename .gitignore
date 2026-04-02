@@ -27,3 +27,4 @@ Thumbs.db
 # Jupyter (if notebooks added later)
 .ipynb_checkpoints/
 *.ipynb
+data/

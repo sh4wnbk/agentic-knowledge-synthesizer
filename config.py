@@ -35,7 +35,7 @@ MAX_RETRIES             = 2      # Retry budget cap — Overseer loop
 
 # ── External APIs ────────────────────────────────────────
 USGS_API_URL   = "https://earthquake.usgs.gov/fdsnws/event/1/query"
-CDC_SVI_URL    = "https://services3.arcgis.com/ZvidGQkLaDJxRSJ2/arcgis/rest/services/CDC_SVI_2020/FeatureServer/0/query"
+CDC_SVI_URL = "https://onemap.cdc.gov/OneMapServices/rest/services/SVI/CDC_ATSDR_Social_Vulnerability_Index_2020_USA/FeatureServer/0/query"
 
 # ── ChromaDB ─────────────────────────────────────────────
 CHROMA_PERSIST_DIR      = "./chroma_db"
