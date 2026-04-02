@@ -1,0 +1,29 @@
+# Credentials — never commit
+.env
+
+# ChromaDB local vector store — rebuild via ingest.py
+chroma_db/
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+.Python
+venv/
+env/
+.venv/
+
+# Audit logs — generated at runtime
+audit_log.json
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Jupyter (if notebooks added later)
+.ipynb_checkpoints/
+*.ipynb
