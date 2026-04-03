@@ -8,7 +8,7 @@
 
 ## The Problem
 
-When a seismic crisis strikes near an industrial disposal well, a citizen in a high-vulnerability community faces a 14–21 day administrative delay before receiving aid. Not because help doesn't exist — but because federal, state, and NGO data systems don't talk to each other.
+When a spatially predictable seismic crisis — driven by disposal‑well volume and pressure dynamics — strikes a high‑vulnerability community, residents face weeks‑long administrative delay before receiving aid. The problem is not the absence of available assistance — it is that federal, state, and NGO data systems still do not talk to one another.
 
 Manual verification. Disconnected APIs. Paper forms. Cognitive overload.
 
@@ -24,7 +24,7 @@ An **Agentic Knowledge Synthesizer** that acts as an invisible coordinator — a
 
 - Parses unstructured 911 transcripts via Watson Speech-to-Text
 - Retrieves real-time seismic and social vulnerability context via RAG before any reasoning begins
-- Cross-references USGS seismic events (M ≥ 3.0) with CDC Social Vulnerability Index census tracts
+- Cross-references USGS seismic events with CDC Social Vulnerability Index tracts, while applying state-specific regulatory logic (ODNR Traffic Light System for Ohio; OCC Plug-back regulations for Oklahoma).
 - Bridges federal (FEMA), state, and NGO data silos via authorized API calls
 - Validates every output before delivery via a proactive Overseer Agent
 - Delivers one of three validated output states — never fluent fiction
@@ -49,8 +49,8 @@ Crisis Input (911 transcript / text)
          ▼
 ┌─────────────────┐
 │  Orchestrator   │  Layer 2: Reasoning & Planning
-│  Agent          │  Routes to Coordination / Reasoning / Synthesis cluster
-└────────┬────────┘
+│  Agent          │  Routes to Coordination / Reasoning clusters. Implements regional inference logic: Ohio Cluster (proximity-based pore pressure diffusion)  
+└────────┬────────┘  vs. Oklahoma Cluster (basin-wide hydraulic connectivity).
          │
          ▼
 ┌─────────────────┐
@@ -114,7 +114,10 @@ The Overseer Agent intercepts at three pre-delivery points:
 
 Retry budget: maximum 2. When exhausted: Honest Fallback — never fabrication.
 
-### 4. Human-in-the-Loop (HITL)
+### 4. Regional Geophysical Inference
+The system does not treat all seismic events as identical. The Orchestrator applies distinct reasoning logic based on the geological basin. In Ohio, the Data Bridge prioritizes 15 km proximity buffers around active wells. In Oklahoma, the logic shifts to basin-wide hydraulic connectivity and depth-to-basement variables. This ensures the Invisible Coordinator provides contextually accurate guidance to local emergency managers.
+
+### 5. Human-in-the-Loop (HITL)
 The Honest Fallback is an escalation signal, not just graceful degradation. High-consequence resource decisions and retry-exhausted life-safety queries are candidates for human authority confirmation. The design acknowledges this accountability boundary. Where exactly HITL is implemented remains an open specification — naming it here is the first governance act.
 
 ---
@@ -259,6 +262,8 @@ Export the following slides as PNG and place them in `assets/`:
 - Login.gov digital identity is an assumption — not yet confirmed for crisis-condition reliability
 - Citation accuracy and narrative framing neutrality are two different checks. This architecture addresses the first. Framing bias is an open design question.
 - FEMA and NGO API calls are stubbed in prototype — production requires authenticated integrations
+- The current MVP is reactive (triggered by events/calls). The architecture is designed to support a proactive mode, using disposal well pressure spikes as predictive triggers to flag  high-risk tracts before a crisis occurs.
+- User interface is currently citizen-facing. A secondary Agency Command Center (USGS/CDC/EMA) dashboard is identified as a Layer 7 extension, utilizing the Overseer Agent’s audit logs for regulatory oversight.
 
 ---
 
@@ -268,6 +273,8 @@ Export the following slides as PNG and place them in `assets/`:
 - CISA (2025) NIFOG v2.02
 - USGS (2024) Circular 1509: Induced Seismicity Strategic Vision
 - USGS (2025) Emergency Management Resources
+- ODNR (Ohio Department of Natural Resources)
+- OCC (Oklahoma Corporation Commission)
 - CDC Social Vulnerability Index (2022)
 - Blackman, S. (2025) Mapping Disparate Risk: Disposal Well-Induced Seismicity and Social Vulnerability in OK and OH
 - IBM (2018) Enterprise Design Thinking Framework
