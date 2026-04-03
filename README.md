@@ -166,14 +166,6 @@ agentic-knowledge-synthesizer/
 └── governance/
     ├── output_states.py           # OutputState enum + AgentOutput dataclass
     └── audit_log.py               # Overseer decision logging
-
-assets/                            # Slide images for README
-├── slide_w4_01_survival_gap.png
-├── slide_w4_03_six_layer_system.png
-├── slide_w4_05_ecosystem.png
-├── slide_w5_02_workflow.png
-├── slide_w5_03_trust_output_matrix.png
-└── slide_w5_05_overseer_governance.png
 ```
 
 ---
