@@ -61,6 +61,7 @@ def run_pipeline(raw_input: str, audio_path: str = None) -> AgentOutput:
     # ── STEP 3: Route to cluster ──────────────────────────────
     cluster = orchestrator.route(intent)
     query   = orchestrator.build_query(intent, cluster)
+    bbox    = orchestrator.get_bbox(cluster)
 
     # ── STEP 4: Retrieve — fires before reasoning ─────────────
     retrieval      = rag.retrieve(query)
@@ -87,7 +88,7 @@ def run_pipeline(raw_input: str, audio_path: str = None) -> AgentOutput:
         retrieval = rag.retrieve(query)
 
     # ── STEP 5: Fetch from data bridge ────────────────────────
-    bridge_data = bridge.fetch(intent, retrieval)
+    bridge_data = bridge.fetch(intent, retrieval, bbox)
 
     # ── STEP 6: Generate beam candidates ─────────────────────
     candidates = synthesis.generate_candidates(intent, retrieval, bridge_data)
@@ -150,7 +151,7 @@ def run_pipeline(raw_input: str, audio_path: str = None) -> AgentOutput:
         print(f"[PIPELINE] Delivery retry {delivery_retries}/{MAX_RETRIES} "
               f"— re-retrieving with amended context")
         retrieval   = rag.retrieve(query)
-        bridge_data = bridge.fetch(intent, retrieval)
+        bridge_data = bridge.fetch(intent, retrieval, bbox)
         candidates  = synthesis.generate_candidates(intent, retrieval, bridge_data)
         citation    = retrieval.get("citation")
         best_output = None
