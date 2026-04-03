@@ -241,21 +241,6 @@ python main.py
 
 ---
 
-## Adding Slide Images
-
-Export the following slides as PNG and place them in `assets/`:
-
-| File | Source |
-|---|---|
-| `slide_w4_01_survival_gap.png` | Week 4 — Slide 1: The Survival Gap |
-| `slide_w4_03_six_layer_system.png` | Week 4 — Slide 3: The Six-Layer Agentic System |
-| `slide_w4_05_ecosystem.png` | Week 4 — Slide 5: The Ecosystem |
-| `slide_w5_02_workflow.png` | Week 5 — Slide 2: Step-by-Step Workflow |
-| `slide_w5_03_trust_output_matrix.png` | Week 5 — Slide 3: Trust Output Matrix |
-| `slide_w5_05_overseer_governance.png` | Week 5 — Slide 5: Overseer Agent |
-
----
-
 ## Known Limitations
 
 - Live data at full fidelity requires commercial data agreements outside prototype scope
