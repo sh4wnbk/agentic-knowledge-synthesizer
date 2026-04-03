@@ -5,6 +5,7 @@ Confidence scoring based on cosine similarity of returned documents.
 This is what makes retrieval-before-reasoning architecturally honest.
 """
 
+import os 
 from rag.vector_store import get_collection
 from config import CONFIDENCE_THRESHOLD
 
@@ -52,8 +53,6 @@ class Retriever:
         }
 
     def _build_citation(self, metadatas: list) -> str:
-        import os # Add this at the top of the file if not already imported
-        
         sources = set()
         for m in metadatas:
             source_val = str(m.get("source", ""))
@@ -62,10 +61,14 @@ class Retriever:
                 sources.add("USGS Earthquake Hazards API (real-time)")
             elif source_val == "CDC_SVI":
                 sources.add("CDC Social Vulnerability Index 2022")
-            elif "blackman" in source_val.lower():
-                sources.add("Blackman (2025) - Induced Seismicity Research")
-            elif "nifog" in source_val.lower():
-                sources.add("NIFOG 2.02 Coordination Protocols")
+            elif source_val == "POLICY":
+                doc_name = str(m.get("document", "")).lower()
+                if "blackman" in doc_name:
+                    sources.add("Blackman (2025) — Mapping Disparate Risk: Induced Seismicity and Social Vulnerability")
+                elif "nifog" in doc_name:
+                    sources.add("CISA NIFOG v2.02 — National Interoperability Field Operations Guide")
+                else:
+                    sources.add(str(m.get("document", "Policy Document")))
             elif source_val: 
                 # Catch-all: just use the filename if it's an unexpected document
                 sources.add(os.path.basename(source_val))
