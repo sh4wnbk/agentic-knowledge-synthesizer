@@ -80,7 +80,8 @@ class SynthesisAgent:
                 timeout=30
             )
             result = r.json()
-            return result.get("results", [{}])[0].get("generated_text", "")
+            raw_text = result.get("results", [{}])[0].get("generated_text", "")
+            return raw_text.replace("```markdown", "").replace("```", "").strip()
         except Exception as e:
             print(f"[SYNTHESIS] Granite call failed (beam {beam_idx}): {e}")
             return ""
@@ -92,40 +93,44 @@ class SynthesisAgent:
         bridge: dict
     ) -> str:
         """
-        RAG-grounded prompt.
-        Retrieved context is injected before the instruction.
-        The LLM reasons over what was retrieved — not over
-        its own parametric knowledge.
+        RAG-grounded prompt with explicit regulatory agency injection.
+        This prevents 'acronym drift' by providing the specific agency 
+        name and acronym resolved by the Orchestrator.
         """
         context  = retrieval.get("context", "No context retrieved.")
         citation = retrieval.get("citation", "No citation available.")
-        fema     = bridge.get("fema_resources", {})
-        ngo      = bridge.get("ngo_resources", {})
         usgs     = bridge.get("usgs_live", {})
+        
+        # Extract the source-of-truth agency provided by the Orchestrator
+        target_agency = intent.get('regulatory_agency', 'relevant state authorities')
 
-        return f"""You are an emergency aid coordination assistant operating during an active crisis.
+        return f"""You are the automated intelligence routing core for a 911 Computer-Aided Dispatch (CAD) system.
+Your end-user is a highly trained Emergency Dispatcher. They are currently managing a live crisis.
 
-RETRIEVED KNOWLEDGE BASE CONTEXT (cite this — do not fabricate beyond it):
+IMPERATIVE RULES:
+1. ZERO CONVERSATION: Do not use greetings, pleasantries, or conversational filler. 
+2. ROLE BOUNDARIES: Your sole job is to provide inter-agency intelligence (USGS, CDC SVI, state policies).
+3. STRICT FORMATTING: Use ONLY the exact markdown structure below. 
+4. CITATION REQUIREMENT: You must cite: {citation} where policy is referenced.
+5. REGULATORY ACCURACY: The primary state agency to notify is {target_agency}. Use this exact name and acronym in the [INTER-AGENCY ROUTING] section.
+
+RETRIEVED POLICY/SVI CONTEXT:
 {context[:1500]}
 
-LIVE SEISMIC DATA:
+LIVE SEISMIC DATA (USGS):
 {json.dumps(usgs)}
 
-AVAILABLE RESOURCES:
-- Federal (FEMA): {json.dumps(fema)}
-- NGO: {json.dumps(ngo)}
-
-CITIZEN CRISIS INPUT:
+CIVILIAN CAD LOG (INCITING EVENT):
 {intent.get('raw_input')}
 
-INSTRUCTION:
-Provide a clear, specific aid coordination response.
-You must cite: {citation}
-Do not include information not present in the retrieved context above.
-Do not fabricate resource availability, locations, or assistance amounts.
-Be direct. The citizen is in crisis.
-
-RESPONSE:"""
+GENERATE DISPATCH INTELLIGENCE BRIEF:
+Use this exact format. Be clinical and concise.
+OUTPUT ONLY THE RAW MARKDOWN. NO PREAMBLE. NO META-COMMENTARY. NO CODE BLOCKS.
+**[HAZARD STATUS]** 1 sentence cross-referencing the CAD log with the LIVE SEISMIC DATA.
+**[DEMOGRAPHIC RISK (SVI)]** 1 sentence detailing the vulnerability of the location based on retrieved context.
+**[INTER-AGENCY ROUTING]** * Immediately notify the {target_agency} regarding site-specific operational status.
+* Coordinate with the Federal Emergency Management Agency (FEMA) for support based on the SVI score and citation: {citation}.
+"""
 
     def _get_iam_token(self) -> str:
         if self._token:
