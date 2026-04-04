@@ -7,10 +7,34 @@ Triggers honest fallback when retry budget is exhausted.
 Key decision: validated against source, or fallback?
 """
 
+import re
 from governance.audit_log import AuditLog
 from config import CONFIDENCE_THRESHOLD, CITATION_ALIGN_THRESHOLD
-import re
 
+
+# ── Unfilled template detection ───────────────────────────
+# Granite occasionally returns prompt scaffolding rather than
+# completing the instruction. These signals identify outputs
+# that expose the prompt structure to the citizen — a distinct
+# failure mode from citation mismatch. Neither should reach delivery.
+UNFILLED_TEMPLATE_SIGNALS = [
+    "1 sentence specifying",
+    "2 sentences specifying",
+    "insert ",
+    "[your ",
+    "[action",
+    "[insert",
+    "[describe",
+    "fill in",
+    "fill out",
+    "placeholder",
+    "<action>",
+    "<insert>",
+    "specifying the immediate action",
+    "specifying the next step",
+    "summarize key",
+    "from the relevant",
+]
 
 class OverseerAgent:
 
@@ -50,19 +74,35 @@ class OverseerAgent:
 
         Returns (passed: bool, citation_score: float).
 
-        This is where beam search candidates are evaluated:
-        the candidate with the highest citation alignment score
-        is selected — not the highest-probability token sequence.
+        Two sequential checks:
+        1. Unfilled template detection — catches prompt artifacts
+           that expose scaffolding to the citizen.
+        2. Citation alignment scoring — catches source mismatches.
+
+        Both must pass. A prompt artifact that scores 1.00 on
+        citation alignment still fails — the Overseer rejects it.
         """
         if not citation or not output:
             self.log.record(
                 "pre_delivery_check",
-                {"output_len": len(output), "citation": citation},
+                {"output_len": len(output) if output else 0,
+                 "citation": citation},
                 False,
                 "Missing output or citation"
             )
             return False, 0.0
 
+        # ── Check 1: Unfilled template detection ──────────────
+        if self._has_unfilled_template(output):
+            self.log.record(
+                "pre_delivery_check",
+                {"citation": citation},
+                False,
+                "Prompt artifact detected — output contains unfilled template"
+            )
+            return False, 0.0
+
+        # ── Check 2: Citation alignment ───────────────────────
         score  = self._citation_alignment_score(output, citation)
         passed = score >= CITATION_ALIGN_THRESHOLD
         reason = (f"Citation alignment {score:.2f} >= {CITATION_ALIGN_THRESHOLD}"
@@ -75,6 +115,21 @@ class OverseerAgent:
             reason
         )
         return passed, score
+
+    def _has_unfilled_template(self, output: str) -> bool:
+        """
+        Detects prompt scaffolding in the generated output.
+        Granite occasionally returns the instruction rather than
+        completing it — exposing the prompt structure to the citizen.
+        This is a distinct failure mode from citation mismatch:
+        a factually grounded response can still fail this check
+        if it contains an unfilled instruction fragment.
+        """
+        output_lower = output.lower()
+        for signal in UNFILLED_TEMPLATE_SIGNALS:
+            if signal.lower() in output_lower:
+                return True
+        return False
 
     def _citation_alignment_score(self, output: str, citation: str) -> float:
         """
@@ -98,7 +153,6 @@ class OverseerAgent:
         output_lower = output.lower()
 
         if not citation_terms:
-            # Fallback: check if output has factual content
             return 0.65 if len(output) > 50 else 0.0
 
         matched = sum(
