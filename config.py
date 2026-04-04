@@ -39,7 +39,9 @@ MAX_NEW_TOKENS = 400
 # to identify meaningful induced seismicity events in both
 # Oklahoma and Ohio datasets. Below M 3.0, events are
 # unlikely to cause structural damage or trigger emergency response.
-SEISMIC_MIN_MAGNITUDE = 3.0
+
+SEISMIC_MIN_MAGNITUDE = 1.5  # Demo mode — shows live USGS data path
+# SEISMIC_MIN_MAGNITUDE = 3.0    # Production — Blackman (2025) validated threshold
 
 # ── SVI threshold ────────────────────────────────────────
 # RPL_THEMES > 0.75: the top vulnerability quartile.
