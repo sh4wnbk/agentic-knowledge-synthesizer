@@ -17,9 +17,12 @@ load_dotenv()
 # ── IBM Credentials ──────────────────────────────────────
 WATSONX_API_KEY    = os.getenv("WATSONX_API_KEY")
 WATSONX_PROJECT_ID = os.getenv("WATSONX_PROJECT_ID")
-WATSONX_URL        = "https://us-south.ml.cloud.ibm.com"
+WATSONX_URL        = os.getenv("WATSONX_URL", "https://us-south.ml.cloud.ibm.com")
 WATSON_STT_KEY     = os.getenv("WATSON_STT_API_KEY")
-WATSON_STT_URL     = "https://api.us-south.speech-to-text.watson.cloud.ibm.com"
+WATSON_STT_URL     = os.getenv(
+    "WATSON_STT_URL",
+    "https://api.us-south.speech-to-text.watson.cloud.ibm.com"
+)
 
 # ── Model ────────────────────────────────────────────────
 # granite-3-8b-instruct: current production Granite model (2024–2025)
@@ -98,12 +101,22 @@ MAX_RETRIES              = 2      # Retry budget cap — Overseer loop
 
 # ── External APIs ────────────────────────────────────────
 USGS_API_URL = "https://earthquake.usgs.gov/fdsnws/event/1/query"
+CENSUS_GEOCODER_URL = "https://geocoding.geo.census.gov/geocoder"
+CENSUS_GEOCODER_BENCHMARK = "Public_AR_Current"
+CENSUS_GEOCODER_VINTAGE = "Current_Current"
 
 # ── ChromaDB ─────────────────────────────────────────────
-CHROMA_PERSIST_DIR     = "./chroma_db"
+VECTOR_STORE_BACKEND = os.getenv("VECTOR_STORE_BACKEND", "chroma")
+CHROMA_PERSIST_DIR     = os.getenv("CHROMA_PERSIST_DIR", "./chroma_db")
 CHROMA_COLLECTION_NAME = "crisis_knowledge_base"
 EMBEDDING_MODEL        = "all-MiniLM-L6-v2"  # Local; swap for IBM embeddings in production
 
 # ── Data paths ───────────────────────────────────────────
-CDC_SVI_CSV      = os.path.join(os.path.dirname(__file__), "data", "svi_2022_us_tract.csv")
-POLICY_DOCS_DIR  = os.path.join(os.path.dirname(__file__), "data", "policy_docs")
+CDC_SVI_CSV      = os.getenv(
+    "CDC_SVI_CSV",
+    os.path.join(os.path.dirname(__file__), "data", "svi_2022_us_tract.csv")
+)
+POLICY_DOCS_DIR  = os.getenv(
+    "POLICY_DOCS_DIR",
+    os.path.join(os.path.dirname(__file__), "data", "policy_docs")
+)

@@ -1,12 +1,17 @@
 """
 rag/vector_store.py
-ChromaDB vector store — local prototype.
-Swap for watsonx.data / Milvus in IBM Cloud production.
+Vector store access layer.
+ChromaDB is the default local backend, with a backend switch for IBM Cloud migration.
 """
 
 import chromadb
 from chromadb.utils import embedding_functions
-from config import CHROMA_PERSIST_DIR, CHROMA_COLLECTION_NAME, EMBEDDING_MODEL
+from config import (
+    VECTOR_STORE_BACKEND,
+    CHROMA_PERSIST_DIR,
+    CHROMA_COLLECTION_NAME,
+    EMBEDDING_MODEL,
+)
 
 
 def get_client() -> chromadb.Client:
@@ -14,6 +19,11 @@ def get_client() -> chromadb.Client:
     Returns a persistent ChromaDB client.
     Data survives between runs — ingest once, query many times.
     """
+    if VECTOR_STORE_BACKEND != "chroma":
+        raise NotImplementedError(
+            f"Vector store backend '{VECTOR_STORE_BACKEND}' is not implemented yet. "
+            "Set VECTOR_STORE_BACKEND=chroma to use the current local store."
+        )
     return chromadb.PersistentClient(path=CHROMA_PERSIST_DIR)
 
 

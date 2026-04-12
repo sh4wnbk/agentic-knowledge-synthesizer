@@ -109,24 +109,26 @@ def run_pipeline(raw_input: str, audio_path: str = None) -> AgentOutput:
     # probability token sequence. This is the architectural
     # correction for greedy decoding.
     citation          = retrieval.get("citation")
+    context           = retrieval.get("context", "")
     delivery_retries  = 0
     first_pass        = True
     best_output       = None
-    best_score        = 0.0
+    best_score        = -1.0
 
     while True:
-        # Score all candidates, select best
+        # Score all candidates by semantic alignment with retrieved context.
+        # Select the highest-scoring beam — not highest token probability.
+        # Each candidate is checked exactly once; no re-check of the winner.
+        best_passed = False
         for candidate in candidates:
-            passed, score = overseer.pre_delivery_check(candidate, citation)
+            passed, score = overseer.pre_delivery_check(candidate, citation, context)
             if score > best_score:
                 best_score  = score
                 best_output = candidate
+                best_passed = passed
 
-        if best_output and best_score >= 0.0:
-            # At least one candidate passed or is best available
-            passed, _ = overseer.pre_delivery_check(best_output, citation)
-            if passed:
-                break
+        if best_output and best_passed:
+            break
 
         if delivery_retries >= MAX_RETRIES:
             # Retry budget exhausted — honest fallback
@@ -154,8 +156,9 @@ def run_pipeline(raw_input: str, audio_path: str = None) -> AgentOutput:
         bridge_data = bridge.fetch(intent, retrieval, bbox)
         candidates  = synthesis.generate_candidates(intent, retrieval, bridge_data)
         citation    = retrieval.get("citation")
+        context     = retrieval.get("context", "")
         best_output = None
-        best_score  = 0.0
+        best_score  = -1.0
 
     # ── Deliver ───────────────────────────────────────────────
     state = (

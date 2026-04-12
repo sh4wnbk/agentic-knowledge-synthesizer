@@ -231,6 +231,52 @@ python main.py
 python main.py
 ```
 
+### Notebook-First Workflow
+
+The primary deliverable is now the notebook at [notebooks/agentic_knowledge_synthesizer.ipynb](/home/shawn/src/agentic-knowledge-synthesizer/notebooks/agentic_knowledge_synthesizer.ipynb). Run the cells in order to seed the vector store and execute the validation cases.
+
+The notebook uses the existing Python pipeline as its backend. Streamlit remains an optional legacy visualization shell and is no longer part of the notebook-first path.
+
+If you need the original containerized demo for reference, the supporting files are still present in the repo, but they are not required for the notebook implementation.
+
+### Orchestrate Skill Bridge (Week 1 Migration Slice)
+
+To register callable skills in watsonx Orchestrate, run the thin skill bridge API:
+
+```bash
+uvicorn orchestrate.skill_server:app --host 0.0.0.0 --port 8080
+```
+
+Available endpoints:
+
+- `GET /health`
+- `POST /skills/intent-route`
+- `POST /skills/retrieve`
+- `POST /skills/bridge`
+- `POST /skills/synthesize`
+- `POST /skills/governance/pre-delivery`
+- `POST /workflow/crisis-brief`
+
+This allows you to demonstrate Orchestrate-based tool calling now, while keeping the existing Python logic unchanged.
+
+Next actions:
+
+1. Start the bridge: `uvicorn orchestrate.skill_server:app --host 0.0.0.0 --port 8080`
+2. Run smoke test: `bash orchestrate/smoke_test.sh`
+3. Register tools in Orchestrate using: `orchestrate/registration_guide.md`
+
+### Code Engine Deployment for the Bridge
+
+Use the bridge-specific container and app manifest when you need a public HTTPS endpoint for Orchestrate:
+
+1. Build the bridge image with `Dockerfile.bridge`.
+2. Push it to IBM Container Registry.
+3. Create a Code Engine app from `deploy/codeengine/bridge-app.yaml`.
+4. Copy the resulting public route into the Orchestrate tool connection.
+
+The bridge app listens on port `8080` and serves `orchestrate.skill_server:app`.
+The public HTTPS route assigned by Code Engine is the URL Orchestrate must use instead of `127.0.0.1` or the placeholder `YOUR_PUBLIC_BRIDGE_URL`.
+
 ---
 
 ## Known Limitations

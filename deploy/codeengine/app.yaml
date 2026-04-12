@@ -1,0 +1,19 @@
+name: agentic-knowledge-synthesizer
+image: YOUR_ICR_REGION.icr.io/YOUR_NAMESPACE/agentic-knowledge-synthesizer:latest
+port: 8501
+
+env:
+  - name: PORT
+    value: "8501"
+  - name: VECTOR_STORE_BACKEND
+    value: "chroma"
+  - name: CHROMA_PERSIST_DIR
+    value: "/tmp/chroma_db"
+  - name: CDC_SVI_CSV
+    value: "/app/data/svi_2022_us_tract.csv"
+  - name: POLICY_DOCS_DIR
+    value: "/app/data/policy_docs"
+  - name: WATSONX_URL
+    value: "https://us-south.ml.cloud.ibm.com"
+  - name: WATSON_STT_URL
+    value: "https://api.us-south.speech-to-text.watson.cloud.ibm.com"

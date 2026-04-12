@@ -16,6 +16,9 @@ env/
 # Audit logs — generated at runtime
 audit_log.json
 
+# IBM program materials — do not publish
+assets/IBM*
+
 # IDE
 .vscode/
 .idea/

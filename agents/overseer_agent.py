@@ -8,6 +8,7 @@ Key decision: validated against source, or fallback?
 """
 
 import re
+import math
 from governance.audit_log import AuditLog
 from config import CONFIDENCE_THRESHOLD, CITATION_ALIGN_THRESHOLD
 
@@ -34,12 +35,18 @@ UNFILLED_TEMPLATE_SIGNALS = [
     "specifying the next step",
     "summarize key",
     "from the relevant",
+    "1 sentence advising",
+    "2 sentences advising",
+    "advising the dispatcher on next steps",
+    "[assistant advice]",
+    "engage local emergency services for immediate response",
 ]
 
 class OverseerAgent:
 
     def __init__(self):
         self.log = AuditLog()
+        self._embedder = None  # Lazy-loaded to avoid startup cost
 
     # ── HOOK 1: Input Audit ───────────────────────────────────
     def input_audit(self, intent: dict) -> bool:
@@ -67,7 +74,7 @@ class OverseerAgent:
         return passed
 
     # ── HOOK 3: Pre-Delivery Check ────────────────────────────
-    def pre_delivery_check(self, output: str, citation: str) -> tuple:
+    def pre_delivery_check(self, output: str, citation: str, context: str = "") -> tuple:
         """
         Cross-validates the generated output against its cited source.
         The last gate before the citizen receives anything.
@@ -103,7 +110,10 @@ class OverseerAgent:
             return False, 0.0
 
         # ── Check 2: Citation alignment ───────────────────────
-        score  = self._citation_alignment_score(output, citation)
+        # Prefer full retrieved context for semantic comparison;
+        # fall back to citation string if context not provided.
+        reference = context if context else citation
+        score  = self._citation_alignment_score(output, reference)
         passed = score >= CITATION_ALIGN_THRESHOLD
         reason = (f"Citation alignment {score:.2f} >= {CITATION_ALIGN_THRESHOLD}"
                   if passed else
@@ -131,35 +141,42 @@ class OverseerAgent:
                 return True
         return False
 
-    def _citation_alignment_score(self, output: str, citation: str) -> float:
-        """
-        Scores how well the output aligns with its cited sources.
+    def _get_embedder(self):
+        """Lazy-load the sentence transformer to avoid startup overhead."""
+        if self._embedder is None:
+            from sentence_transformers import SentenceTransformer
+            self._embedder = SentenceTransformer("all-MiniLM-L6-v2")
+        return self._embedder
 
-        Prototype: keyword overlap between output and citation string.
-        Production: semantic similarity via watsonx.ai embedding comparison
-        between generated text and the retrieved source chunks.
-
-        This is the selection criterion for beam search candidates —
-        the beam with the highest alignment score wins,
-        not the beam with the highest token probability.
+    def _citation_alignment_score(self, output: str, reference: str) -> float:
         """
-        if not citation:
+        Scores semantic alignment between generated output and retrieved
+        source context using embedding cosine similarity.
+
+        Replaces keyword overlap, which measured prompt compliance
+        (did the output reproduce the citation string?) rather than
+        factual grounding (does the output reflect what was retrieved?).
+
+        Cosine similarity range with all-MiniLM-L6-v2:
+          > 0.70  strong alignment
+          0.50–0.70  moderate
+          < 0.50  weak — likely hallucinated or off-topic
+        """
+        if not output or not reference:
             return 0.0
-
-        # Extract meaningful terms from citation
-        citation_terms = set(
-            re.findall(r'\b[A-Z][a-z]+(?:\s[A-Z][a-z]+)*\b', citation)
-        )
-        output_lower = output.lower()
-
-        if not citation_terms:
-            return 0.65 if len(output) > 50 else 0.0
-
-        matched = sum(
-            1 for term in citation_terms
-            if term.lower() in output_lower
-        )
-        return round(matched / len(citation_terms), 3)
+        try:
+            embedder = self._get_embedder()
+            vecs = embedder.encode([output, reference], convert_to_numpy=True)
+            a, b = vecs[0], vecs[1]
+            dot = float(sum(x * y for x, y in zip(a.tolist(), b.tolist())))
+            norm_a = math.sqrt(sum(x * x for x in a.tolist()))
+            norm_b = math.sqrt(sum(y * y for y in b.tolist()))
+            if norm_a == 0 or norm_b == 0:
+                return 0.0
+            return round(max(0.0, dot / (norm_a * norm_b)), 3)
+        except Exception as e:
+            print(f"[OVERSEER] Embedding scoring failed: {e}")
+            return 0.0
 
     def get_audit_log(self) -> list:
         return self.log.to_list()
