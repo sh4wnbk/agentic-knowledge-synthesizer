@@ -1,5 +1,4 @@
 # AEGIS — Project Explainer
-### A plain-English forensic scan of the codebase
 
 **Full name:** Agentic Emergency Geospatial Intelligence Synthesizer  
 **Built by:** Shawn Blackman, Lehman College (CUNY), Environmental Science  
