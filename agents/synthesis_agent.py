@@ -7,6 +7,7 @@ The Overseer selects by citation alignment — not token probability.
 Key decision: which output state does validation authorize?
 """
 
+import time
 import requests
 import json
 from config import (
@@ -19,6 +20,7 @@ class SynthesisAgent:
 
     def __init__(self):
         self._token = None
+        self._token_expiry = 0  # Unix timestamp
 
     def generate_candidates(
         self,
@@ -81,7 +83,15 @@ class SynthesisAgent:
             )
             result = r.json()
             raw_text = result.get("results", [{}])[0].get("generated_text", "")
-            return raw_text.replace("```markdown", "").replace("```", "").strip()
+            raw_text = raw_text.replace("```markdown", "").replace("```", "").strip()
+            # Strip any preamble Granite generates before the first section header.
+            # The output contract requires [HAZARD STATUS] to be the opening line.
+            for marker in ["**[HAZARD STATUS]**", "[HAZARD STATUS]"]:
+                idx = raw_text.find(marker)
+                if idx > 0:
+                    raw_text = raw_text[idx:]
+                    break
+            return raw_text
         except Exception as e:
             print(f"[SYNTHESIS] Granite call failed (beam {beam_idx}): {e}")
             return ""
@@ -100,6 +110,7 @@ class SynthesisAgent:
         context  = retrieval.get("context", "No context retrieved.")
         citation = retrieval.get("citation", "No citation available.")
         usgs     = bridge.get("usgs_live", {})
+        svi      = bridge.get("svi_lookup", {})
         
         # Extract the source-of-truth agency provided by the Orchestrator
         target_agency = intent.get('regulatory_agency', 'relevant state authorities')
@@ -114,9 +125,13 @@ IMPERATIVE RULES FOR RESPONSE GENERATION:
 4. CITATION REQUIREMENT: You must cite: {citation} where policy is referenced.
 5. Do NOT cite specific policy codes, regulation numbers, or document titles unless they appear verbatim in the retrieved context above. If no specific policy name is available, refer to 'applicable federal and state regulations' only.
 6. REGULATORY ACCURACY: The primary state agency to notify is {target_agency}. Use this exact name and acronym in the [INTER-AGENCY ROUTING] section.
+7. If the SVI lookup is available, explicitly name the census tract GEOID and overall SVI percentile in the [DEMOGRAPHIC RISK (SVI)] section. If the lookup is approximate, say so.
 
 RETRIEVED POLICY/SVI CONTEXT:
 {context[:1500]}
+
+DETERMINISTIC SVI LOOKUP:
+{json.dumps(svi, indent=2)}
 
 LIVE SEISMIC DATA (USGS):
 {json.dumps(usgs)}
@@ -127,14 +142,18 @@ CIVILIAN CAD LOG (INCITING EVENT):
 GENERATE DISPATCH INTELLIGENCE BRIEF:
 Use this exact format. Be clinical and concise.
 OUTPUT ONLY THE RAW MARKDOWN. NO PREAMBLE. NO META-COMMENTARY. NO CODE BLOCKS.
-**[HAZARD STATUS]** 1 sentence cross-referencing the CAD log with the LIVE SEISMIC DATA.
+DO NOT add any other headings, clarifications, or parenthetical notes.
+DO NOT add any section before [HAZARD STATUS]. The first line of output must be **[HAZARD STATUS]** with no preceding text, bullets, or whitespace.
+Use only these three section headers and nothing else:
+**[HAZARD STATUS]** 1 sentence stating the confirmed USGS magnitude, depth, and location, cross-referenced with the CAD log. If no seismic event is detected, state "No seismic events detected in the regional scope."
 **[DEMOGRAPHIC RISK (SVI)]** 1 sentence detailing the vulnerability of the location based on retrieved context.
 **[INTER-AGENCY ROUTING]** * Immediately notify the {target_agency} regarding site-specific operational status.
 * Coordinate with the Federal Emergency Management Agency (FEMA) for support based on the SVI score and citation: {citation}.
 """
 
     def _get_iam_token(self) -> str:
-        if self._token:
+        # Refresh if missing or expiring within 60 seconds
+        if self._token and time.time() < self._token_expiry - 60:
             return self._token
         try:
             r = requests.post(
@@ -145,7 +164,9 @@ OUTPUT ONLY THE RAW MARKDOWN. NO PREAMBLE. NO META-COMMENTARY. NO CODE BLOCKS.
                 },
                 timeout=15
             )
-            self._token = r.json().get("access_token", "")
+            payload = r.json()
+            self._token = payload.get("access_token", "")
+            self._token_expiry = time.time() + payload.get("expires_in", 3600)
             return self._token
         except Exception as e:
             print(f"[SYNTHESIS] IAM token failed: {e}")

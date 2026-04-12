@@ -1,0 +1,103 @@
+openapi: 3.0.3
+info:
+  title: Agentic Knowledge Synthesizer Skill Bridge
+  version: 0.1.0
+  description: OpenAPI definition for watsonx Orchestrate tool import.
+servers:
+  - url: https://overcoat-semester-duly.ngrok-free.dev
+paths:
+  /health:
+    get:
+      operationId: health
+      summary: Health check
+      responses:
+        '200':
+          description: Service health status
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+  /skills/intent-route:
+    post:
+      operationId: intentRoute
+      summary: Parse input and build retrieval route
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/IntentRouteRequest'
+      responses:
+        '200':
+          description: Routed intent payload
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  intent:
+                    type: object
+                    additionalProperties: true
+                  cluster:
+                    type: string
+                  query:
+                    type: string
+                  bbox:
+                    type: object
+                    additionalProperties: true
+  /workflow/crisis-brief:
+    post:
+      operationId: crisisBrief
+      summary: Run full crisis workflow
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PipelineRequest'
+      responses:
+        '200':
+          description: Governed final output
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  state:
+                    type: string
+                  content:
+                    type: string
+                  citation:
+                    type: string
+                  confidence:
+                    type: number
+                  citation_score:
+                    type: number
+                  audit_log:
+                    type: array
+                    items:
+                      type: object
+                      additionalProperties: true
+components:
+  schemas:
+    IntentRouteRequest:
+      type: object
+      required:
+        - raw_input
+      properties:
+        raw_input:
+          type: string
+          description: Citizen or dispatcher input text.
+    PipelineRequest:
+      type: object
+      required:
+        - raw_input
+      properties:
+        raw_input:
+          type: string
+        audio_path:
+          type: string
+          nullable: true

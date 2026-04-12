@@ -1,6 +1,14 @@
 import streamlit as st
 import json
+from rag.ingest import run_full_ingest
+from rag.vector_store import collection_size
 from pipeline import run_pipeline
+
+
+def ensure_vector_store_ready() -> None:
+    if collection_size() == 0:
+        with st.spinner("Seeding crisis knowledge base for first run..."):
+            run_full_ingest()
 
 # 1. Page Configuration
 st.set_page_config(
@@ -8,6 +16,8 @@ st.set_page_config(
     page_icon="🛡️",
     layout="wide"
 )
+
+ensure_vector_store_ready()
 
 # 2. Sidebar: Scientific Grounding & Metadata
 with st.sidebar:

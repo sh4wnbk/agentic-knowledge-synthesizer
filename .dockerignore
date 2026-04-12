@@ -1,0 +1,15 @@
+.git
+.gitignore
+.vscode
+.idea
+__pycache__
+*.py[cod]
+.Python
+.venv
+venv
+env
+.ibm_survival_gap
+audit_log.json
+chroma_db
+.ipynb_checkpoints
+*.ipynb
