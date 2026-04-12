@@ -160,6 +160,26 @@ def run_pipeline(raw_input: str, audio_path: str = None) -> AgentOutput:
         best_output = None
         best_score  = -1.0
 
+    # ── Append verification links ─────────────────────────────
+    # Links are constructed from deterministic API data — not LLM-generated.
+    # Appended after Overseer scoring so they don't affect citation alignment.
+    verification_lines = []
+    usgs = bridge_data.get("usgs_live", {})
+    svi  = bridge_data.get("svi_lookup", {})
+
+    usgs_url = usgs.get("verification_url")
+    svi_url  = svi.get("verification_url")
+
+    if usgs_url:
+        verification_lines.append(f"[USGS Event]({usgs_url})")
+    if svi_url and svi.get("tract_geoid"):
+        verification_lines.append(
+            f"[Census Tract {svi['tract_geoid']} — Census Bureau]({svi_url})"
+        )
+
+    if verification_lines:
+        best_output += "\n\n---\n**Verify:** " + " · ".join(verification_lines)
+
     # ── Deliver ───────────────────────────────────────────────
     state = (
         OutputState.CONFIRMED_DELIVERY if first_pass

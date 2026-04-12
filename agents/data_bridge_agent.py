@@ -128,7 +128,8 @@ class DataBridgeAgent:
                 "theme3": self._to_float(svi_row.get("RPL_THEME3")),
                 "theme4": self._to_float(svi_row.get("RPL_THEME4")),
             },
-            "source": "CDC Social Vulnerability Index 2022",
+            "source":           "CDC Social Vulnerability Index 2022",
+            "verification_url": f"https://data.census.gov/table?g=1400000US{tract_geoid}",
         }
 
     def _resolve_coordinates(self, location_text: str):
@@ -292,16 +293,22 @@ class DataBridgeAgent:
                     "source": "USGS Earthquake Hazards API (real-time)"
                 }
 
-            latest = features[0]["properties"]
-            coords = features[0].get("geometry", {}).get("coordinates", [])
+            latest   = features[0]["properties"]
+            coords   = features[0].get("geometry", {}).get("coordinates", [])
+            event_id = features[0].get("id", "")
             return {
-                "status":       "HAZARD DETECTED: SEISMIC EVENT CONFIRMED",
-                "latest_event": latest.get("place"),
-                "magnitude":    latest.get("mag"),
-                "depth_km":     coords[2] if len(coords) > 2 else "unknown",
-                "region_scope": "regional",
-                "event_count":  len(features),
-                "source":       "USGS Earthquake Hazards API (real-time)"
+                "status":           "HAZARD DETECTED: SEISMIC EVENT CONFIRMED",
+                "latest_event":     latest.get("place"),
+                "magnitude":        latest.get("mag"),
+                "depth_km":         coords[2] if len(coords) > 2 else "unknown",
+                "region_scope":     "regional",
+                "event_count":      len(features),
+                "event_id":         event_id,
+                "verification_url": (
+                    f"https://earthquake.usgs.gov/earthquakes/eventpage/{event_id}/executive"
+                    if event_id else None
+                ),
+                "source": "USGS Earthquake Hazards API (real-time)"
             }
         except Exception as e:
             print(f"[BRIDGE] USGS live fetch failed: {e}")
