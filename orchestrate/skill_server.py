@@ -101,11 +101,18 @@ def pre_delivery(req: GovernanceRequest) -> dict[str, Any]:
 @app.post("/workflow/crisis-brief")
 def crisis_brief(req: PipelineRequest) -> dict[str, Any]:
     result = run_pipeline(req.raw_input, req.audio_path)
+
+    state_labels = {
+        "confirmed_delivery":       "CONFIRMED DELIVERY",
+        "retry_corrected_delivery": "RETRY-CORRECTED DELIVERY",
+        "honest_fallback":          "HONEST FALLBACK",
+    }
+
     return {
-        "state": result.state.value,
-        "content": result.content,
-        "citation": result.citation,
-        "confidence": result.confidence,
-        "citation_score": result.citation_score,
-        "audit_log": result.audit_log,
+        "output_status":       state_labels.get(result.state.value, result.state.value),
+        "citation_alignment":  f"{result.citation_score:.1%}",
+        "retrieval_confidence": f"{result.confidence:.1%}",
+        "brief":               result.content,
+        "citation":            result.citation,
+        "audit_log":           result.audit_log,
     }
