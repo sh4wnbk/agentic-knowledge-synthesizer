@@ -7,6 +7,7 @@ Usage:
 """
 
 import json
+import os
 import re
 import subprocess
 import sys
@@ -16,6 +17,18 @@ import urllib.request
 YAML_PATH = "orchestrate/skill_bridge_openapi.yaml"
 NGROK_API  = "http://localhost:4040/api/tunnels"
 PORT       = 8080
+LOG_DIR    = "orchestrate/logs"
+
+
+def wait_for_health(url: str, retries: int = 20, delay: float = 0.5) -> bool:
+    for _ in range(retries):
+        try:
+            with urllib.request.urlopen(url, timeout=2) as r:
+                if r.status == 200:
+                    return True
+        except Exception:
+            time.sleep(delay)
+    return False
 
 
 def get_ngrok_url(retries: int = 6, delay: float = 1.5) -> str:
@@ -46,20 +59,31 @@ def main() -> None:
     print("  AEGIS SKILL BRIDGE — STARTUP")
     print("═" * 52)
 
+    os.makedirs(LOG_DIR, exist_ok=True)
+    uvicorn_log_path = os.path.join(LOG_DIR, "uvicorn.log")
+    ngrok_log_path = os.path.join(LOG_DIR, "ngrok.log")
+
     print("[1/3] Starting uvicorn on port 8080...")
+    uvicorn_log = open(uvicorn_log_path, "a", buffering=1)
     uvicorn = subprocess.Popen(
         [sys.executable, "-m", "uvicorn", "orchestrate.skill_server:app",
-         "--host", "0.0.0.0", "--port", str(PORT)],
-        stdout=subprocess.DEVNULL,
-        stderr=subprocess.DEVNULL,
+         "--host", "0.0.0.0", "--port", str(PORT), "--log-level", "info"],
+        stdout=uvicorn_log,
+        stderr=subprocess.STDOUT,
     )
-    time.sleep(2)
+    if not wait_for_health(f"http://127.0.0.1:{PORT}/health"):
+        print("\n  ERROR: uvicorn did not become healthy in time.")
+        print(f"  Check logs: {uvicorn_log_path}")
+        uvicorn.terminate()
+        uvicorn_log.close()
+        sys.exit(1)
 
     print("[2/3] Starting ngrok tunnel...")
+    ngrok_log = open(ngrok_log_path, "a", buffering=1)
     ngrok = subprocess.Popen(
         ["ngrok", "http", str(PORT)],
-        stdout=subprocess.DEVNULL,
-        stderr=subprocess.DEVNULL,
+        stdout=ngrok_log,
+        stderr=subprocess.STDOUT,
     )
 
     print("[3/3] Reading tunnel URL from ngrok API...")
@@ -67,8 +91,11 @@ def main() -> None:
         url = get_ngrok_url()
     except RuntimeError as e:
         print(f"\n  ERROR: {e}")
+        print(f"  Check logs: {ngrok_log_path}")
         uvicorn.terminate()
         ngrok.terminate()
+        uvicorn_log.close()
+        ngrok_log.close()
         sys.exit(1)
 
     update_yaml(url)
@@ -78,6 +105,7 @@ def main() -> None:
     print("  BRIDGE ACTIVE")
     print(f"  URL:   {url}")
     print(f"  YAML:  {YAML_PATH}  (updated)")
+    print(f"  LOGS:  {uvicorn_log_path}, {ngrok_log_path}")
     print()
     print("  In Orchestrate:")
     print("    1. Toolset → delete intentRoute + crisisBrief")
@@ -91,6 +119,9 @@ def main() -> None:
         print("\n  Shutting down...")
         uvicorn.terminate()
         ngrok.terminate()
+    finally:
+        uvicorn_log.close()
+        ngrok_log.close()
 
 
 if __name__ == "__main__":
