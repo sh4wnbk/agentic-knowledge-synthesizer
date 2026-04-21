@@ -8,7 +8,7 @@ info:
     The agent calls this tool once with the dispatcher's incident text and receives
     a governed inter-agency routing brief in return.
 servers:
-  - url: https://overcoat-semester-duly.ngrok-free.dev
+  - url: https://agentic-knowledge-synthesizer-production.up.railway.app
 paths:
   /health:
     get:
