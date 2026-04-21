@@ -1,18 +1,22 @@
 openapi: 3.0.3
 info:
-  title: Agentic Knowledge Synthesizer Skill Bridge
-  version: 0.1.0
-  description: OpenAPI definition for watsonx Orchestrate tool import.
+  title: AEGIS — EOC Crisis Intelligence Skill
+  version: 1.0.0
+  description: >
+    Single-tool OpenAPI definition for watsonx Orchestrate registration.
+    Exposes the AEGIS full-pipeline endpoint as the `run_full_crisis_workflow` tool.
+    The agent calls this tool once with the dispatcher's incident text and receives
+    a governed inter-agency routing brief in return.
 servers:
   - url: https://overcoat-semester-duly.ngrok-free.dev
 paths:
   /health:
     get:
       operationId: health
-      summary: Health check
+      summary: Service health check
       responses:
         '200':
-          description: Service health status
+          description: Service is alive
           content:
             application/json:
               schema:
@@ -20,84 +24,146 @@ paths:
                 properties:
                   status:
                     type: string
-  /skills/intent-route:
+                    example: ok
+  /workflow/incident-report:
     post:
-      operationId: intentRoute
-      summary: Parse input and build retrieval route
+      operationId: run_full_crisis_workflow
+      summary: >
+        Run the AEGIS full-pipeline crisis workflow and return a validated
+        inter-agency routing brief for the EOC dispatcher.
+      description: >
+        Accepts a free-text incident report from an emergency manager and runs
+        the complete 6-agent AEGIS pipeline: intake parsing → orchestrator routing
+        → RAG retrieval → live data bridge (USGS, CDC SVI, HHS emPOWER, EPA TRI)
+        → Granite LLM synthesis → Overseer governance validation.
+
+        Returns one of three output states:
+          - CONFIRMED DELIVERY: passed all governance checks
+          - RETRY-CORRECTED DELIVERY: passed after Overseer retry with amended context
+          - HONEST FALLBACK: no beam passed governance; safe fallback text returned
+
+        The `brief` field contains the full dispatch intelligence brief with three
+        required sections: [HAZARD STATUS], [DEMOGRAPHIC RISK (SVI)], [INTER-AGENCY ROUTING].
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/IntentRouteRequest'
+              $ref: '#/components/schemas/IncidentReportRequest'
       responses:
         '200':
-          description: Routed intent payload
+          description: Governed dispatch intelligence brief
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  intent:
-                    type: object
-                    additionalProperties: true
-                  cluster:
-                    type: string
-                  query:
-                    type: string
-                  bbox:
-                    type: object
-                    additionalProperties: true
-  /workflow/crisis-brief:
-    post:
-      operationId: crisisBrief
-      summary: Run full crisis workflow
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/PipelineRequest'
-      responses:
-        '200':
-          description: Governed final output
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  state:
-                    type: string
-                  content:
-                    type: string
-                  citation:
-                    type: string
-                  confidence:
-                    type: number
-                  citation_score:
-                    type: number
-                  audit_log:
-                    type: array
-                    items:
-                      type: object
-                      additionalProperties: true
+                $ref: '#/components/schemas/IncidentReportResponse'
 components:
   schemas:
-    IntentRouteRequest:
+    IncidentReportRequest:
       type: object
       required:
         - raw_input
       properties:
         raw_input:
           type: string
-          description: Citizen or dispatcher input text.
-    PipelineRequest:
-      type: object
-      required:
-        - raw_input
-      properties:
-        raw_input:
-          type: string
-        audio_path:
+          description: >
+            Free-text incident description from the emergency manager or dispatcher.
+            Example: "M3.1 earthquake reported near Cushing, Oklahoma. Multiple calls
+            reporting structure damage."
+        incident_id:
           type: string
           nullable: true
+          description: >
+            Optional caller-assigned incident identifier. If omitted, the server
+            assigns a UUID automatically. Do not populate this field — leave blank.
+        channel:
+          type: string
+          nullable: true
+          description: Originating channel. Use "api" for Orchestrate-initiated calls.
+          enum:
+            - text
+            - api
+          default: api
+    IncidentReportResponse:
+      type: object
+      properties:
+        incident_id:
+          type: string
+          description: Server-assigned or caller-provided incident UUID.
+        output_status:
+          type: string
+          description: >
+            Pipeline governance outcome. One of: CONFIRMED DELIVERY,
+            RETRY-CORRECTED DELIVERY, HONEST FALLBACK.
+          enum:
+            - CONFIRMED DELIVERY
+            - RETRY-CORRECTED DELIVERY
+            - HONEST FALLBACK
+        citation_alignment:
+          type: string
+          description: >
+            Semantic cosine similarity score between the generated brief and the
+            retrieved source context, expressed as a percentage (e.g. "56.5%").
+        retrieval_confidence:
+          type: string
+          description: >
+            RAG retrieval confidence score for the policy/SVI context chunk
+            used to ground the response, expressed as a percentage (e.g. "69.2%").
+        brief:
+          type: string
+          description: >
+            The validated dispatch intelligence brief. Contains three sections:
+            [HAZARD STATUS], [DEMOGRAPHIC RISK (SVI)], [INTER-AGENCY ROUTING].
+            Present on CONFIRMED DELIVERY and RETRY-CORRECTED DELIVERY.
+            On HONEST FALLBACK, contains a safe summary of available live data
+            without LLM-generated content.
+        citation:
+          type: string
+          description: >
+            Scientific citation chain grounding the response.
+            Example: "Blackman (2025) [synthesizing Keranen et al. (2014); Hincks et al. (2018)]"
+        cluster:
+          type: string
+          description: >
+            Routing cluster assigned by the Orchestrator.
+            One of: reasoning_ohio, reasoning_oklahoma, reasoning, coordination, synthesis.
+        agency_routing_baseline:
+          type: object
+          description: >
+            Pre-promotion agency routing matrix from the Orchestrator. Reflects static
+            tier assignments before EPA TRI hazmat check. The brief field contains the
+            authoritative post-promotion routing. If TRI facilities are detected,
+            the environmental agency (ODEQ or Ohio EPA) is promoted Tier 2→1 in the
+            brief but that change is not reflected here.
+          additionalProperties:
+            type: object
+            properties:
+              name:
+                type: string
+              role:
+                type: string
+              tier:
+                type: integer
+              hotline:
+                type: string
+        citation_chain:
+          type: string
+          description: >
+            Full academic citation chain including synthesized papers.
+        audit_log:
+          type: array
+          description: >
+            Ordered list of Overseer governance hook results.
+            Each entry records which hook ran (input_audit, retrieval_audit,
+            pre_delivery_check), whether it passed, and the reason.
+          items:
+            type: object
+            properties:
+              hook:
+                type: string
+              passed:
+                type: boolean
+              reason:
+                type: string
+              timestamp:
+                type: string

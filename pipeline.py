@@ -19,7 +19,7 @@ from governance.output_states   import AgentOutput, OutputState
 from config                     import MAX_RETRIES
 
 
-def run_pipeline(raw_input: str, audio_path: str = None) -> AgentOutput:
+def run_pipeline(raw_input: str) -> AgentOutput:
 
     # ── Instantiate agents ────────────────────────────────────
     intake      = IntakeAgent()
@@ -30,17 +30,10 @@ def run_pipeline(raw_input: str, audio_path: str = None) -> AgentOutput:
     synthesis    = SynthesisAgent()
 
     print("\n" + "═"*55)
-    print("  AGENTIC KNOWLEDGE SYNTHESIZER — PIPELINE START")
+    print("  AEGIS — INCIDENT ROUTING PIPELINE START")
     print("═"*55)
 
-    # ── STEP 1: Transcribe audio if provided ──────────────────
-    if audio_path:
-        transcribed = intake.transcribe(audio_path)
-        if transcribed:
-            raw_input = transcribed
-            print(f"[INTAKE] Transcribed: {raw_input[:80]}...")
-
-    # ── STEP 2: Parse intent ──────────────────────────────────
+    # ── STEP 1: Parse intent ──────────────────────────────────
     intent = intake.parse(raw_input)
     print(f"[INTAKE] Crisis type: {intent.get('crisis_type')} | "
           f"Complete: {intent.get('is_complete')}")
@@ -62,6 +55,8 @@ def run_pipeline(raw_input: str, audio_path: str = None) -> AgentOutput:
     cluster = orchestrator.route(intent)
     query   = orchestrator.build_query(intent, cluster)
     bbox    = orchestrator.get_bbox(cluster)
+    agency_routing = orchestrator.get_agency_routing(cluster)
+    citation_chain = orchestrator.get_citation_chain(cluster)
 
     # ── STEP 4: Retrieve — fires before reasoning ─────────────
     retrieval      = rag.retrieve(query)
@@ -88,7 +83,11 @@ def run_pipeline(raw_input: str, audio_path: str = None) -> AgentOutput:
         retrieval = rag.retrieve(query)
 
     # ── STEP 5: Fetch from data bridge ────────────────────────
-    bridge_data = bridge.fetch(intent, retrieval, bbox)
+    bridge_data = bridge.fetch(intent, retrieval, bbox, agency_routing)
+
+    # Promote the citation chain into the retrieval record so downstream
+    # generation and governance see the same provenance string.
+    retrieval["citation"] = citation_chain
 
     # ── STEP 6: Generate beam candidates ─────────────────────
     candidates = synthesis.generate_candidates(intent, retrieval, bridge_data)
@@ -153,12 +152,43 @@ def run_pipeline(raw_input: str, audio_path: str = None) -> AgentOutput:
         print(f"[PIPELINE] Delivery retry {delivery_retries}/{MAX_RETRIES} "
               f"— re-retrieving with amended context")
         retrieval   = rag.retrieve(query)
-        bridge_data = bridge.fetch(intent, retrieval, bbox)
+        bridge_data = bridge.fetch(intent, retrieval, bbox, agency_routing)
         candidates  = synthesis.generate_candidates(intent, retrieval, bridge_data)
         citation    = retrieval.get("citation")
         context     = retrieval.get("context", "")
         best_output = None
         best_score  = -1.0
+
+    # ── Replace [INTER-AGENCY ROUTING] with deterministic table ──
+    # The LLM reliably truncates table rows. Generate from bridge data
+    # directly so every agency appears and tier promotion is reflected.
+    # Injected after Overseer scoring so it does not affect citation alignment.
+    agency_brief = bridge_data.get("agency_routing", {})
+    if agency_brief and any(
+        agency_brief.get(k) for k in ("tier_1_immediate", "tier_2_within_hour", "tier_3_as_warranted")
+    ):
+        table_rows = ["| Tier | Agency | Role |", "|---|---|---|"]
+        for agency in agency_brief.get("tier_1_immediate", []):
+            role = agency.get("role", "")
+            table_rows.append(f"| 1 — IMMEDIATE | {agency['name']} | {role} |")
+        for agency in agency_brief.get("tier_2_within_hour", []):
+            role = agency.get("role", "")
+            table_rows.append(f"| 2 — WITHIN HOUR | {agency['name']} | {role} |")
+        for agency in agency_brief.get("tier_3_as_warranted", []):
+            role = agency.get("role", "")
+            if agency.get("hotline"):
+                role += f" · {agency['hotline']}"
+            table_rows.append(f"| 3 — AS WARRANTED | {agency['name']} | {role} |")
+        routing_table = "\n".join(table_rows)
+
+        # Strip whatever the LLM generated for [INTER-AGENCY ROUTING] and replace it
+        import re as _re
+        best_output = _re.sub(
+            r"\*?\*?\[INTER-AGENCY ROUTING\]\*?\*?.*",
+            f"**[INTER-AGENCY ROUTING]**\n{routing_table}",
+            best_output,
+            flags=_re.DOTALL
+        )
 
     # ── Append verification links ─────────────────────────────
     # Links are constructed from deterministic API data — not LLM-generated.
@@ -166,16 +196,39 @@ def run_pipeline(raw_input: str, audio_path: str = None) -> AgentOutput:
     verification_lines = []
     usgs = bridge_data.get("usgs_live", {})
     svi  = bridge_data.get("svi_lookup", {})
+    external_ops = bridge_data.get("external_operational_picture", {})
 
     usgs_url = usgs.get("verification_url")
     svi_url  = svi.get("verification_url")
 
     if usgs_url:
         verification_lines.append(f"[USGS Event]({usgs_url})")
+    else:
+        verification_lines.append("[USGS Earthquake Map](https://earthquake.usgs.gov/earthquakes/map/)")
+
     if svi_url and svi.get("tract_geoid"):
         verification_lines.append(
             f"[Census Tract {svi['tract_geoid']} — Census Bureau]({svi_url})"
         )
+    else:
+        verification_lines.append("[CDC/ATSDR Social Vulnerability Index](https://www.atsdr.cdc.gov/placeandhealth/svi/index.html)")
+
+    # External source verification links (FEMA + IFRC)
+    source_urls = external_ops.get("source_validation_urls", {})
+    fema_portal = source_urls.get("fema_portal")
+    ifrc_portal = source_urls.get("ifrc_portal")
+
+    if fema_portal:
+        verification_lines.append(f"[FEMA Declarations (Portal)]({fema_portal})")
+    if ifrc_portal:
+        verification_lines.append(f"[IFRC Emergencies (Portal)]({ifrc_portal})")
+
+    for evt in external_ops.get("top_events", [])[:2]:
+        src = evt.get("source") or "External"
+        evt_id = evt.get("event_id") or "unknown"
+        purl = evt.get("provenance_url")
+        if purl:
+            verification_lines.append(f"[{src} Event {evt_id}]({purl})")
 
     if verification_lines:
         best_output += "\n\n---\n**Verify:** " + " · ".join(verification_lines)

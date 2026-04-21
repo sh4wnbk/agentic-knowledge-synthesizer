@@ -19,4 +19,10 @@ curl -sS -X POST "${BASE_URL}/workflow/crisis-brief" \
   -d '{"raw_input":"Emergency Log: Tremors reported near a disposal well in Youngstown, OH. SVI tract identification required."}'
 echo
 
+echo "[SMOKE] Checking incident-report workflow"
+curl -sS -X POST "${BASE_URL}/workflow/incident-report" \
+  -H 'Content-Type: application/json' \
+  -d '{"raw_input":"M3.1 seismic event near Niles, Ohio. Requesting inter-agency routing brief.", "incident_id": "smoke-test-001"}'
+echo
+
 echo "[SMOKE] Done"

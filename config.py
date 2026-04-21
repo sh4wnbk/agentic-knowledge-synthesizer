@@ -23,6 +23,21 @@ WATSON_STT_URL     = os.getenv(
     "WATSON_STT_URL",
     "https://api.us-south.speech-to-text.watson.cloud.ibm.com"
 )
+WATSON_TTS_KEY     = os.getenv("WATSON_TTS_API_KEY") or WATSONX_API_KEY
+WATSON_TTS_URL     = os.getenv(
+    "WATSON_TTS_URL",
+    "https://api.us-south.text-to-speech.watson.cloud.ibm.com"
+)
+
+# ── IBM Granite Guardian guardrail ───────────────────────
+USE_GRANITE_GUARDIAN = os.getenv("USE_GRANITE_GUARDIAN", "false").strip().lower() in (
+    "1",
+    "true",
+    "yes",
+    "on",
+)
+GRANITE_GUARDIAN_MODEL = os.getenv("GRANITE_GUARDIAN_MODEL", "ibm/granite-guardian-3-8b")
+GRANITE_GUARDIAN_THRESHOLD = float(os.getenv("GRANITE_GUARDIAN_THRESHOLD", "0.5"))
 
 # ── Model ────────────────────────────────────────────────
 # granite-3-8b-instruct: current production Granite model (2024–2025)
@@ -96,7 +111,8 @@ OKLAHOMA_BBOX = {
 CONFIDENCE_THRESHOLD     = 0.45   # Local prototype (all-MiniLM-L6-v2)
 # CONFIDENCE_THRESHOLD   = 0.70   # Production (IBM watsonx embeddings)
 
-CITATION_ALIGN_THRESHOLD = 0.60   # Minimum citation alignment — pre-delivery
+CITATION_ALIGN_THRESHOLD = 0.55   # Local prototype (all-MiniLM-L6-v2 + OH-heavy knowledge base)
+# CITATION_ALIGN_THRESHOLD = 0.65 # Production (IBM watsonx embeddings + balanced knowledge base)
 MAX_RETRIES              = 2      # Retry budget cap — Overseer loop
 
 # ── External APIs ────────────────────────────────────────
@@ -104,6 +120,8 @@ USGS_API_URL = "https://earthquake.usgs.gov/fdsnws/event/1/query"
 CENSUS_GEOCODER_URL = "https://geocoding.geo.census.gov/geocoder"
 CENSUS_GEOCODER_BENCHMARK = "Public_AR_Current"
 CENSUS_GEOCODER_VINTAGE = "Current_Current"
+EMPOWER_JSON    = os.path.join(os.path.dirname(__file__), "data", "empower_oh_ok.json")
+TRI_FACILITIES_JSON = os.path.join(os.path.dirname(__file__), "data", "tri_facilities_oh_ok.json")
 
 # ── ChromaDB ─────────────────────────────────────────────
 VECTOR_STORE_BACKEND = os.getenv("VECTOR_STORE_BACKEND", "chroma")

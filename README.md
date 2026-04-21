@@ -1,86 +1,126 @@
-# Agentic Knowledge Synthesizer: Bridging the Survival Gap
+# AEGIS — Agentic Emergency Geospatial Intelligence Synthesizer
 
-**IBM SkillsBuild AI Experiential Learning Lab**
-**Track: Government & Public Services**
+**IBM SkillsBuild AI Experiential Learning Lab 2026**  
+**Track: Government & Public Services**  
 **Author: Shawn Blackman** | B.S. Environmental Science, Lehman College (CUNY)
 
 ---
 
 ## The Problem
 
-When a spatially predictable seismic crisis — driven by disposal‑well volume and pressure dynamics — strikes a high‑vulnerability community, residents face weeks‑long administrative delay before receiving aid. The problem is not the absence of available assistance — it is that federal, state, and NGO data systems still do not talk to one another.
+When a spatially predictable seismic crisis — driven by disposal-well volume and pressure dynamics — strikes a high-vulnerability community, the emergency response chain breaks at the coordination layer. The problem is not the absence of available data. It is that USGS seismic records, CDC census vulnerability scores, HHS electricity-dependent resident counts, EPA hazmat facility registries, and state regulatory contacts exist in separate systems that do not communicate under pressure.
 
-Manual verification. Disconnected APIs. Paper forms. Cognitive overload.
+Manual cross-referencing. Disconnected APIs. Cognitive overload.
 
 ![The Survival Gap](assets/slide_w4_01_survival_gap.png)
 
-> *The system was designed for agency independence. The citizen needs interdependence.*
+> *The system was designed for agency independence. The crisis requires interdependence.*
 
 ---
 
 ## The Solution
 
-An **Agentic Knowledge Synthesizer** that acts as an invisible coordinator — a six-agent AI pipeline built on IBM watsonx that:
+**AEGIS** is a six-agent AI pipeline that acts as an invisible coordinator for Emergency Operations Center supervisors managing induced seismicity events. A dispatcher submits a free-text incident report. AEGIS fuses live federal data, runs the output through three governance checkpoints, and returns a validated inter-agency routing brief in under 30 seconds.
 
-- Parses unstructured 911 transcripts via Watson Speech-to-Text
-- Retrieves real-time seismic and social vulnerability context via RAG before any reasoning begins
-- Cross-references USGS seismic events with CDC Social Vulnerability Index tracts, while applying state-specific regulatory logic (ODNR Traffic Light System for Ohio; OCC Plug-back regulations for Oklahoma).
-- Bridges federal (FEMA), state, and NGO data silos via authorized API calls
-- Validates every output before delivery via a proactive Overseer Agent
-- Delivers one of three validated output states — never fluent fiction
+The brief contains exactly three sections, always:
+
+- **[HAZARD STATUS]** — confirmed USGS magnitude, depth, location, distance verification, and EPA TRI compound hazmat risk
+- **[DEMOGRAPHIC RISK (SVI)]** — CDC Social Vulnerability Index percentile, HHS emPOWER electricity-dependent resident count, census tract identification
+- **[INTER-AGENCY ROUTING]** — tiered agency table (Tier 1 immediate, Tier 2 within the hour, Tier 3 as warranted), with EPA environmental agency promoted to Tier 1 if hazmat facilities are detected
 
 ---
 
-## Architecture
+## Pipeline Architecture
 
-![Six-Layer Agentic System](assets/slide_w4_03_six_layer_system.png)
+```mermaid
+flowchart TD
+    A([Dispatcher Incident Report]) --> B
 
-### The Six Agents
+    subgraph Pipeline["Six-Agent Pipeline"]
+        B[Agent 1 — IntakeAgent\nParse location · crisis type · state]
+        B --> H1
 
-```
-Crisis Input (911 transcript / text)
-        │
-        ▼
-┌─────────────────┐
-│  Intake Agent   │  Layer 1: Perception
-│  Watson STT     │  Parses unstructured input → structured intent
-└────────┬────────┘
-         │
-         ▼
-┌─────────────────┐
-│  Orchestrator   │  Layer 2: Reasoning & Planning
-│  Agent          │  Routes to Coordination / Reasoning clusters. Implements regional inference logic: Ohio Cluster (proximity-based pore pressure diffusion)  
-└────────┬────────┘  vs. Oklahoma Cluster (basin-wide hydraulic connectivity).
-         │
-         ▼
-┌─────────────────┐
-│  RAG Knowledge  │  Layer 3: Memory & Knowledge  ← Retrieval before reasoning
-│  Agent          │  ChromaDB → USGS + CDC SVI semantic retrieval
-└────────┬────────┘
-         │
-         ▼
-┌─────────────────┐
-│  Data Bridge    │  Layer 4: Tools
-│  Agent          │  FEMA NIMS, NGO APIs, Login.gov identity
-└────────┬────────┘
-         │
-         ▼
-┌─────────────────┐
-│  Overseer       │  Layer 5: Governance  ← Three hooks, proactive not reactive
-│  Agent          │  Input Audit → Retrieval Audit → Pre-Delivery Check
-└────────┬────────┘
-         │
-    ┌────┴─────────────────┐
-    ▼                      ▼
-┌──────────┐         ┌──────────────┐
-│Confirmed │         │    Honest    │
-│Delivery  │         │   Fallback   │
-└──────────┘         └──────────────┘
+        H1{Overseer Hook 1\nInput Audit}
+        H1 -->|fail| F1([HONEST FALLBACK\nIncomplete intent])
+        H1 -->|pass| C
+
+        C[Agent 2 — OrchestratorAgent\nRoute to cluster · assign regulatory agency\nBuild RAG query · set geographic bbox]
+        C --> D
+
+        D[Agent 3 — RAGKnowledgeAgent\nChromaDB semantic retrieval\n586 chunks · all-MiniLM-L6-v2]
+        D --> H2
+
+        H2{Overseer Hook 2\nRetrieval Audit\nconfidence ≥ 0.45}
+        H2 -->|fail| F2([HONEST FALLBACK\nLow retrieval confidence])
+        H2 -->|pass| E
+
+        E[Agent 4 — DataBridgeAgent\nUSGS live · Census geocoder\nCDC SVI · HHS emPOWER · EPA TRI\nGeographic distance verification\nEPA tier promotion if hazmat detected]
+        E --> G
+
+        G[Agent 5 — SynthesisAgent\nGranite 3-8B-instruct\n4 beam candidates at varying temperature]
+        G --> H3
+
+        H3{Overseer Hook 3\nPre-Delivery Check\ncitation alignment ≥ 0.55}
+        H3 -->|all fail| RB{Retry budget\nexhausted?}
+        RB -->|no| D
+        RB -->|yes| F3([HONEST FALLBACK\nRetry budget exhausted])
+        H3 -->|best beam passes| INJ
+
+        INJ[Deterministic post-processing\nReplace routing section with\ncomplete agency table from bridge data\nAppend verification links]
+    end
+
+    INJ --> OUT
+    OUT{First pass?}
+    OUT -->|yes| CD([CONFIRMED DELIVERY])
+    OUT -->|no| RCD([RETRY-CORRECTED DELIVERY])
 ```
 
-### Pipeline: How a Crisis Input Becomes Aid Delivery
+---
 
-![Step-by-Step Workflow](assets/slide_w5_02_workflow.png)
+## Data Sources
+
+```mermaid
+graph LR
+    subgraph Live["Live APIs"]
+        USGS["USGS Earthquake\nHazards API"]
+        GEO["U.S. Census\nBureau Geocoder"]
+        FEMA["FEMA Disaster\nDeclarations Portal"]
+        IFRC["IFRC GO\nEmergencies Portal"]
+    end
+
+    subgraph Snapshot["Local Snapshots — OH/OK"]
+        SVI["CDC SVI 2022\n61MB CSV · 72,837 tracts"]
+        EMP["HHS emPOWER\n165 county records"]
+        TRI["EPA TRI Facilities\n3,463 active sites"]
+    end
+
+    subgraph KB["Knowledge Base — ChromaDB"]
+        POL["Policy docs · 47 chunks\nODNR · OCC · FEMA · ODEQ · Ohio EPA"]
+        SVI2["CDC SVI high-vulnerability\n500 tract descriptions"]
+        USGS2["USGS seismic context\n50 event records"]
+    end
+
+    subgraph IBM["IBM watsonx"]
+        G34["Granite 3-8B-instruct\nSynthesis"]
+        GG["Granite Guardian 3-8B\nInput moderation"]
+        IAM["IBM Cloud IAM\nAuthentication"]
+    end
+
+    USGS --> DataBridge
+    GEO --> DataBridge
+    SVI --> DataBridge
+    EMP --> DataBridge
+    TRI --> DataBridge
+    FEMA --> DataBridge
+    IFRC --> DataBridge
+
+    KB --> RAG
+    IBM --> Synthesis
+
+    DataBridge["DataBridgeAgent\nAgent 4"]
+    RAG["RAGKnowledgeAgent\nAgent 3"]
+    Synthesis["SynthesisAgent\nAgent 5"]
+```
 
 ---
 
@@ -88,11 +128,11 @@ Crisis Input (911 transcript / text)
 
 ![Trust Output Matrix](assets/slide_w5_03_trust_output_matrix.png)
 
-| State | Condition | Trust Consequence |
+| State | Condition | Trust Signal |
 |---|---|---|
-| Confirmed Delivery | Citation validated. Confidence met. Overseer approved. | Full trust. Citizen knows the source. |
-| Retry-Corrected Delivery | First pass failed. Retry passed. | Trust maintained. System corrected itself. |
-| Honest Fallback | Retry budget exhausted. | Trust preserved. System told the truth. |
+| CONFIRMED DELIVERY | All three hooks passed on first attempt | Full governance validation |
+| RETRY-CORRECTED DELIVERY | Failed at least one hook; passed within retry budget (max 2) | System self-corrected |
+| HONEST FALLBACK | Retry budget exhausted | System reported its limit honestly |
 
 > *A system that cannot say "I don't know" gives less weight to the times it says "I know."*
 
@@ -101,43 +141,72 @@ Crisis Input (911 transcript / text)
 ## Key Design Decisions
 
 ### 1. Retrieval Before Reasoning
-The RAG Knowledge Agent retrieves USGS seismic event data and CDC SVI census tract context **before** the Orchestrator reasons about resource allocation. The knowledge base constrains the reasoning. An agent that reasons first confirms its own assumptions — and in an emergency aid context, confident-wrong is the worst failure mode.
+The RAGKnowledgeAgent retrieves policy context and vulnerability data **before** the Orchestrator reasons about agency routing. The knowledge base constrains the reasoning. An agent that reasons first confirms its own assumptions — in an emergency context, confident-wrong is the worst failure mode.
 
 ### 2. Beam Search Over Greedy Decoding
-The Synthesis Agent generates `BEAM_WIDTH=4` candidate responses at varying temperatures. The Overseer Agent selects the candidate with the highest **citation alignment score** — not the highest token probability. The selection criterion is logical consistency with the retrieved source, not statistical likelihood.
+The SynthesisAgent generates `BEAM_WIDTH=4` candidate responses at temperatures 0.30, 0.45, 0.60, 0.75. The Overseer selects the candidate with the highest **citation alignment score** — semantic cosine similarity between the output and the retrieved source context — not the highest token probability.
 
-### 3. Proactive Governance
-The Overseer Agent intercepts at three pre-delivery points:
-- **Input Audit** — catches structuring failures before reasoning begins
-- **Retrieval Audit** — low-confidence retrieval does not proceed
-- **Pre-Delivery Check** — output cross-validated against cited source before delivery
+### 3. Deterministic Routing Table
+The `[INTER-AGENCY ROUTING]` section is not LLM-generated. After the Overseer scores and selects the best beam, `pipeline.py` replaces the routing section with a table built directly from bridge data. This guarantees all agencies appear, tiers are correct, and EPA tier promotion under compound hazmat conditions is always reflected.
 
-Retry budget: maximum 2. When exhausted: Honest Fallback — never fabrication.
+### 4. Geographic Distance Verification
+The DataBridgeAgent calculates the haversine distance between the reported incident location and the nearest USGS catalogued event. Three response tiers:
+- **< 30 km** — Co-located: event confirmed near reported location
+- **30–50 km** — Nearest regional event: moderate proximity
+- **> 50 km** — No USGS-verified seismic activity at reported location; notes possible catalogue lag (5–15 min) or location correction needed
 
-### 4. Regional Geophysical Inference
-The system does not treat all seismic events as identical. The Orchestrator applies distinct reasoning logic based on the geological basin. In Ohio, the Data Bridge prioritizes 15 km proximity buffers around active wells. In Oklahoma, the logic shifts to basin-wide hydraulic connectivity and depth-to-basement variables. This ensures the Invisible Coordinator provides contextually accurate guidance to local emergency managers.
+### 5. EPA Tier Promotion
+If EPA TRI-listed hazmat facilities are detected within ±0.25° of the reported incident, the environmental agency (Ohio EPA or ODEQ) is automatically promoted from Tier 2 to Tier 1 in the routing matrix, with a ⚠ COMPOUND HAZMAT RISK warning prepended to its role. This is evidence-driven conditional routing — bridge data changes the governance output.
 
-### 5. Human-in-the-Loop (HITL)
-The Honest Fallback is an escalation signal, not just graceful degradation. High-consequence resource decisions and retry-exhausted life-safety queries are candidates for human authority confirmation. The design acknowledges this accountability boundary. Where exactly HITL is implemented remains an open specification — naming it here is the first governance act.
-
----
-
-## Governance: The Overseer Agent
+### 6. Proactive Three-Hook Governance
 
 ![Overseer Agent Three Hooks](assets/slide_w5_05_overseer_governance.png)
+
+- **Input Audit** — catches structuring failures before reasoning begins
+- **Retrieval Audit** — low-confidence retrieval does not proceed to synthesis
+- **Pre-Delivery Check** — semantic citation alignment scored across all beam candidates; unfilled template detection; required section structure enforcement
 
 ---
 
 ## IBM Tools
 
-![Ecosystem](assets/slide_w4_05_ecosystem.png)
-
-| Tool | Role in Architecture |
+| Tool | Role |
 |---|---|
-| IBM watsonx.ai (Granite LLM) | Synthesis Agent — candidate response generation |
-| IBM watsonx.governance | Overseer Agent — audit log, bias detection, model monitoring |
-| IBM Watson Speech-to-Text | Intake Agent — 911 transcript ingestion |
-| IBM watsonx.data | RAG layer — vector store in production (ChromaDB locally) |
+| IBM watsonx.ai (Granite 3-8B-instruct) | SynthesisAgent — beam candidate generation |
+| IBM Granite Guardian 3-8B | OverseerAgent — input and retrieval moderation |
+| IBM watsonx Orchestrate | Front-end — single tool registration, ReAct agent |
+| IBM watsonx.governance | Overseer audit log, model monitoring |
+
+---
+
+## Orchestrate Integration
+
+AEGIS is registered in watsonx Orchestrate as a **single tool**: `run_full_crisis_workflow` → `POST /workflow/incident-report`.
+
+The agent receives a dispatcher's incident text, calls the tool once, and returns the full brief. No chaining, no multi-step decomposition.
+
+```mermaid
+sequenceDiagram
+    participant D as Dispatcher
+    participant O as Orchestrate Agent
+    participant B as AEGIS Bridge
+    participant P as Pipeline
+
+    D->>O: Incident report text
+    O->>B: POST /workflow/incident-report\n{raw_input, channel: "api"}
+    B->>P: run_pipeline(raw_input)
+    P-->>B: AgentOutput (state · brief · audit_log)
+    B-->>O: JSON response
+    O-->>D: Formatted brief
+```
+
+### Starting the bridge
+
+```bash
+python start_bridge.py
+```
+
+`start_bridge.py` handles uvicorn startup, ngrok tunnel, YAML URL patching, and a regression pair automatically. The ngrok URL is patched into `orchestrate/skill_bridge_openapi.yaml` on each startup.
 
 ---
 
@@ -145,27 +214,44 @@ The Honest Fallback is an escalation signal, not just graceful degradation. High
 
 ```
 agentic-knowledge-synthesizer/
-├── main.py                        # Entry point
-├── pipeline.py                    # Six-agent orchestration
-├── config.py                      # All constants and credentials
+├── pipeline.py                    # Six-agent orchestration + post-processing
+├── config.py                      # All constants and thresholds
+├── start_bridge.py                # Bridge startup: uvicorn + ngrok + regression
 ├── requirements.txt
 │
 ├── agents/
-│   ├── intake_agent.py            # Layer 1: Perception + Watson STT
-│   ├── orchestrator_agent.py      # Layer 2: Routing
-│   ├── rag_knowledge_agent.py     # Layer 3: Retrieval
-│   ├── data_bridge_agent.py       # Layer 4: API calls
-│   ├── overseer_agent.py          # Layer 5: Three-hook governance
-│   └── synthesis_agent.py         # Layer 6: Beam search + delivery
+│   ├── intake_agent.py            # Agent 1: intent parsing · location resolution
+│   ├── orchestrator_agent.py      # Agent 2: cluster routing · agency assignment
+│   ├── rag_knowledge_agent.py     # Agent 3: ChromaDB semantic retrieval
+│   ├── data_bridge_agent.py       # Agent 4: USGS · SVI · emPOWER · TRI · distance
+│   ├── overseer_agent.py          # Agent 5: three-hook governance · moderation
+│   └── synthesis_agent.py         # Agent 6: Granite beam generation
 │
 ├── rag/
-│   ├── ingest.py                  # USGS + CDC SVI ingestion pipeline
+│   ├── ingest.py                  # Knowledge base ingestion (run once)
 │   ├── vector_store.py            # ChromaDB client
 │   └── retriever.py               # Semantic search + confidence scoring
 │
-└── governance/
-    ├── output_states.py           # OutputState enum + AgentOutput dataclass
-    └── audit_log.py               # Overseer decision logging
+├── governance/
+│   ├── output_states.py           # OutputState enum · AgentOutput dataclass
+│   └── audit_log.py               # Overseer decision logging
+│
+├── orchestrate/
+│   ├── skill_server.py            # FastAPI bridge · /workflow/incident-report
+│   ├── skill_bridge_openapi.yaml  # Single-tool OpenAPI spec for Orchestrate
+│   └── registration_guide.md      # Agent config · evaluation notes
+│
+├── data/
+│   ├── svi_2022_us_tract.csv      # CDC SVI 2022 (61MB · not in git)
+│   ├── empower_oh_ok.json         # HHS emPOWER OH/OK snapshot (165 counties)
+│   ├── tri_facilities_oh_ok.json  # EPA TRI OH/OK snapshot (3,463 facilities)
+│   └── policy_docs/
+│       ├── blackman_2025_full.txt
+│       ├── nifog_2025_summary.txt
+│       └── agency_response_operations.txt  # ODNR · OCC · FEMA operational protocols
+│
+└── tests/
+    └── test_units.py              # 52 pure unit tests · no network · no LLM
 ```
 
 ---
@@ -176,34 +262,16 @@ agentic-knowledge-synthesizer/
 - Python 3.11+
 - [uv](https://github.com/astral-sh/uv) — fast Python package manager
 - IBM Cloud account with watsonx.ai access
-- IBM watsonx project ID
+- ngrok account (free tier)
 
-### Clone (WSL)
+### Install
 
 ```bash
 cd ~/src
 git clone https://github.com/sh4wnbk/agentic-knowledge-synthesizer.git
 cd agentic-knowledge-synthesizer
-```
-
-### Create named virtual environment
-
-The environment is named `.ibm_survival_gap` — dot-prefixed so it's hidden
-from `ls`, named so it's immediately identifiable alongside other environments.
-
-```bash
 uv venv .ibm_survival_gap
 source .ibm_survival_gap/bin/activate
-```
-
-Your prompt should now show:
-```
-(.ibm_survival_gap) shawn@Shawn-Laptop:~/src/agentic-knowledge-synthesizer$
-```
-
-### Install dependencies
-
-```bash
 uv pip install -r requirements.txt
 ```
 
@@ -211,82 +279,52 @@ uv pip install -r requirements.txt
 
 ```bash
 cp .env.example .env
+# Fill in: WATSONX_API_KEY, WATSONX_PROJECT_ID, WATSONX_URL
 ```
 
-Open `.env` and fill in your IBM credentials:
-
-```
-WATSONX_API_KEY=your_ibm_cloud_api_key
-WATSONX_PROJECT_ID=your_watsonx_project_id
-WATSON_STT_API_KEY=your_watson_stt_api_key
-```
-
-### Run
+### Seed the knowledge base (run once)
 
 ```bash
-# First run: ingests USGS and CDC SVI data into ChromaDB automatically
-python main.py
-
-# Subsequent runs: queries existing vector store
-python main.py
+python rag/ingest.py
 ```
 
-### Notebook-First Workflow
-
-The primary deliverable is now the notebook at [notebooks/agentic_knowledge_synthesizer.ipynb](/home/shawn/src/agentic-knowledge-synthesizer/notebooks/agentic_knowledge_synthesizer.ipynb). Run the cells in order to seed the vector store and execute the validation cases.
-
-The notebook uses the existing Python pipeline as its backend. Streamlit remains an optional legacy visualization shell and is no longer part of the notebook-first path.
-
-If you need the original containerized demo for reference, the supporting files are still present in the repo, but they are not required for the notebook implementation.
-
-### Orchestrate Skill Bridge (Week 1 Migration Slice)
-
-To register callable skills in watsonx Orchestrate, run the thin skill bridge API:
+### Start the bridge
 
 ```bash
-uvicorn orchestrate.skill_server:app --host 0.0.0.0 --port 8080
+python start_bridge.py
 ```
 
-Available endpoints:
+### Run unit tests
 
-- `GET /health`
-- `POST /skills/intent-route`
-- `POST /skills/retrieve`
-- `POST /skills/bridge`
-- `POST /skills/synthesize`
-- `POST /skills/governance/pre-delivery`
-- `POST /workflow/crisis-brief`
+```bash
+pytest tests/test_units.py -v
+# 52 tests · no network required · no LLM required
+```
 
-This allows you to demonstrate Orchestrate-based tool calling now, while keeping the existing Python logic unchanged.
+---
 
-Next actions:
+## Governance Thresholds
 
-1. Start the bridge: `uvicorn orchestrate.skill_server:app --host 0.0.0.0 --port 8080`
-2. Run smoke test: `bash orchestrate/smoke_test.sh`
-3. Register tools in Orchestrate using: `orchestrate/registration_guide.md`
-
-### Code Engine Deployment for the Bridge
-
-Use the bridge-specific container and app manifest when you need a public HTTPS endpoint for Orchestrate:
-
-1. Build the bridge image with `Dockerfile.bridge`.
-2. Push it to IBM Container Registry.
-3. Create a Code Engine app from `deploy/codeengine/bridge-app.yaml`.
-4. Copy the resulting public route into the Orchestrate tool connection.
-
-The bridge app listens on port `8080` and serves `orchestrate.skill_server:app`.
-The public HTTPS route assigned by Code Engine is the URL Orchestrate must use instead of `127.0.0.1` or the placeholder `YOUR_PUBLIC_BRIDGE_URL`.
+| Threshold | Value | Source |
+|---|---|---|
+| `CONFIDENCE_THRESHOLD` | 0.45 | Calibrated for all-MiniLM-L6-v2 |
+| `CITATION_ALIGN_THRESHOLD` | 0.55 | Local prototype (all-MiniLM-L6-v2 + OH/OK knowledge base) |
+| `SVI_THRESHOLD` | 0.75 | Blackman (2025) — top vulnerability quartile |
+| `SEISMIC_MIN_MAGNITUDE` | 1.5 | Demo threshold |
+| `TRI_PROXIMITY_RADIUS_DEG` | 0.25° | ≈ 25 km — tight incident bbox for hazmat |
+| `BEAM_WIDTH` | 4 | Diversity vs. API cost balance |
+| `MAX_RETRIES` | 2 | Retry budget before honest fallback |
 
 ---
 
 ## Known Limitations
 
-- Live data at full fidelity requires commercial data agreements outside prototype scope
-- Login.gov digital identity is an assumption — not yet confirmed for crisis-condition reliability
-- Citation accuracy and narrative framing neutrality are two different checks. This architecture addresses the first. Framing bias is an open design question.
-- FEMA and NGO API calls are stubbed in prototype — production requires authenticated integrations
-- The current MVP is reactive (triggered by events/calls). The architecture is designed to support a proactive mode, using disposal well pressure spikes as predictive triggers to flag  high-risk tracts before a crisis occurs.
-- User interface is currently citizen-facing. A secondary Agency Command Center (USGS/CDC/EMA) dashboard is identified as a Layer 7 extension, utilizing the Overseer Agent’s audit logs for regulatory oversight.
+- **Live USGS lag** — seismic events appear in the USGS catalogue 5–15 minutes after occurrence. The geographic distance note explicitly flags when no verified activity exists at the reported location.
+- **emPOWER and TRI are local snapshots** — fetched at project time, not real-time. Production would call live APIs on each request.
+- **FEMA and IFRC** — verification links only; no live disaster declaration data is ingested.
+- **ngrok tunnel** — the bridge is exposed via a development tunnel tied to the local machine. Production deployment requires a persistent host (IBM Code Engine or equivalent).
+- **Citation alignment threshold** — 0.55 is calibrated for the local `all-MiniLM-L6-v2` model against the Ohio/Oklahoma-weighted knowledge base. Production with IBM watsonx embeddings would raise this to 0.65+.
+- **Semantic match evaluation in Orchestrate** — Orchestrate's built-in semantic match metric is not valid for this system. AEGIS returns live data; the USGS event, SVI score, and TRI facilities change between runs. The authoritative quality signal is the internal governance layer (Overseer audit log), not a fixed expected-output comparison. See `orchestrate/registration_guide.md`.
 
 ---
 
@@ -295,12 +333,12 @@ The public HTTPS route assigned by Code Engine is the URL Orchestrate must use i
 - FEMA (2024) 20 Years of NIMS
 - CISA (2025) NIFOG v2.02
 - USGS (2024) Circular 1509: Induced Seismicity Strategic Vision
-- USGS (2025) Emergency Management Resources
-- ODNR (Ohio Department of Natural Resources)
-- OCC (Oklahoma Corporation Commission)
-- CDC Social Vulnerability Index (2022)
-- Blackman, S. (2025) Mapping Disparate Risk: Disposal Well-Induced Seismicity and Social Vulnerability in OK and OH
-- IBM (2018) Enterprise Design Thinking Framework
+- ODNR — Ohio Induced Seismicity Traffic Light System
+- OCC — Oklahoma Corporation Commission Traffic Light Protocol
+- CDC/ATSDR Social Vulnerability Index 2022
+- HHS emPOWER Map — Electricity-Dependent Medicare Beneficiaries
+- EPA Toxic Release Inventory (TRI) Program
+- Blackman, S. (2025) Mapping Disparate Risk: Disposal Well-Induced Seismicity and Social Vulnerability in Ohio and Oklahoma
 
 ---
 

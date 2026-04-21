@@ -1,0 +1,40 @@
+OPERATIONAL GUIDANCE: INTER-AGENCY RESPONSE FRAMEWORK FOR INDUCED SEISMICITY EVENTS
+Source: Compiled from OCC, ODNR, FEMA, and state emergency management operational protocols.
+
+OKLAHOMA AGENCY ROLES AND RESPONSIBILITIES
+
+Oklahoma Corporation Commission (OCC)
+The OCC is the primary regulatory authority for oil and gas operations in Oklahoma. Upon confirmation of a seismic event potentially associated with injection well activity, OCC initiates immediate review of disposal well operational status within the affected area. The OCC evaluates injection volumes, pressures, and well depths relative to the crystalline basement. Where hydraulic connectivity with the basement is suspected, OCC may issue plug-back directives — requiring operators to cement wells to restrict injection depth above the Arbuckle Group. The OCC Traffic Light Protocol (TLP) defines thresholds: yellow alert at M 2.5, red alert and operational suspension at M 3.0 or greater within 10 km of an active disposal well. OCC coordinates directly with the Oklahoma Office of Emergency Management and Oklahoma Department of Environmental Quality during compound hazard events.
+
+Oklahoma Department of Environmental Quality (ODEQ)
+ODEQ provides environmental hazard assessment following seismic events, particularly where injection well activity may have impacted groundwater, surface water, or soil contamination. When TRI-listed facilities are identified within the incident bounding box, ODEQ is elevated to Tier 1 immediate notification status for compound hazmat risk evaluation. ODEQ coordinates with OCC on injection well impact assessment and conducts independent environmental sampling as warranted.
+
+Oklahoma Office of Emergency Management (ODEM)
+ODEM facilitates state-level coordination, activating county emergency operations centers and coordinating shelter activation for displaced residents. ODEM interfaces with FEMA for federal disaster declarations when seismic events exceed local response capacity. ODEM maintains the Oklahoma Hazard Mitigation Plan, which identifies Payne, Lincoln, Logan, Creek, Pawnee, and Garfield counties as priority response zones for injection-induced seismicity.
+
+OHIO AGENCY ROLES AND RESPONSIBILITIES
+
+Ohio Department of Natural Resources (ODNR)
+ODNR is the primary regulatory authority for Class II disposal wells in Ohio and serves as the lead agency for induced seismicity response. ODNR's Oil, Gas and Minerals Division monitors the Ohio Seismic Network (OhioSeis) and enforces Traffic Light System (TLS) protocols. At M 1.0, ODNR issues an advisory notice to operators. At M 2.0, ODNR requires operational review and possible injection rate reduction. At M 2.5, immediate suspension of injection operations is required. ODNR coordinates with Ohio EPA on groundwater impacts and with Ohio EMA on emergency management activation. Counties with highest induced seismicity activity: Mahoning, Trumbull, Columbiana, Portage, Medina, and Morrow.
+
+Ohio Environmental Protection Agency (Ohio EPA)
+Ohio EPA responds to seismic events where environmental contamination is a secondary hazard — particularly in counties with chemical manufacturing, petroleum storage, or industrial facilities. Ohio EPA coordinates with ODNR and local fire departments for structural assessments near hazardous material storage sites.
+
+Ohio Emergency Management Agency (Ohio EMA)
+Ohio EMA facilitates county-level emergency operations, coordinates with FEMA for federal aid assessment, and activates shelters when seismic events cause structural damage to residential areas. Ohio EMA interfaces with the American Red Cross for immediate shelter and resource needs.
+
+FEDERAL COORDINATION
+
+Federal Emergency Management Agency (FEMA)
+FEMA coordinates federal disaster response and administers Individual Assistance and Public Assistance programs following seismic events that exceed state response capacity. FEMA's pre-disaster mitigation programs fund hazard mapping updates for induced seismicity zones. FEMA coordinates with USGS for real-time hazard data and with state emergency management agencies for resource allocation.
+
+COMPOUND HAZMAT RISK PROTOCOL
+When EPA Toxic Release Inventory (TRI) facilities are identified within the incident bounding box, inter-agency routing is escalated. Environmental agencies (ODEQ in Oklahoma, Ohio EPA in Ohio) are promoted to Tier 1 Immediate Notification status alongside the primary regulatory agency and local fire and law enforcement. HAZMAT teams are activated for gas leak evaluation and containment. The National Response Framework compound incident protocol applies when industrial facilities and seismic activity are co-located.
+
+SOCIAL VULNERABILITY INDEX (SVI) AND RESOURCE ALLOCATION
+CDC Social Vulnerability Index (SVI) scores at or above 0.75 (top quartile) indicate communities requiring prioritized emergency resource allocation. High-SVI census tracts in Oklahoma induced seismicity zones are concentrated in Payne, Lincoln, Pawnee, Garfield, and Creek counties. High-SVI census tracts in Ohio induced seismicity zones are concentrated in Mahoning, Trumbull, and Columbiana counties. HHS emPOWER data identifies electricity-dependent Medicare beneficiaries — ventilator users, oxygen-dependent patients, and durable medical equipment users — who require priority evacuation and shelter-in-place coordination during power disruption events following seismic damage. Inter-agency routing must account for emPOWER counts when coordinating shelter capacity and medical transport resources.
+
+TIERED NOTIFICATION STRUCTURE
+Tier 1 — Immediate (0-30 minutes): Primary regulatory agency (OCC or ODNR), local fire and law enforcement, environmental agency (if compound hazmat risk confirmed).
+Tier 2 — Within the Hour: FEMA, state emergency management (ODEM or Ohio EMA), environmental agency (if no compound hazmat risk).
+Tier 3 — As Warranted: American Red Cross (shelter and immediate needs), additional NGOs, utility companies for power restoration coordination.

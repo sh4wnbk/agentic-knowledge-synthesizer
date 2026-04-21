@@ -1,0 +1,14 @@
+POLICY REFERENCE: National Interoperability Field Operations Guide (NIFOG) v2.02
+Source: CISA (Cybersecurity and Infrastructure Security Agency), 2025
+
+INTEROPERABILITY FINDING
+NIFOG 2.02 confirms that interoperability between federal, state, and local emergency agencies is currently achieved through manual vocal documentation via radio and phone — not through automated data layers. This is the technical basis for the Connectivity Gap identified in this project. The system is designed for agency independence, not citizen interdependence.
+
+COORDINATION ARCHITECTURE
+Current emergency coordination follows a sequential, unidirectional push model. Agencies broadcast alerts downward through the chain. There is no pull mechanism — no automated system that retrieves and synchronizes citizen data across agency boundaries in real time. Citizens in crisis must re-enter personally identifiable information across multiple agency systems manually.
+
+IMPLICATION FOR AGENTIC AI
+Traditional Robotic Process Automation cannot resolve this gap. Inter-agency crisis coordination involves incomplete inputs, ambiguous seismic events, overlapping eligibility rules, and dynamic legal data-sharing boundaries. These exceed what a static script can navigate. Agentic AI is required because the edge cases — the high-ambiguity, multi-agency coordination scenarios — are the common case in a seismic emergency.
+
+HITL REQUIREMENT
+High-consequence resource allocation decisions require human authority confirmation. The NIFOG framework establishes that automated systems operating in emergency contexts must maintain human oversight at decision points that carry legal or life-safety consequences. This is the basis for the Human-in-the-Loop design acknowledgment in this architecture.

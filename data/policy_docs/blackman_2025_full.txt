@@ -1,0 +1,74 @@
+RESEARCH PAPER: Mapping Disparate Risk: A Comparative Geospatial Analysis of Disposal Well-Induced Seismicity and Social Vulnerability in Oklahoma and Ohio
+Author: Shawn Blackman, B.S. Environmental Science, Lehman College (CUNY), 2025
+Intended audience: USGS, CDC, state geological surveys, local emergency management agencies.
+
+INTRODUCTION AND GUIDING RESEARCH QUESTION
+Since 2008, seismic activity across the Central and Eastern United States has risen sharply due to human activity, directly tied to underground injection of wastewater produced during oil and gas extraction. The scientific consensus is that sustained, high-volume wastewater injection is the primary driver of the recent surge in earthquakes. The physical mechanism is the increase in pore fluid pressure, which reduces effective normal stress on pre-existing faults, allowing faults to slip and release stored tectonic strain energy as earthquakes. Before 2008, the CEUS averaged fewer than 25 earthquakes of magnitude 3.0 or greater annually. By 2015, this peaked at 1,010 events. Even after regulatory measures, seismicity rates remain elevated.
+
+Guiding geographic question: Where do the greatest overlaps exist between induced earthquake hazards and socially vulnerable populations in the United States?
+
+The study compares Oklahoma and Ohio — two states representing distinct seismicity regimes. Oklahoma exemplifies basin-wide, high-volume hydraulic connectivity. Ohio demonstrates localized pore pressure diffusion (PPD) causality. The ultimate goal is to provide geospatial evidence supporting policies that prevent hydraulic connectivity with the crystalline basement, which is highly seismogenic.
+
+METHODOLOGY — DATA SOURCES
+1. Earthquake Data: USGS Earthquake Catalog (EQ_OH_Permanent and EQ_OK_Permanent). Point feature classes documenting earthquake events including magnitude, depth, and geographic location. WGS84 coordinate system.
+2. Disposal Wells: Oklahoma Corporation Commission (OCC) and Ohio Department of Natural Resources (ODNR). Class II disposal wells (Class IID) including injection volume in barrels and pressure in psi. 230 active disposal wells identified in Ohio. 3,830 active disposal wells in Oklahoma.
+3. Social Vulnerability Index: CDC/ATSDR Social Vulnerability Index. Census tract-level socioeconomic data including poverty and minority status. Each tract ranked nationally in terms of vulnerability providing a standardized measure of social risk.
+
+METHODOLOGY — ANALYSIS
+Geodesic buffer rings generated at distances of 5 km, 15 km, 25 km, and 45 km around disposal wells to establish proximity gradients. Earthquake data divided by magnitude thresholds — moderate M 3.0 and greater, and strong M 4.0 and greater — and depth thresholds — shallow under 5 km and intermediate 5 to 15 km. Spatial join applied to identify earthquake intersections with buffer zones.
+
+Oklahoma bivariate mapping isolated 584 high-intensity wells operating at greater than 10,000 barrels and greater than 1,000 psi — directly clustered beneath the densest fields of M 3.0 and greater earthquakes.
+
+RESULTS — COMPARATIVE SCALE OF INJECTION INFRASTRUCTURE
+Oklahoma: approximately 3,830 disposal wells. Disposal well density reaches 206.98 to 372.04 per 10,000 residents in core areas, correlating with maximum earthquake rates of 1,172.98 to 4,137.76 events per 10,000 residents. This reflects the expansive pressure field created by deep injection into the Arbuckle Group.
+Ohio: approximately 230 active disposal wells. Normalized disposal well density peaks between 0.91 and 1.38 per 10,000 residents, coinciding with earthquake rates of 3.07 to 7.01 events per 10,000 residents. Seismic activity and well density concentrated in eastern counties.
+
+RESULTS — QUANTITATIVE PROXIMITY ANALYSIS (TABLE 1 KEY FINDINGS)
+Ohio M 3.0 and greater within 5 km buffer: 267 events. Mean magnitude 3.26. Mean depth 5.38 km.
+Ohio M 3.0 and greater within 15 km buffer: 343 events. Mean magnitude 3.26. Mean depth 5.41 km.
+Ohio M 3.0 and greater within 25 km buffer: 343 events — count stabilizes at 15 km confirming proximity-based model.
+
+Oklahoma M 3.0 and greater within 5 km buffer: 2,331 events. Mean magnitude 3.27. Mean depth 5.61 km.
+Oklahoma M 3.0 and greater within 15 km buffer: 2,988 events.
+Oklahoma M 3.0 and greater within 25 km buffer: 2,991 events — count continues growing reflecting basin-wide diffusion.
+
+Shallow earthquakes under 5 km depth — Ohio within 5 km: 482 events. Mean depth 3.79 km. Oklahoma within 5 km: 1,955 events. Mean depth 3.80 km. Both states: consistent mean focal depth of 3.79 km within the 5 km buffer across all buffer distances. This places induced seismicity firmly within the brittle Precambrian crystalline basement in both states.
+
+RESULTS — OHIO HAZARD MODEL: PROXIMITY-BASED LOCALIZED TRIGGERING
+77 percent of M 3.0 and greater earthquakes in Ohio occur within 15 km of disposal wells. This confirms the near-field pore pressure diffusion mechanism. Buffer zones at 5 km, 15 km, and 25 km trace the eastern border where wells are concentrated. The earthquake count stabilizes after 15 km — seismic influence does not extend beyond the local pressure diffusion radius. This underscores the need for proactive, site-specific regulation in Ohio. The 15 km proximity buffer is the operational threshold for emergency response planning in Ohio.
+
+RESULTS — OKLAHOMA HAZARD MODEL: BASIN-WIDE HYDRAULIC CONNECTIVITY
+Oklahoma's seismic crisis is driven by massive fluid movement facilitating widespread pressure diffusion through hydraulic connectivity with the crystalline basement. The 584 high-volume wells — greater than 10,000 barrels and greater than 1,000 psi — cluster directly beneath the densest field of M 3.0 and greater earthquakes. Volume and pressure act as combined risk catalysts. Injection depth relative to the crystalline basement is the strongest predictor of seismic moment release. The earthquake count continues growing across all buffer distances reflecting basin-wide, not proximity-based, diffusion.
+
+RESULTS — CRYSTALLINE BASEMENT THREAT (BOTH STATES)
+Despite operational differences, both Ohio and Oklahoma show shallow earthquakes under 5 km averaging a focal depth of 3.79 km within a 5 km buffer of injection wells. This places induced seismicity firmly within the brittle Precambrian crystalline basement. The crystalline basement is universally susceptible to injection-related pressure changes across different geographies and operational scales. This is the common geological failure mechanism in both states.
+
+RESULTS — SOCIAL VULNERABILITY OVERLAP: ENVIRONMENTAL JUSTICE FINDING
+Oklahoma: The highest concentrations of M 3.0 and greater earthquakes and disposal wells in central and north-central Oklahoma coincide directly with census tracts scoring 0.75 to 1.00 on the Social Vulnerability Index — the highest vulnerability quartile.
+Ohio: Earthquake and well clusters along the eastern edge overlap with SVI tracts scoring 0.75 to 1.00. Although event frequency is lower than Oklahoma, proximity to vulnerable communities increases local risk.
+Both states confirm: seismic hazards disproportionately affect vulnerable populations. Under-resourced communities bear an unequal burden of this anthropogenic industrial hazard. This is an environmental justice finding with direct implications for emergency aid coordination and resource allocation.
+
+REGULATORY FINDINGS AND MITIGATION STRATEGIES
+Oklahoma: The Oklahoma Corporation Commission's regulatory response after 2015 was validated by scientific studies. Reducing injection rates and requiring plug-backs — cementing wells to restrict injection depth above the crystalline basement — proved effective in lowering earthquake rates. Mandates restricting injection depths to 200 to 500 meters above the basement could reduce annual seismic moment release by 1.4 to 2.8 times.
+Ohio: Ohio adopted a proactive model following the Youngstown crisis. The Ohio Department of Natural Resources ODNR prohibited Class II disposal wells from penetrating the Precambrian crystalline basement. Ongoing mitigation relies on strict pre-permit evaluations and real-time monitoring through the Ohio Seismic Network OhioSeis with operational control enforced via Traffic Light System TLS principles.
+
+CONCLUSIONS
+The essential distinction between the two crises lies in scale and pressure transmission mechanism. Oklahoma's hazard is basin-wide and volumetric, driven by direct hydraulic connectivity with the crystalline basement. Ohio's hazard is highly localized, reflecting near-field pore pressure diffusion. Both crises produce the same environmental justice outcome: seismic hazard concentrated in the communities least able to recover without coordinated external assistance.
+
+Regulatory frameworks must be tailored to regional geophysical conditions. One-size-fits-all permitting fails both states. Engineered mitigation strategies — injection depth restrictions in Oklahoma, proactive ODNR prohibition and TLS monitoring in Ohio — must be combined with targeted emergency preparedness resources directed at the high-SVI communities this research identifies.
+
+KEY QUANTITATIVE THRESHOLDS FOR EMERGENCY RESPONSE SYSTEMS
+Seismic trigger: M 3.0 and greater (minimum meaningful induced seismicity threshold validated in both datasets)
+SVI vulnerability threshold: RPL_THEMES greater than 0.75 (top quartile — highest hazard-vulnerability overlap)
+Ohio proximity buffer: 15 km from active Class II disposal wells
+Oklahoma mechanism: basin-wide hydraulic connectivity, high-volume injection greater than 10,000 barrels and greater than 1,000 psi
+Focal depth threshold: under 5 km (crystalline basement interaction zone)
+Mean induced seismicity focal depth: 3.79 km (consistent across both states within 5 km buffer)
+
+REFERENCES (SELECTED)
+Ellsworth, W. L. (2013). Injection-induced earthquakes. Science, 341(6142).
+Keranen, K. M., et al. (2014). Sharp increase in central Oklahoma seismicity since 2008 induced by massive wastewater injection. Science, 345(6195), 448-451.
+Kim, W.-Y. (2013). Induced seismicity associated with fluid injection into a deep well in Youngstown, Ohio. Journal of Geophysical Research: Solid Earth, 118(7), 3506-3518.
+Hincks, T., et al. (2018). Oklahoma's induced seismicity strongly linked to wastewater injection depth. Science, 359(6381), 1251-1255.
+Skoumal, R. J., et al. (2024). Plugged wells and reduced injection lower induced earthquake rates in Oklahoma. The Seismic Record, 4(4), 279-289.
+Zhou, W., et al. (2024). Managing induced seismicity risks from enhanced geothermal systems. Reviews of Geophysics, 62(4).

@@ -7,6 +7,7 @@ In prototype: writes to local JSON log and stdout.
 
 import json
 import datetime
+import ast
 
 
 class AuditLog:
@@ -31,12 +32,51 @@ class AuditLog:
               + (f" | {entry['reason']}" if entry["reason"] else ""))
 
     def _safe_truncate(self, data: dict) -> dict:
-        """Truncate large payloads for log readability."""
+        """Truncate large payloads while preserving structured types."""
         truncated = {}
         for k, v in data.items():
-            s = str(v)
-            truncated[k] = s[:200] + "..." if len(s) > 200 else s
+            truncated[k] = self._normalize_value(v)
         return truncated
+
+    def _normalize_value(self, value):
+        """Keep dictionaries/lists structured; only truncate long leaf strings."""
+        if isinstance(value, dict):
+            return {k: self._normalize_value(v) for k, v in value.items()}
+
+        if isinstance(value, list):
+            return [self._normalize_value(v) for v in value]
+
+        if isinstance(value, str):
+            parsed = self._parse_structured_string(value)
+            if parsed is not None:
+                return self._normalize_value(parsed)
+            return value[:200] + "..." if len(value) > 200 else value
+
+        # Keep scalars as-is for machine-readability.
+        return value
+
+    def _parse_structured_string(self, text: str):
+        """
+        Parse JSON or Python-literal dict/list strings when present.
+        This fixes moderation fields that may arrive as serialized strings.
+        """
+        candidate = text.strip()
+        if not candidate or candidate[0] not in "[{":
+            return None
+
+        try:
+            return json.loads(candidate)
+        except Exception:
+            pass
+
+        try:
+            parsed = ast.literal_eval(candidate)
+            if isinstance(parsed, (dict, list)):
+                return parsed
+        except Exception:
+            return None
+
+        return None
 
     def export(self, path: str = "audit_log.json"):
         """

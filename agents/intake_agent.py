@@ -18,6 +18,21 @@ OHIO_LOCATIONS = {
     "summit":     "Akron, OH",
     "cleveland":  "Cleveland, OH",
     "cuyahoga":   "Cleveland, OH",
+    # NE Ohio — Utica/Marcellus shale zone (Trumbull/Mahoning/Columbiana counties)
+    "niles":      "Niles, OH",
+    "austintown": "Youngstown, OH",
+    "boardman":   "Youngstown, OH",
+    "canfield":   "Canfield, OH",
+    "poland":     "Youngstown, OH",
+    "sebring":    "Sebring, OH",
+    "lisbon":     "Lisbon, OH",
+    "salem":      "Salem, OH",
+    "columbiana": "Columbiana, OH",
+    "lordstown":  "Warren, OH",
+    "girard":     "Girard, OH",
+    "struthers":  "Youngstown, OH",
+    "campbell":   "Youngstown, OH",
+    "hubbard":    "Hubbard, OH",
     "columbus":   "Columbus, OH",
     "franklin":   "Columbus, OH",
     "toledo":     "Toledo, OH",
@@ -32,7 +47,6 @@ OKLAHOMA_LOCATIONS = {
     "payne":          "Stillwater, OK",
     "stillwater":     "Stillwater, OK",
     "oklahoma city":  "Oklahoma City, OK",
-    "oklahoma":       "Oklahoma City, OK",
     "norman":         "Norman, OK",
     "cleveland":      "Norman, OK",
     "enid":           "Enid, OK",
@@ -41,6 +55,16 @@ OKLAHOMA_LOCATIONS = {
     "lawton":         "Lawton, OK",
     "edmond":         "Edmond, OK",
     "ponca city":     "Ponca City, OK",
+    "pawnee":         "Pawnee, OK",
+    "prague":         "Prague, OK",
+    "crescent":       "Crescent, OK",
+    "fairview":       "Fairview, OK",
+    "guthrie":        "Guthrie, OK",
+    "shawnee":        "Shawnee, OK",
+    "ada":            "Ada, OK",
+    "atoka":          "Atoka, OK",
+    "duncan":         "Duncan, OK",
+    "chickasha":      "Chickasha, OK",
 }
 
 ADDRESS_KEYWORDS = [
@@ -62,7 +86,8 @@ class IntakeAgent:
         crisis_type = None
         seismic_keys = [
             "earthquake", "shaking", "tremor", "tremors",
-            "seismic", "quake", "cracking", "magnitude", " m2", " m3", " m4"
+            "seismic", "quake", "cracking", "magnitude",
+            " m2", " m3", " m4", "m2.", "m3.", "m4."
         ]
         if any(w in text_lower for w in seismic_keys):
             crisis_type = "induced_seismicity"

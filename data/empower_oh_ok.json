@@ -1,0 +1,1487 @@
+{
+  "39085": {
+    "FIPS_Code": "39085",
+    "NAME": "Lake",
+    "State": "OH",
+    "Medicare_Benes": 60169,
+    "Power_Dependent_Devices_DME": 2457,
+    "Power_De_1": 55,
+    "O2_Services_Any_DME": 433
+  },
+  "39133": {
+    "FIPS_Code": "39133",
+    "NAME": "Portage",
+    "State": "OH",
+    "Medicare_Benes": 38846,
+    "Power_Dependent_Devices_DME": 1744,
+    "Power_De_1": 99,
+    "O2_Services_Any_DME": 441
+  },
+  "39155": {
+    "FIPS_Code": "39155",
+    "NAME": "Trumbull",
+    "State": "OH",
+    "Medicare_Benes": 51895,
+    "Power_Dependent_Devices_DME": 2806,
+    "Power_De_1": 143,
+    "O2_Services_Any_DME": 906
+  },
+  "39111": {
+    "FIPS_Code": "39111",
+    "NAME": "Monroe",
+    "State": "OH",
+    "Medicare_Benes": 3637,
+    "Power_Dependent_Devices_DME": 294,
+    "Power_De_1": 44,
+    "O2_Services_Any_DME": 128
+  },
+  "39059": {
+    "FIPS_Code": "39059",
+    "NAME": "Guernsey",
+    "State": "OH",
+    "Medicare_Benes": 9725,
+    "Power_Dependent_Devices_DME": 855,
+    "Power_De_1": 55,
+    "O2_Services_Any_DME": 306
+  },
+  "39067": {
+    "FIPS_Code": "39067",
+    "NAME": "Harrison",
+    "State": "OH",
+    "Medicare_Benes": 4106,
+    "Power_Dependent_Devices_DME": 313,
+    "Power_De_1": 44,
+    "O2_Services_Any_DME": 138
+  },
+  "39007": {
+    "FIPS_Code": "39007",
+    "NAME": "Ashtabula",
+    "State": "OH",
+    "Medicare_Benes": 25017,
+    "Power_Dependent_Devices_DME": 1450,
+    "Power_De_1": 88,
+    "O2_Services_Any_DME": 404
+  },
+  "39151": {
+    "FIPS_Code": "39151",
+    "NAME": "Stark",
+    "State": "OH",
+    "Medicare_Benes": 99521,
+    "Power_Dependent_Devices_DME": 4643,
+    "Power_De_1": 231,
+    "O2_Services_Any_DME": 1374
+  },
+  "39099": {
+    "FIPS_Code": "39099",
+    "NAME": "Mahoning",
+    "State": "OH",
+    "Medicare_Benes": 59146,
+    "Power_Dependent_Devices_DME": 2909,
+    "Power_De_1": 143,
+    "O2_Services_Any_DME": 923
+  },
+  "39157": {
+    "FIPS_Code": "39157",
+    "NAME": "Tuscarawas",
+    "State": "OH",
+    "Medicare_Benes": 22894,
+    "Power_Dependent_Devices_DME": 1348,
+    "Power_De_1": 66,
+    "O2_Services_Any_DME": 498
+  },
+  "39081": {
+    "FIPS_Code": "39081",
+    "NAME": "Jefferson",
+    "State": "OH",
+    "Medicare_Benes": 17560,
+    "Power_Dependent_Devices_DME": 1148,
+    "Power_De_1": 99,
+    "O2_Services_Any_DME": 439
+  },
+  "39055": {
+    "FIPS_Code": "39055",
+    "NAME": "Geauga",
+    "State": "OH",
+    "Medicare_Benes": 22397,
+    "Power_Dependent_Devices_DME": 717,
+    "Power_De_1": 11,
+    "O2_Services_Any_DME": 190
+  },
+  "39029": {
+    "FIPS_Code": "39029",
+    "NAME": "Columbiana",
+    "State": "OH",
+    "Medicare_Benes": 27491,
+    "Power_Dependent_Devices_DME": 1585,
+    "Power_De_1": 99,
+    "O2_Services_Any_DME": 606
+  },
+  "39019": {
+    "FIPS_Code": "39019",
+    "NAME": "Carroll",
+    "State": "OH",
+    "Medicare_Benes": 5380,
+    "Power_Dependent_Devices_DME": 288,
+    "Power_De_1": 22,
+    "O2_Services_Any_DME": 116
+  },
+  "39013": {
+    "FIPS_Code": "39013",
+    "NAME": "Belmont",
+    "State": "OH",
+    "Medicare_Benes": 16554,
+    "Power_Dependent_Devices_DME": 1312,
+    "Power_De_1": 88,
+    "O2_Services_Any_DME": 444
+  },
+  "39167": {
+    "FIPS_Code": "39167",
+    "NAME": "Washington",
+    "State": "OH",
+    "Medicare_Benes": 16562,
+    "Power_Dependent_Devices_DME": 989,
+    "Power_De_1": 44,
+    "O2_Services_Any_DME": 267
+  },
+  "39121": {
+    "FIPS_Code": "39121",
+    "NAME": "Noble",
+    "State": "OH",
+    "Medicare_Benes": 2188,
+    "Power_Dependent_Devices_DME": 156,
+    "Power_De_1": 22,
+    "O2_Services_Any_DME": 80
+  },
+  "39035": {
+    "FIPS_Code": "39035",
+    "NAME": "Cuyahoga",
+    "State": "OH",
+    "Medicare_Benes": 275822,
+    "Power_Dependent_Devices_DME": 10903,
+    "Power_De_1": 451,
+    "O2_Services_Any_DME": 2216
+  },
+  "39153": {
+    "FIPS_Code": "39153",
+    "NAME": "Summit",
+    "State": "OH",
+    "Medicare_Benes": 119743,
+    "Power_Dependent_Devices_DME": 5664,
+    "Power_De_1": 242,
+    "O2_Services_Any_DME": 1361
+  },
+  "39115": {
+    "FIPS_Code": "39115",
+    "NAME": "Morgan",
+    "State": "OH",
+    "Medicare_Benes": 3108,
+    "Power_Dependent_Devices_DME": 212,
+    "Power_De_1": 11,
+    "O2_Services_Any_DME": 75
+  },
+  "39163": {
+    "FIPS_Code": "39163",
+    "NAME": "Vinton",
+    "State": "OH",
+    "Medicare_Benes": 2665,
+    "Power_Dependent_Devices_DME": 198,
+    "Power_De_1": 0,
+    "O2_Services_Any_DME": 108
+  },
+  "39087": {
+    "FIPS_Code": "39087",
+    "NAME": "Lawrence",
+    "State": "OH",
+    "Medicare_Benes": 14396,
+    "Power_Dependent_Devices_DME": 1241,
+    "Power_De_1": 44,
+    "O2_Services_Any_DME": 413
+  },
+  "39033": {
+    "FIPS_Code": "39033",
+    "NAME": "Crawford",
+    "State": "OH",
+    "Medicare_Benes": 11626,
+    "Power_Dependent_Devices_DME": 777,
+    "Power_De_1": 22,
+    "O2_Services_Any_DME": 161
+  },
+  "39119": {
+    "FIPS_Code": "39119",
+    "NAME": "Muskingum",
+    "State": "OH",
+    "Medicare_Benes": 22613,
+    "Power_Dependent_Devices_DME": 1877,
+    "Power_De_1": 47,
+    "O2_Services_Any_DME": 649
+  },
+  "39139": {
+    "FIPS_Code": "39139",
+    "NAME": "Richland",
+    "State": "OH",
+    "Medicare_Benes": 30136,
+    "Power_Dependent_Devices_DME": 1743,
+    "Power_De_1": 77,
+    "O2_Services_Any_DME": 311
+  },
+  "39169": {
+    "FIPS_Code": "39169",
+    "NAME": "Wayne",
+    "State": "OH",
+    "Medicare_Benes": 26919,
+    "Power_Dependent_Devices_DME": 1660,
+    "Power_De_1": 77,
+    "O2_Services_Any_DME": 565
+  },
+  "39073": {
+    "FIPS_Code": "39073",
+    "NAME": "Hocking",
+    "State": "OH",
+    "Medicare_Benes": 6552,
+    "Power_Dependent_Devices_DME": 439,
+    "Power_De_1": 33,
+    "O2_Services_Any_DME": 165
+  },
+  "39005": {
+    "FIPS_Code": "39005",
+    "NAME": "Ashland",
+    "State": "OH",
+    "Medicare_Benes": 12293,
+    "Power_Dependent_Devices_DME": 708,
+    "Power_De_1": 33,
+    "O2_Services_Any_DME": 230
+  },
+  "39079": {
+    "FIPS_Code": "39079",
+    "NAME": "Jackson",
+    "State": "OH",
+    "Medicare_Benes": 7397,
+    "Power_Dependent_Devices_DME": 576,
+    "Power_De_1": 11,
+    "O2_Services_Any_DME": 244
+  },
+  "39117": {
+    "FIPS_Code": "39117",
+    "NAME": "Morrow",
+    "State": "OH",
+    "Medicare_Benes": 6399,
+    "Power_Dependent_Devices_DME": 416,
+    "Power_De_1": 22,
+    "O2_Services_Any_DME": 119
+  },
+  "39127": {
+    "FIPS_Code": "39127",
+    "NAME": "Perry",
+    "State": "OH",
+    "Medicare_Benes": 9412,
+    "Power_Dependent_Devices_DME": 665,
+    "Power_De_1": 55,
+    "O2_Services_Any_DME": 227
+  },
+  "39043": {
+    "FIPS_Code": "39043",
+    "NAME": "Erie",
+    "State": "OH",
+    "Medicare_Benes": 21960,
+    "Power_Dependent_Devices_DME": 913,
+    "Power_De_1": 33,
+    "O2_Services_Any_DME": 119
+  },
+  "39093": {
+    "FIPS_Code": "39093",
+    "NAME": "Lorain",
+    "State": "OH",
+    "Medicare_Benes": 74533,
+    "Power_Dependent_Devices_DME": 3696,
+    "Power_De_1": 110,
+    "O2_Services_Any_DME": 497
+  },
+  "39009": {
+    "FIPS_Code": "39009",
+    "NAME": "Athens",
+    "State": "OH",
+    "Medicare_Benes": 12380,
+    "Power_Dependent_Devices_DME": 797,
+    "Power_De_1": 22,
+    "O2_Services_Any_DME": 303
+  },
+  "39075": {
+    "FIPS_Code": "39075",
+    "NAME": "Holmes",
+    "State": "OH",
+    "Medicare_Benes": 4764,
+    "Power_Dependent_Devices_DME": 240,
+    "Power_De_1": 22,
+    "O2_Services_Any_DME": 114
+  },
+  "39105": {
+    "FIPS_Code": "39105",
+    "NAME": "Meigs",
+    "State": "OH",
+    "Medicare_Benes": 5215,
+    "Power_Dependent_Devices_DME": 391,
+    "Power_De_1": 22,
+    "O2_Services_Any_DME": 154
+  },
+  "39077": {
+    "FIPS_Code": "39077",
+    "NAME": "Huron",
+    "State": "OH",
+    "Medicare_Benes": 17287,
+    "Power_Dependent_Devices_DME": 838,
+    "Power_De_1": 55,
+    "O2_Services_Any_DME": 160
+  },
+  "39045": {
+    "FIPS_Code": "39045",
+    "NAME": "Fairfield",
+    "State": "OH",
+    "Medicare_Benes": 31081,
+    "Power_Dependent_Devices_DME": 1401,
+    "Power_De_1": 44,
+    "O2_Services_Any_DME": 409
+  },
+  "39083": {
+    "FIPS_Code": "39083",
+    "NAME": "Knox",
+    "State": "OH",
+    "Medicare_Benes": 14856,
+    "Power_Dependent_Devices_DME": 833,
+    "Power_De_1": 22,
+    "O2_Services_Any_DME": 214
+  },
+  "39089": {
+    "FIPS_Code": "39089",
+    "NAME": "Licking",
+    "State": "OH",
+    "Medicare_Benes": 36289,
+    "Power_Dependent_Devices_DME": 1945,
+    "Power_De_1": 66,
+    "O2_Services_Any_DME": 729
+  },
+  "39103": {
+    "FIPS_Code": "39103",
+    "NAME": "Medina",
+    "State": "OH",
+    "Medicare_Benes": 43661,
+    "Power_Dependent_Devices_DME": 1676,
+    "Power_De_1": 77,
+    "O2_Services_Any_DME": 409
+  },
+  "39053": {
+    "FIPS_Code": "39053",
+    "NAME": "Gallia",
+    "State": "OH",
+    "Medicare_Benes": 7610,
+    "Power_Dependent_Devices_DME": 616,
+    "Power_De_1": 11,
+    "O2_Services_Any_DME": 215
+  },
+  "39031": {
+    "FIPS_Code": "39031",
+    "NAME": "Coshocton",
+    "State": "OH",
+    "Medicare_Benes": 8271,
+    "Power_Dependent_Devices_DME": 578,
+    "Power_De_1": 22,
+    "O2_Services_Any_DME": 208
+  },
+  "39063": {
+    "FIPS_Code": "39063",
+    "NAME": "Hancock",
+    "State": "OH",
+    "Medicare_Benes": 15323,
+    "Power_Dependent_Devices_DME": 702,
+    "Power_De_1": 22,
+    "O2_Services_Any_DME": 189
+  },
+  "39047": {
+    "FIPS_Code": "39047",
+    "NAME": "Fayette",
+    "State": "OH",
+    "Medicare_Benes": 6021,
+    "Power_Dependent_Devices_DME": 424,
+    "Power_De_1": 11,
+    "O2_Services_Any_DME": 176
+  },
+  "39145": {
+    "FIPS_Code": "39145",
+    "NAME": "Scioto",
+    "State": "OH",
+    "Medicare_Benes": 16843,
+    "Power_Dependent_Devices_DME": 1604,
+    "Power_De_1": 55,
+    "O2_Services_Any_DME": 693
+  },
+  "39015": {
+    "FIPS_Code": "39015",
+    "NAME": "Brown",
+    "State": "OH",
+    "Medicare_Benes": 9693,
+    "Power_Dependent_Devices_DME": 647,
+    "Power_De_1": 55,
+    "O2_Services_Any_DME": 226
+  },
+  "39091": {
+    "FIPS_Code": "39091",
+    "NAME": "Logan",
+    "State": "OH",
+    "Medicare_Benes": 11913,
+    "Power_Dependent_Devices_DME": 692,
+    "Power_De_1": 22,
+    "O2_Services_Any_DME": 288
+  },
+  "39131": {
+    "FIPS_Code": "39131",
+    "NAME": "Pike",
+    "State": "OH",
+    "Medicare_Benes": 5810,
+    "Power_Dependent_Devices_DME": 442,
+    "Power_De_1": 11,
+    "O2_Services_Any_DME": 213
+  },
+  "39001": {
+    "FIPS_Code": "39001",
+    "NAME": "Adams",
+    "State": "OH",
+    "Medicare_Benes": 7824,
+    "Power_Dependent_Devices_DME": 536,
+    "Power_De_1": 33,
+    "O2_Services_Any_DME": 225
+  },
+  "39129": {
+    "FIPS_Code": "39129",
+    "NAME": "Pickaway",
+    "State": "OH",
+    "Medicare_Benes": 11765,
+    "Power_Dependent_Devices_DME": 674,
+    "Power_De_1": 33,
+    "O2_Services_Any_DME": 236
+  },
+  "39021": {
+    "FIPS_Code": "39021",
+    "NAME": "Champaign",
+    "State": "OH",
+    "Medicare_Benes": 8884,
+    "Power_Dependent_Devices_DME": 545,
+    "Power_De_1": 44,
+    "O2_Services_Any_DME": 171
+  },
+  "39123": {
+    "FIPS_Code": "39123",
+    "NAME": "Ottawa",
+    "State": "OH",
+    "Medicare_Benes": 13457,
+    "Power_Dependent_Devices_DME": 633,
+    "Power_De_1": 55,
+    "O2_Services_Any_DME": 165
+  },
+  "39023": {
+    "FIPS_Code": "39023",
+    "NAME": "Clark",
+    "State": "OH",
+    "Medicare_Benes": 31533,
+    "Power_Dependent_Devices_DME": 2014,
+    "Power_De_1": 55,
+    "O2_Services_Any_DME": 423
+  },
+  "39041": {
+    "FIPS_Code": "39041",
+    "NAME": "Delaware",
+    "State": "OH",
+    "Medicare_Benes": 41452,
+    "Power_Dependent_Devices_DME": 1431,
+    "Power_De_1": 66,
+    "O2_Services_Any_DME": 297
+  },
+  "39057": {
+    "FIPS_Code": "39057",
+    "NAME": "Greene",
+    "State": "OH",
+    "Medicare_Benes": 36529,
+    "Power_Dependent_Devices_DME": 1868,
+    "Power_De_1": 55,
+    "O2_Services_Any_DME": 333
+  },
+  "39095": {
+    "FIPS_Code": "39095",
+    "NAME": "Lucas",
+    "State": "OH",
+    "Medicare_Benes": 90273,
+    "Power_Dependent_Devices_DME": 4785,
+    "Power_De_1": 176,
+    "O2_Services_Any_DME": 1204
+  },
+  "39071": {
+    "FIPS_Code": "39071",
+    "NAME": "Highland",
+    "State": "OH",
+    "Medicare_Benes": 10035,
+    "Power_Dependent_Devices_DME": 694,
+    "Power_De_1": 33,
+    "O2_Services_Any_DME": 298
+  },
+  "39101": {
+    "FIPS_Code": "39101",
+    "NAME": "Marion",
+    "State": "OH",
+    "Medicare_Benes": 14920,
+    "Power_Dependent_Devices_DME": 1083,
+    "Power_De_1": 11,
+    "O2_Services_Any_DME": 214
+  },
+  "39027": {
+    "FIPS_Code": "39027",
+    "NAME": "Clinton",
+    "State": "OH",
+    "Medicare_Benes": 11022,
+    "Power_Dependent_Devices_DME": 705,
+    "Power_De_1": 44,
+    "O2_Services_Any_DME": 276
+  },
+  "39143": {
+    "FIPS_Code": "39143",
+    "NAME": "Sandusky",
+    "State": "OH",
+    "Medicare_Benes": 13198,
+    "Power_Dependent_Devices_DME": 640,
+    "Power_De_1": 11,
+    "O2_Services_Any_DME": 139
+  },
+  "39141": {
+    "FIPS_Code": "39141",
+    "NAME": "Ross",
+    "State": "OH",
+    "Medicare_Benes": 17221,
+    "Power_Dependent_Devices_DME": 1209,
+    "Power_De_1": 55,
+    "O2_Services_Any_DME": 505
+  },
+  "39097": {
+    "FIPS_Code": "39097",
+    "NAME": "Madison",
+    "State": "OH",
+    "Medicare_Benes": 11361,
+    "Power_Dependent_Devices_DME": 601,
+    "Power_De_1": 44,
+    "O2_Services_Any_DME": 161
+  },
+  "39065": {
+    "FIPS_Code": "39065",
+    "NAME": "Hardin",
+    "State": "OH",
+    "Medicare_Benes": 6594,
+    "Power_Dependent_Devices_DME": 424,
+    "Power_De_1": 33,
+    "O2_Services_Any_DME": 128
+  },
+  "39049": {
+    "FIPS_Code": "39049",
+    "NAME": "Franklin",
+    "State": "OH",
+    "Medicare_Benes": 209221,
+    "Power_Dependent_Devices_DME": 9192,
+    "Power_De_1": 363,
+    "O2_Services_Any_DME": 2369
+  },
+  "39173": {
+    "FIPS_Code": "39173",
+    "NAME": "Wood",
+    "State": "OH",
+    "Medicare_Benes": 27340,
+    "Power_Dependent_Devices_DME": 1197,
+    "Power_De_1": 99,
+    "O2_Services_Any_DME": 357
+  },
+  "39147": {
+    "FIPS_Code": "39147",
+    "NAME": "Seneca",
+    "State": "OH",
+    "Medicare_Benes": 15039,
+    "Power_Dependent_Devices_DME": 684,
+    "Power_De_1": 55,
+    "O2_Services_Any_DME": 177
+  },
+  "39159": {
+    "FIPS_Code": "39159",
+    "NAME": "Union",
+    "State": "OH",
+    "Medicare_Benes": 8617,
+    "Power_Dependent_Devices_DME": 491,
+    "Power_De_1": 22,
+    "O2_Services_Any_DME": 191
+  },
+  "39175": {
+    "FIPS_Code": "39175",
+    "NAME": "Wyandot",
+    "State": "OH",
+    "Medicare_Benes": 5817,
+    "Power_Dependent_Devices_DME": 312,
+    "Power_De_1": 22,
+    "O2_Services_Any_DME": 102
+  },
+  "39003": {
+    "FIPS_Code": "39003",
+    "NAME": "Allen",
+    "State": "OH",
+    "Medicare_Benes": 24861,
+    "Power_Dependent_Devices_DME": 1474,
+    "Power_De_1": 99,
+    "O2_Services_Any_DME": 406
+  },
+  "39017": {
+    "FIPS_Code": "39017",
+    "NAME": "Butler",
+    "State": "OH",
+    "Medicare_Benes": 74619,
+    "Power_Dependent_Devices_DME": 3671,
+    "Power_De_1": 110,
+    "O2_Services_Any_DME": 855
+  },
+  "39125": {
+    "FIPS_Code": "39125",
+    "NAME": "Paulding",
+    "State": "OH",
+    "Medicare_Benes": 4175,
+    "Power_Dependent_Devices_DME": 259,
+    "Power_De_1": 33,
+    "O2_Services_Any_DME": 121
+  },
+  "39069": {
+    "FIPS_Code": "39069",
+    "NAME": "Henry",
+    "State": "OH",
+    "Medicare_Benes": 6630,
+    "Power_Dependent_Devices_DME": 301,
+    "Power_De_1": 22,
+    "O2_Services_Any_DME": 165
+  },
+  "39051": {
+    "FIPS_Code": "39051",
+    "NAME": "Fulton",
+    "State": "OH",
+    "Medicare_Benes": 11532,
+    "Power_Dependent_Devices_DME": 554,
+    "Power_De_1": 44,
+    "O2_Services_Any_DME": 193
+  },
+  "39161": {
+    "FIPS_Code": "39161",
+    "NAME": "Van Wert",
+    "State": "OH",
+    "Medicare_Benes": 5872,
+    "Power_Dependent_Devices_DME": 365,
+    "Power_De_1": 22,
+    "O2_Services_Any_DME": 144
+  },
+  "39109": {
+    "FIPS_Code": "39109",
+    "NAME": "Miami",
+    "State": "OH",
+    "Medicare_Benes": 26188,
+    "Power_Dependent_Devices_DME": 1332,
+    "Power_De_1": 80,
+    "O2_Services_Any_DME": 429
+  },
+  "39037": {
+    "FIPS_Code": "39037",
+    "NAME": "Darke",
+    "State": "OH",
+    "Medicare_Benes": 11745,
+    "Power_Dependent_Devices_DME": 617,
+    "Power_De_1": 44,
+    "O2_Services_Any_DME": 209
+  },
+  "39135": {
+    "FIPS_Code": "39135",
+    "NAME": "Preble",
+    "State": "OH",
+    "Medicare_Benes": 9877,
+    "Power_Dependent_Devices_DME": 609,
+    "Power_De_1": 22,
+    "O2_Services_Any_DME": 193
+  },
+  "39039": {
+    "FIPS_Code": "39039",
+    "NAME": "Defiance",
+    "State": "OH",
+    "Medicare_Benes": 9518,
+    "Power_Dependent_Devices_DME": 481,
+    "Power_De_1": 11,
+    "O2_Services_Any_DME": 235
+  },
+  "39113": {
+    "FIPS_Code": "39113",
+    "NAME": "Montgomery",
+    "State": "OH",
+    "Medicare_Benes": 118706,
+    "Power_Dependent_Devices_DME": 6144,
+    "Power_De_1": 297,
+    "O2_Services_Any_DME": 1339
+  },
+  "39011": {
+    "FIPS_Code": "39011",
+    "NAME": "Auglaize",
+    "State": "OH",
+    "Medicare_Benes": 10845,
+    "Power_Dependent_Devices_DME": 605,
+    "Power_De_1": 44,
+    "O2_Services_Any_DME": 178
+  },
+  "39061": {
+    "FIPS_Code": "39061",
+    "NAME": "Hamilton",
+    "State": "OH",
+    "Medicare_Benes": 163814,
+    "Power_Dependent_Devices_DME": 6490,
+    "Power_De_1": 451,
+    "O2_Services_Any_DME": 1325
+  },
+  "39025": {
+    "FIPS_Code": "39025",
+    "NAME": "Clermont",
+    "State": "OH",
+    "Medicare_Benes": 49283,
+    "Power_Dependent_Devices_DME": 2215,
+    "Power_De_1": 110,
+    "O2_Services_Any_DME": 496
+  },
+  "39137": {
+    "FIPS_Code": "39137",
+    "NAME": "Putnam",
+    "State": "OH",
+    "Medicare_Benes": 8225,
+    "Power_Dependent_Devices_DME": 344,
+    "Power_De_1": 44,
+    "O2_Services_Any_DME": 123
+  },
+  "39171": {
+    "FIPS_Code": "39171",
+    "NAME": "Williams",
+    "State": "OH",
+    "Medicare_Benes": 9559,
+    "Power_Dependent_Devices_DME": 456,
+    "Power_De_1": 22,
+    "O2_Services_Any_DME": 222
+  },
+  "39165": {
+    "FIPS_Code": "39165",
+    "NAME": "Warren",
+    "State": "OH",
+    "Medicare_Benes": 43985,
+    "Power_Dependent_Devices_DME": 1757,
+    "Power_De_1": 77,
+    "O2_Services_Any_DME": 328
+  },
+  "39149": {
+    "FIPS_Code": "39149",
+    "NAME": "Shelby",
+    "State": "OH",
+    "Medicare_Benes": 9856,
+    "Power_Dependent_Devices_DME": 513,
+    "Power_De_1": 44,
+    "O2_Services_Any_DME": 198
+  },
+  "39107": {
+    "FIPS_Code": "39107",
+    "NAME": "Mercer",
+    "State": "OH",
+    "Medicare_Benes": 9729,
+    "Power_Dependent_Devices_DME": 434,
+    "Power_De_1": 44,
+    "O2_Services_Any_DME": 132
+  },
+  "40001": {
+    "FIPS_Code": "40001",
+    "NAME": "Adair",
+    "State": "OK",
+    "Medicare_Benes": 4758,
+    "Power_Dependent_Devices_DME": 287,
+    "Power_De_1": 44,
+    "O2_Services_Any_DME": 115
+  },
+  "40135": {
+    "FIPS_Code": "40135",
+    "NAME": "Sequoyah",
+    "State": "OK",
+    "Medicare_Benes": 10503,
+    "Power_Dependent_Devices_DME": 803,
+    "Power_De_1": 33,
+    "O2_Services_Any_DME": 270
+  },
+  "40101": {
+    "FIPS_Code": "40101",
+    "NAME": "Muskogee",
+    "State": "OK",
+    "Medicare_Benes": 16908,
+    "Power_Dependent_Devices_DME": 1016,
+    "Power_De_1": 55,
+    "O2_Services_Any_DME": 401
+  },
+  "40115": {
+    "FIPS_Code": "40115",
+    "NAME": "Ottawa",
+    "State": "OK",
+    "Medicare_Benes": 9462,
+    "Power_Dependent_Devices_DME": 564,
+    "Power_De_1": 55,
+    "O2_Services_Any_DME": 149
+  },
+  "40131": {
+    "FIPS_Code": "40131",
+    "NAME": "Rogers",
+    "State": "OK",
+    "Medicare_Benes": 18033,
+    "Power_Dependent_Devices_DME": 940,
+    "Power_De_1": 44,
+    "O2_Services_Any_DME": 241
+  },
+  "40097": {
+    "FIPS_Code": "40097",
+    "NAME": "Mayes",
+    "State": "OK",
+    "Medicare_Benes": 9699,
+    "Power_Dependent_Devices_DME": 583,
+    "Power_De_1": 55,
+    "O2_Services_Any_DME": 181
+  },
+  "40089": {
+    "FIPS_Code": "40089",
+    "NAME": "McCurtain",
+    "State": "OK",
+    "Medicare_Benes": 7446,
+    "Power_Dependent_Devices_DME": 537,
+    "Power_De_1": 44,
+    "O2_Services_Any_DME": 223
+  },
+  "40041": {
+    "FIPS_Code": "40041",
+    "NAME": "Delaware",
+    "State": "OK",
+    "Medicare_Benes": 9970,
+    "Power_Dependent_Devices_DME": 579,
+    "Power_De_1": 55,
+    "O2_Services_Any_DME": 159
+  },
+  "40127": {
+    "FIPS_Code": "40127",
+    "NAME": "Pushmataha",
+    "State": "OK",
+    "Medicare_Benes": 3083,
+    "Power_Dependent_Devices_DME": 245,
+    "Power_De_1": 11,
+    "O2_Services_Any_DME": 132
+  },
+  "40145": {
+    "FIPS_Code": "40145",
+    "NAME": "Wagoner",
+    "State": "OK",
+    "Medicare_Benes": 16966,
+    "Power_Dependent_Devices_DME": 955,
+    "Power_De_1": 33,
+    "O2_Services_Any_DME": 285
+  },
+  "40035": {
+    "FIPS_Code": "40035",
+    "NAME": "Craig",
+    "State": "OK",
+    "Medicare_Benes": 4396,
+    "Power_Dependent_Devices_DME": 278,
+    "Power_De_1": 11,
+    "O2_Services_Any_DME": 109
+  },
+  "40021": {
+    "FIPS_Code": "40021",
+    "NAME": "Cherokee",
+    "State": "OK",
+    "Medicare_Benes": 9565,
+    "Power_Dependent_Devices_DME": 507,
+    "Power_De_1": 23,
+    "O2_Services_Any_DME": 152
+  },
+  "40079": {
+    "FIPS_Code": "40079",
+    "NAME": "Le Flore",
+    "State": "OK",
+    "Medicare_Benes": 11292,
+    "Power_Dependent_Devices_DME": 906,
+    "Power_De_1": 66,
+    "O2_Services_Any_DME": 370
+  },
+  "40023": {
+    "FIPS_Code": "40023",
+    "NAME": "Choctaw",
+    "State": "OK",
+    "Medicare_Benes": 3902,
+    "Power_Dependent_Devices_DME": 311,
+    "Power_De_1": 11,
+    "O2_Services_Any_DME": 127
+  },
+  "40077": {
+    "FIPS_Code": "40077",
+    "NAME": "Latimer",
+    "State": "OK",
+    "Medicare_Benes": 2830,
+    "Power_Dependent_Devices_DME": 144,
+    "Power_De_1": 11,
+    "O2_Services_Any_DME": 53
+  },
+  "40061": {
+    "FIPS_Code": "40061",
+    "NAME": "Haskell",
+    "State": "OK",
+    "Medicare_Benes": 3227,
+    "Power_Dependent_Devices_DME": 211,
+    "Power_De_1": 22,
+    "O2_Services_Any_DME": 98
+  },
+  "40095": {
+    "FIPS_Code": "40095",
+    "NAME": "Marshall",
+    "State": "OK",
+    "Medicare_Benes": 4320,
+    "Power_Dependent_Devices_DME": 248,
+    "Power_De_1": 22,
+    "O2_Services_Any_DME": 69
+  },
+  "40081": {
+    "FIPS_Code": "40081",
+    "NAME": "Lincoln",
+    "State": "OK",
+    "Medicare_Benes": 7716,
+    "Power_Dependent_Devices_DME": 522,
+    "Power_De_1": 33,
+    "O2_Services_Any_DME": 214
+  },
+  "40063": {
+    "FIPS_Code": "40063",
+    "NAME": "Hughes",
+    "State": "OK",
+    "Medicare_Benes": 3103,
+    "Power_Dependent_Devices_DME": 243,
+    "Power_De_1": 22,
+    "O2_Services_Any_DME": 106
+  },
+  "40029": {
+    "FIPS_Code": "40029",
+    "NAME": "Coal",
+    "State": "OK",
+    "Medicare_Benes": 1266,
+    "Power_Dependent_Devices_DME": 105,
+    "Power_De_1": 11,
+    "O2_Services_Any_DME": 57
+  },
+  "40005": {
+    "FIPS_Code": "40005",
+    "NAME": "Atoka",
+    "State": "OK",
+    "Medicare_Benes": 2770,
+    "Power_Dependent_Devices_DME": 152,
+    "Power_De_1": 11,
+    "O2_Services_Any_DME": 62
+  },
+  "40111": {
+    "FIPS_Code": "40111",
+    "NAME": "Okmulgee",
+    "State": "OK",
+    "Medicare_Benes": 8667,
+    "Power_Dependent_Devices_DME": 479,
+    "Power_De_1": 33,
+    "O2_Services_Any_DME": 168
+  },
+  "40147": {
+    "FIPS_Code": "40147",
+    "NAME": "Washington",
+    "State": "OK",
+    "Medicare_Benes": 12866,
+    "Power_Dependent_Devices_DME": 649,
+    "Power_De_1": 59,
+    "O2_Services_Any_DME": 180
+  },
+  "40133": {
+    "FIPS_Code": "40133",
+    "NAME": "Seminole",
+    "State": "OK",
+    "Medicare_Benes": 5319,
+    "Power_Dependent_Devices_DME": 391,
+    "Power_De_1": 44,
+    "O2_Services_Any_DME": 137
+  },
+  "40123": {
+    "FIPS_Code": "40123",
+    "NAME": "Pontotoc",
+    "State": "OK",
+    "Medicare_Benes": 8358,
+    "Power_Dependent_Devices_DME": 549,
+    "Power_De_1": 11,
+    "O2_Services_Any_DME": 201
+  },
+  "40037": {
+    "FIPS_Code": "40037",
+    "NAME": "Creek",
+    "State": "OK",
+    "Medicare_Benes": 17124,
+    "Power_Dependent_Devices_DME": 1087,
+    "Power_De_1": 66,
+    "O2_Services_Any_DME": 311
+  },
+  "40069": {
+    "FIPS_Code": "40069",
+    "NAME": "Johnston",
+    "State": "OK",
+    "Medicare_Benes": 2676,
+    "Power_Dependent_Devices_DME": 181,
+    "Power_De_1": 11,
+    "O2_Services_Any_DME": 80
+  },
+  "40113": {
+    "FIPS_Code": "40113",
+    "NAME": "Osage",
+    "State": "OK",
+    "Medicare_Benes": 3815,
+    "Power_Dependent_Devices_DME": 228,
+    "Power_De_1": 77,
+    "O2_Services_Any_DME": 91
+  },
+  "40121": {
+    "FIPS_Code": "40121",
+    "NAME": "Pittsburg",
+    "State": "OK",
+    "Medicare_Benes": 9942,
+    "Power_Dependent_Devices_DME": 694,
+    "Power_De_1": 33,
+    "O2_Services_Any_DME": 288
+  },
+  "40117": {
+    "FIPS_Code": "40117",
+    "NAME": "Pawnee",
+    "State": "OK",
+    "Medicare_Benes": 4004,
+    "Power_Dependent_Devices_DME": 273,
+    "Power_De_1": 33,
+    "O2_Services_Any_DME": 99
+  },
+  "40107": {
+    "FIPS_Code": "40107",
+    "NAME": "Okfuskee",
+    "State": "OK",
+    "Medicare_Benes": 2684,
+    "Power_Dependent_Devices_DME": 154,
+    "Power_De_1": 33,
+    "O2_Services_Any_DME": 75
+  },
+  "40013": {
+    "FIPS_Code": "40013",
+    "NAME": "Bryan",
+    "State": "OK",
+    "Medicare_Benes": 10433,
+    "Power_Dependent_Devices_DME": 587,
+    "Power_De_1": 77,
+    "O2_Services_Any_DME": 112
+  },
+  "40143": {
+    "FIPS_Code": "40143",
+    "NAME": "Tulsa",
+    "State": "OK",
+    "Medicare_Benes": 136119,
+    "Power_Dependent_Devices_DME": 6444,
+    "Power_De_1": 330,
+    "O2_Services_Any_DME": 1758
+  },
+  "40091": {
+    "FIPS_Code": "40091",
+    "NAME": "McIntosh",
+    "State": "OK",
+    "Medicare_Benes": 6224,
+    "Power_Dependent_Devices_DME": 384,
+    "Power_De_1": 33,
+    "O2_Services_Any_DME": 143
+  },
+  "40105": {
+    "FIPS_Code": "40105",
+    "NAME": "Nowata",
+    "State": "OK",
+    "Medicare_Benes": 2571,
+    "Power_Dependent_Devices_DME": 121,
+    "Power_De_1": 33,
+    "O2_Services_Any_DME": 60
+  },
+  "40017": {
+    "FIPS_Code": "40017",
+    "NAME": "Canadian",
+    "State": "OK",
+    "Medicare_Benes": 27303,
+    "Power_Dependent_Devices_DME": 1318,
+    "Power_De_1": 44,
+    "O2_Services_Any_DME": 273
+  },
+  "40019": {
+    "FIPS_Code": "40019",
+    "NAME": "Carter",
+    "State": "OK",
+    "Medicare_Benes": 11492,
+    "Power_Dependent_Devices_DME": 710,
+    "Power_De_1": 44,
+    "O2_Services_Any_DME": 227
+  },
+  "40071": {
+    "FIPS_Code": "40071",
+    "NAME": "Kay",
+    "State": "OK",
+    "Medicare_Benes": 11210,
+    "Power_Dependent_Devices_DME": 797,
+    "Power_De_1": 44,
+    "O2_Services_Any_DME": 196
+  },
+  "40125": {
+    "FIPS_Code": "40125",
+    "NAME": "Pottawatomie",
+    "State": "OK",
+    "Medicare_Benes": 16763,
+    "Power_Dependent_Devices_DME": 1008,
+    "Power_De_1": 77,
+    "O2_Services_Any_DME": 394
+  },
+  "40085": {
+    "FIPS_Code": "40085",
+    "NAME": "Love",
+    "State": "OK",
+    "Medicare_Benes": 2307,
+    "Power_Dependent_Devices_DME": 144,
+    "Power_De_1": 11,
+    "O2_Services_Any_DME": 63
+  },
+  "40103": {
+    "FIPS_Code": "40103",
+    "NAME": "Noble",
+    "State": "OK",
+    "Medicare_Benes": 2518,
+    "Power_Dependent_Devices_DME": 144,
+    "Power_De_1": 22,
+    "O2_Services_Any_DME": 67
+  },
+  "40109": {
+    "FIPS_Code": "40109",
+    "NAME": "Oklahoma",
+    "State": "OK",
+    "Medicare_Benes": 152188,
+    "Power_Dependent_Devices_DME": 7134,
+    "Power_De_1": 429,
+    "O2_Services_Any_DME": 1634
+  },
+  "40027": {
+    "FIPS_Code": "40027",
+    "NAME": "Cleveland",
+    "State": "OK",
+    "Medicare_Benes": 49932,
+    "Power_Dependent_Devices_DME": 2323,
+    "Power_De_1": 114,
+    "O2_Services_Any_DME": 539
+  },
+  "40049": {
+    "FIPS_Code": "40049",
+    "NAME": "Garvin",
+    "State": "OK",
+    "Medicare_Benes": 6862,
+    "Power_Dependent_Devices_DME": 368,
+    "Power_De_1": 44,
+    "O2_Services_Any_DME": 117
+  },
+  "40083": {
+    "FIPS_Code": "40083",
+    "NAME": "Logan",
+    "State": "OK",
+    "Medicare_Benes": 7710,
+    "Power_Dependent_Devices_DME": 413,
+    "Power_De_1": 22,
+    "O2_Services_Any_DME": 114
+  },
+  "40067": {
+    "FIPS_Code": "40067",
+    "NAME": "Jefferson",
+    "State": "OK",
+    "Medicare_Benes": 1646,
+    "Power_Dependent_Devices_DME": 120,
+    "Power_De_1": 22,
+    "O2_Services_Any_DME": 55
+  },
+  "40087": {
+    "FIPS_Code": "40087",
+    "NAME": "McClain",
+    "State": "OK",
+    "Medicare_Benes": 10617,
+    "Power_Dependent_Devices_DME": 524,
+    "Power_De_1": 55,
+    "O2_Services_Any_DME": 135
+  },
+  "40137": {
+    "FIPS_Code": "40137",
+    "NAME": "Stephens",
+    "State": "OK",
+    "Medicare_Benes": 11365,
+    "Power_Dependent_Devices_DME": 665,
+    "Power_De_1": 11,
+    "O2_Services_Any_DME": 262
+  },
+  "40073": {
+    "FIPS_Code": "40073",
+    "NAME": "Kingfisher",
+    "State": "OK",
+    "Medicare_Benes": 3559,
+    "Power_Dependent_Devices_DME": 182,
+    "Power_De_1": 11,
+    "O2_Services_Any_DME": 86
+  },
+  "40053": {
+    "FIPS_Code": "40053",
+    "NAME": "Grant",
+    "State": "OK",
+    "Medicare_Benes": 1028,
+    "Power_Dependent_Devices_DME": 88,
+    "Power_De_1": 11,
+    "O2_Services_Any_DME": 77
+  },
+  "40099": {
+    "FIPS_Code": "40099",
+    "NAME": "Murray",
+    "State": "OK",
+    "Medicare_Benes": 3323,
+    "Power_Dependent_Devices_DME": 183,
+    "Power_De_1": 22,
+    "O2_Services_Any_DME": 33
+  },
+  "40051": {
+    "FIPS_Code": "40051",
+    "NAME": "Grady",
+    "State": "OK",
+    "Medicare_Benes": 10191,
+    "Power_Dependent_Devices_DME": 590,
+    "Power_De_1": 22,
+    "O2_Services_Any_DME": 194
+  },
+  "40119": {
+    "FIPS_Code": "40119",
+    "NAME": "Payne",
+    "State": "OK",
+    "Medicare_Benes": 14048,
+    "Power_Dependent_Devices_DME": 708,
+    "Power_De_1": 44,
+    "O2_Services_Any_DME": 215
+  },
+  "40047": {
+    "FIPS_Code": "40047",
+    "NAME": "Garfield",
+    "State": "OK",
+    "Medicare_Benes": 12767,
+    "Power_Dependent_Devices_DME": 728,
+    "Power_De_1": 33,
+    "O2_Services_Any_DME": 259
+  },
+  "40059": {
+    "FIPS_Code": "40059",
+    "NAME": "Harper",
+    "State": "OK",
+    "Medicare_Benes": 875,
+    "Power_Dependent_Devices_DME": 80,
+    "Power_De_1": 0,
+    "O2_Services_Any_DME": 35
+  },
+  "40003": {
+    "FIPS_Code": "40003",
+    "NAME": "Alfalfa",
+    "State": "OK",
+    "Medicare_Benes": 1197,
+    "Power_Dependent_Devices_DME": 109,
+    "Power_De_1": 0,
+    "O2_Services_Any_DME": 66
+  },
+  "40015": {
+    "FIPS_Code": "40015",
+    "NAME": "Caddo",
+    "State": "OK",
+    "Medicare_Benes": 6724,
+    "Power_Dependent_Devices_DME": 402,
+    "Power_De_1": 11,
+    "O2_Services_Any_DME": 179
+  },
+  "40055": {
+    "FIPS_Code": "40055",
+    "NAME": "Greer",
+    "State": "OK",
+    "Medicare_Benes": 1250,
+    "Power_Dependent_Devices_DME": 79,
+    "Power_De_1": 11,
+    "O2_Services_Any_DME": 40
+  },
+  "40033": {
+    "FIPS_Code": "40033",
+    "NAME": "Cotton",
+    "State": "OK",
+    "Medicare_Benes": 1331,
+    "Power_Dependent_Devices_DME": 83,
+    "Power_De_1": 11,
+    "O2_Services_Any_DME": 42
+  },
+  "40151": {
+    "FIPS_Code": "40151",
+    "NAME": "Woods",
+    "State": "OK",
+    "Medicare_Benes": 1723,
+    "Power_Dependent_Devices_DME": 103,
+    "Power_De_1": 0,
+    "O2_Services_Any_DME": 42
+  },
+  "40011": {
+    "FIPS_Code": "40011",
+    "NAME": "Blaine",
+    "State": "OK",
+    "Medicare_Benes": 2149,
+    "Power_Dependent_Devices_DME": 139,
+    "Power_De_1": 22,
+    "O2_Services_Any_DME": 69
+  },
+  "40075": {
+    "FIPS_Code": "40075",
+    "NAME": "Kiowa",
+    "State": "OK",
+    "Medicare_Benes": 2270,
+    "Power_Dependent_Devices_DME": 153,
+    "Power_De_1": 11,
+    "O2_Services_Any_DME": 88
+  },
+  "40149": {
+    "FIPS_Code": "40149",
+    "NAME": "Washita",
+    "State": "OK",
+    "Medicare_Benes": 2476,
+    "Power_Dependent_Devices_DME": 183,
+    "Power_De_1": 11,
+    "O2_Services_Any_DME": 83
+  },
+  "40065": {
+    "FIPS_Code": "40065",
+    "NAME": "Jackson",
+    "State": "OK",
+    "Medicare_Benes": 4706,
+    "Power_Dependent_Devices_DME": 292,
+    "Power_De_1": 11,
+    "O2_Services_Any_DME": 136
+  },
+  "40093": {
+    "FIPS_Code": "40093",
+    "NAME": "Major",
+    "State": "OK",
+    "Medicare_Benes": 1755,
+    "Power_Dependent_Devices_DME": 103,
+    "Power_De_1": 22,
+    "O2_Services_Any_DME": 55
+  },
+  "40039": {
+    "FIPS_Code": "40039",
+    "NAME": "Custer",
+    "State": "OK",
+    "Medicare_Benes": 5049,
+    "Power_Dependent_Devices_DME": 245,
+    "Power_De_1": 22,
+    "O2_Services_Any_DME": 83
+  },
+  "40045": {
+    "FIPS_Code": "40045",
+    "NAME": "Ellis",
+    "State": "OK",
+    "Medicare_Benes": 942,
+    "Power_Dependent_Devices_DME": 53,
+    "Power_De_1": 0,
+    "O2_Services_Any_DME": 45
+  },
+  "40031": {
+    "FIPS_Code": "40031",
+    "NAME": "Comanche",
+    "State": "OK",
+    "Medicare_Benes": 21534,
+    "Power_Dependent_Devices_DME": 1234,
+    "Power_De_1": 44,
+    "O2_Services_Any_DME": 559
+  },
+  "40009": {
+    "FIPS_Code": "40009",
+    "NAME": "Beckham",
+    "State": "OK",
+    "Medicare_Benes": 4348,
+    "Power_Dependent_Devices_DME": 280,
+    "Power_De_1": 22,
+    "O2_Services_Any_DME": 100
+  },
+  "40141": {
+    "FIPS_Code": "40141",
+    "NAME": "Tillman",
+    "State": "OK",
+    "Medicare_Benes": 1625,
+    "Power_Dependent_Devices_DME": 117,
+    "Power_De_1": 0,
+    "O2_Services_Any_DME": 64
+  },
+  "40043": {
+    "FIPS_Code": "40043",
+    "NAME": "Dewey",
+    "State": "OK",
+    "Medicare_Benes": 1219,
+    "Power_Dependent_Devices_DME": 103,
+    "Power_De_1": 33,
+    "O2_Services_Any_DME": 77
+  },
+  "40129": {
+    "FIPS_Code": "40129",
+    "NAME": "Roger Mills",
+    "State": "OK",
+    "Medicare_Benes": 788,
+    "Power_Dependent_Devices_DME": 75,
+    "Power_De_1": 0,
+    "O2_Services_Any_DME": 55
+  },
+  "40153": {
+    "FIPS_Code": "40153",
+    "NAME": "Woodward",
+    "State": "OK",
+    "Medicare_Benes": 3892,
+    "Power_Dependent_Devices_DME": 269,
+    "Power_De_1": 11,
+    "O2_Services_Any_DME": 130
+  },
+  "40057": {
+    "FIPS_Code": "40057",
+    "NAME": "Harmon",
+    "State": "OK",
+    "Medicare_Benes": 592,
+    "Power_Dependent_Devices_DME": 52,
+    "Power_De_1": 11,
+    "O2_Services_Any_DME": 22
+  },
+  "40007": {
+    "FIPS_Code": "40007",
+    "NAME": "Beaver",
+    "State": "OK",
+    "Medicare_Benes": 1019,
+    "Power_Dependent_Devices_DME": 84,
+    "Power_De_1": 11,
+    "O2_Services_Any_DME": 55
+  },
+  "40139": {
+    "FIPS_Code": "40139",
+    "NAME": "Texas",
+    "State": "OK",
+    "Medicare_Benes": 2734,
+    "Power_Dependent_Devices_DME": 169,
+    "Power_De_1": 11,
+    "O2_Services_Any_DME": 88
+  },
+  "40025": {
+    "FIPS_Code": "40025",
+    "NAME": "Cimarron",
+    "State": "OK",
+    "Medicare_Benes": 530,
+    "Power_Dependent_Devices_DME": 45,
+    "Power_De_1": 11,
+    "O2_Services_Any_DME": 22
+  }
+}

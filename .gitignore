@@ -1,8 +1,8 @@
 # Credentials — never commit
 .env
 
-# ChromaDB local vector store — rebuild via ingest.py
-chroma_db/
+# ChromaDB local vector store — committed for Railway deployment
+# chroma_db/
 
 # Python
 __pycache__/
@@ -30,4 +30,14 @@ Thumbs.db
 # Jupyter (if notebooks added later)
 .ipynb_checkpoints/
 *.ipynb
-data/
+# Data files — included for Railway deployment
+# Large CSV is 58 MB (under GitHub's 100 MB hard limit)
+!data/
+!data/svi_2022_us_tract.csv
+!data/empower_oh_ok.json
+!data/tri_facilities_oh_ok.json
+!data/policy_docs/
+!data/policy_docs/*.txt
+
+# Draft assessment variants (do not track)
+agents/assessments/
