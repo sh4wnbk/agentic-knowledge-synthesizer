@@ -451,10 +451,16 @@
       padding: 6px 8px;
       line-height: 1.7;
     }
+    .agent-card-top {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+    .agent-card-top .agent-step { margin-bottom: 0; }
     .ibm-badge {
       display: inline-flex;
       align-items: center;
-      gap: 5px;
       font-size: 11px;
       font-weight: 800;
       letter-spacing: 0.5px;
@@ -462,7 +468,6 @@
       background: #0f62fe;
       border-radius: 4px;
       padding: 3px 9px;
-      margin-bottom: 10px;
     }
     .ibm-tech {
       margin-top: 10px;
@@ -837,7 +842,7 @@
 
           <div class="agent-card" id="agent-card-1">
             <div class="card-dot" id="dot-1"></div>
-            <div class="agent-step" id="step-1">1</div>
+            <div class="agent-card-top"><div class="agent-step" id="step-1">1</div></div>
             <div class="agent-name">Intake Agent</div>
             <div class="agent-role">Parse &amp; Classify</div>
             <div class="agent-desc">Reads the raw incident report and extracts structured intent — crisis type, location, state, and whether the input is complete enough to act on.</div>
@@ -846,7 +851,7 @@
 
           <div class="agent-card" id="agent-card-2">
             <div class="card-dot" id="dot-2"></div>
-            <div class="agent-step" id="step-2">2</div>
+            <div class="agent-card-top"><div class="agent-step" id="step-2">2</div></div>
             <div class="agent-name">Orchestrator Agent</div>
             <div class="agent-role">Route &amp; Resolve</div>
             <div class="agent-desc">Routes the intent to the correct specialist cluster (Ohio / Oklahoma), assigns the regulatory agency by name, constructs the semantic RAG query, and loads the citation chain.</div>
@@ -855,7 +860,7 @@
 
           <div class="agent-card" id="agent-card-3">
             <div class="card-dot" id="dot-3"></div>
-            <div class="agent-step" id="step-3">3</div>
+            <div class="agent-card-top"><div class="agent-step" id="step-3">3</div></div>
             <div class="agent-name">RAG Knowledge Agent</div>
             <div class="agent-role">Retrieve</div>
             <div class="agent-desc">Performs semantic search over the policy document corpus (ChromaDB, local). Returns the most relevant context passages with a confidence score for the Overseer to validate.</div>
@@ -864,7 +869,7 @@
 
           <div class="agent-card" id="agent-card-4">
             <div class="card-dot" id="dot-4"></div>
-            <div class="agent-step" id="step-4">4</div>
+            <div class="agent-card-top"><div class="agent-step" id="step-4">4</div></div>
             <div class="agent-name">Data Bridge Agent</div>
             <div class="agent-role">Live Data Fetch</div>
             <div class="agent-desc">Queries four live APIs in sequence: USGS real-time seismic feed, CDC Social Vulnerability Index by census tract, HHS emPOWER electricity-dependent beneficiaries, and EPA TRI hazmat facilities. Promotes EPA to Tier 1 if hazmat is detected.</div>
@@ -873,8 +878,7 @@
 
           <div class="agent-card" id="agent-card-5">
             <div class="card-dot" id="dot-5"></div>
-            <div class="agent-step" id="step-5">5</div>
-            <div class="ibm-badge">⬡ IBM</div>
+            <div class="agent-card-top"><div class="agent-step" id="step-5">5</div><div class="ibm-badge">IBM</div></div>
             <div class="agent-name">Overseer Agent</div>
             <div class="agent-role">Govern &amp; Score</div>
             <div class="agent-desc">Runs three governance hooks at fixed pipeline positions. Scores each beam candidate by citation alignment — not token probability. Can trigger retry or force HONEST FALLBACK.</div>
@@ -883,8 +887,7 @@
 
           <div class="agent-card" id="agent-card-6">
             <div class="card-dot" id="dot-6"></div>
-            <div class="agent-step" id="step-6">6</div>
-            <div class="ibm-badge">⬡ IBM</div>
+            <div class="agent-card-top"><div class="agent-step" id="step-6">6</div><div class="ibm-badge">IBM</div></div>
             <div class="agent-name">Synthesis Agent</div>
             <div class="agent-role">Generate &amp; Select</div>
             <div class="agent-desc">Generates four beam candidates at varying temperatures. The Overseer selects the highest citation-aligned candidate — not the most probable token sequence.</div>
