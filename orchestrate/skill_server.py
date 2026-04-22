@@ -160,23 +160,34 @@ def incident_report(req: IncidentReportRequest) -> dict[str, Any]:
     Primary EOC endpoint. Accepts an incident report from an emergency manager
     and returns a validated inter-agency routing brief.
     """
-    incident_id    = req.incident_id or str(uuid4())
-    intent         = intake.parse(req.raw_input)
-    cluster        = orchestrator.route(intent)
-    agency_routing = orchestrator.get_agency_routing(cluster)
-    citation_chain = orchestrator.get_citation_chain(cluster)
-    result         = run_pipeline(req.raw_input)
-    status_label   = STATE_LABELS.get(result.state.value, result.state.value)
+    import traceback
+    try:
+        incident_id    = req.incident_id or str(uuid4())
+        intent         = intake.parse(req.raw_input)
+        cluster        = orchestrator.route(intent)
+        agency_routing = orchestrator.get_agency_routing(cluster)
+        citation_chain = orchestrator.get_citation_chain(cluster)
+        result         = run_pipeline(req.raw_input)
+        status_label   = STATE_LABELS.get(result.state.value, result.state.value)
 
-    return {
-        "incident_id":          incident_id,
-        "output_status":        status_label,
-        "citation_alignment":   f"{result.citation_score:.1%}",
-        "retrieval_confidence": f"{result.confidence:.1%}",
-        "brief":                result.content,
-        "citation":             result.citation,
-        "cluster":              cluster,
-        "agency_routing_baseline": agency_routing,
-        "citation_chain":       citation_chain,
-        "audit_log":            result.audit_log,
-    }
+        return {
+            "incident_id":          incident_id,
+            "output_status":        status_label,
+            "citation_alignment":   f"{result.citation_score:.1%}",
+            "retrieval_confidence": f"{result.confidence:.1%}",
+            "brief":                result.content,
+            "citation":             result.citation,
+            "cluster":              cluster,
+            "agency_routing_baseline": agency_routing,
+            "citation_chain":       citation_chain,
+            "audit_log":            result.audit_log,
+        }
+    except Exception as exc:
+        tb = traceback.format_exc()
+        print(f"[INCIDENT_REPORT] Unhandled exception:\n{tb}")
+        return {
+            "incident_id":   req.incident_id or "unknown",
+            "output_status": "PIPELINE ERROR",
+            "error":         str(exc),
+            "traceback":     tb,
+        }
