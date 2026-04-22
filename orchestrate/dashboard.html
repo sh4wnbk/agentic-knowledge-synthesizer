@@ -189,9 +189,9 @@
     }
 
     .sidebar-section-label {
-      font-size: 12px;
+      font-size: 14px;
       font-weight: 700;
-      letter-spacing: 1px;
+      letter-spacing: 0.8px;
       text-transform: uppercase;
       color: var(--text-dim);
       margin-bottom: 8px;
@@ -340,7 +340,7 @@
     }
     .about-block strong {
       display: block;
-      font-size: 15px;
+      font-size: 18px;
       font-weight: 800;
       color: var(--accent);
       margin-bottom: 8px;
@@ -551,16 +551,16 @@
       overflow: hidden;
     }
     .sidebar-panel-header {
-      font-size: 12px;
+      font-size: 15px;
       font-weight: 700;
-      letter-spacing: 1px;
+      letter-spacing: 0.5px;
       text-transform: uppercase;
-      color: var(--text-dim);
-      padding: 9px 12px;
+      color: var(--text-muted);
+      padding: 10px 14px;
       background: var(--surface-2);
       border-bottom: 1px solid var(--border);
     }
-    .sidebar-panel-body { padding: 10px 12px; }
+    .sidebar-panel-body { padding: 12px 14px; }
 
     /* Data source rows */
     .source-row {
@@ -623,6 +623,67 @@
     .tier-3 { color: var(--text-muted); }
     .tier-agency { font-size: 13px; color: var(--text); font-weight: 600; }
     .tier-role { font-size: 12px; color: var(--text-muted); margin-top: 1px; line-height: 1.4; }
+
+    /* Citation box */
+    .citation-primary {
+      background: var(--accent-bg);
+      border: 1px solid var(--accent-dim);
+      border-radius: 6px;
+      padding: 10px 12px;
+      margin-bottom: 10px;
+    }
+    .citation-primary-label {
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 4px;
+    }
+    .citation-primary-text {
+      font-size: 13px;
+      color: var(--text-2);
+      font-weight: 600;
+      line-height: 1.5;
+    }
+    .citation-synth-label {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.8px;
+      text-transform: uppercase;
+      color: var(--text-dim);
+      margin-bottom: 6px;
+    }
+    .citation-synth-list {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+    .citation-author {
+      font-size: 13px;
+      color: var(--text-muted);
+      padding: 5px 10px;
+      background: var(--surface-2);
+      border: 1px solid var(--border-2);
+      border-radius: 5px;
+      line-height: 1.4;
+    }
+    .citation-retrieval {
+      margin-top: 10px;
+      padding-top: 10px;
+      border-top: 1px solid var(--border-2);
+      font-size: 12px;
+      color: var(--text-dim);
+      line-height: 1.5;
+    }
+    .citation-retrieval-label {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.8px;
+      text-transform: uppercase;
+      color: var(--text-dim);
+      margin-bottom: 3px;
+    }
 
     /* About block mini (collapsed state) */
     .about-mini {
@@ -728,6 +789,13 @@
 
     <!-- Sidebar result panels (shown after run) -->
     <div id="sidebar-results" style="display:none; flex-direction:column; gap:12px;">
+
+      <div class="sidebar-panel">
+        <div class="sidebar-panel-header">Citations</div>
+        <div class="sidebar-panel-body">
+          <div id="citation-box"></div>
+        </div>
+      </div>
 
       <div class="sidebar-panel">
         <div class="sidebar-panel-header">Data Sources</div>
@@ -1039,6 +1107,42 @@
     // Show results section
     const resultsEl = document.getElementById('sidebar-results');
     resultsEl.style.display = 'flex';
+
+    // ── Citations ──
+    const chain = d.citation_chain || d.citation || '';
+    const citEl = document.getElementById('citation-box');
+    if (chain) {
+      const synthIdx = chain.indexOf('[synthesizing');
+      const primaryText = synthIdx > 0 ? chain.substring(0, synthIdx).trim() : chain;
+      const synthesized = synthIdx > 0
+        ? chain.substring(synthIdx + '[synthesizing'.length).replace(']', '').trim()
+            .split(';').map(s => s.trim()).filter(Boolean)
+        : [];
+
+      let citHtml = `
+        <div class="citation-primary">
+          <div class="citation-primary-label">Primary Source</div>
+          <div class="citation-primary-text">${primaryText}</div>
+        </div>`;
+
+      if (synthesized.length) {
+        citHtml += `<div class="citation-synth-label">Synthesized From</div>
+          <div class="citation-synth-list">
+            ${synthesized.map(a => `<div class="citation-author">${a}</div>`).join('')}
+          </div>`;
+      }
+
+      if (d.citation && d.citation !== chain) {
+        citHtml += `<div class="citation-retrieval">
+          <div class="citation-retrieval-label">Retrieved Policy Context</div>
+          ${d.citation}
+        </div>`;
+      }
+
+      citEl.innerHTML = citHtml;
+    } else {
+      citEl.innerHTML = '<div style="font-size:13px;color:var(--text-dim)">No citation data.</div>';
+    }
 
     // ── Data sources ──
     const sources = [
