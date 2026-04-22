@@ -50,7 +50,7 @@ GRANITE_MODEL  = "ibm/granite-3-8b-instruct"
 # Beam search generates N candidates; the Overseer Agent
 # selects by citation alignment score, not token probability.
 BEAM_WIDTH     = 4      # Number of candidate responses generated
-MAX_NEW_TOKENS = 400
+MAX_NEW_TOKENS = 700
 
 # ── Seismic threshold ────────────────────────────────────
 # M >= 3.0: the minimum magnitude used in Blackman (2025)
