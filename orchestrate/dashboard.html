@@ -265,12 +265,15 @@
     .privacy-badge svg { flex-shrink: 0; margin-top: 1px; }
 
     .about-block {
-      background: var(--accent-bg); border: 1px solid var(--accent-dim); border-radius: 8px;
-      padding: 13px; color: var(--text-2); line-height: 1.65;
+      background: var(--surface); border: 1px solid var(--border); border-radius: 8px;
+      padding: 14px; color: var(--text-2); line-height: 1.65;
     }
-    .about-block strong { display: block; font-size: 18px; font-weight: 800; color: var(--accent); margin-bottom: 8px; }
-    .about-block p { margin: 0; font-size: 15px; }
-    .about-block p + p { margin-top: 8px; }
+    .about-name { font-size: 15px; font-weight: 800; color: var(--text); margin-bottom: 8px; }
+    .about-tags { display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 12px; }
+    .about-tag  { font-size: 11px; padding: 3px 8px; border-radius: 20px; background: var(--surface-2); border: 1px solid var(--border-2); color: var(--text-muted); }
+    .about-body p { margin: 0; font-size: 13px; color: var(--text-muted); line-height: 1.6; }
+    .about-body p + p { margin-top: 8px; }
+    .about-body strong { color: var(--text); }
 
     /* ── Sidebar result panels ── */
     .sidebar-panel { background: var(--bg); border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
@@ -316,14 +319,23 @@
     .citation-author { font-size: 13px; color: var(--text-muted); padding: 5px 10px; background: var(--surface-2); border: 1px solid var(--border-2); border-radius: 5px; line-height: 1.4; }
     .citation-retrieval { margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--border-2); font-size: 12px; color: var(--text-dim); line-height: 1.5; }
     .citation-retrieval-label { font-size: 10px; font-weight: 700; letter-spacing: 0.8px; text-transform: uppercase; color: var(--text-dim); margin-bottom: 3px; }
+    .citation-link { color: var(--accent); text-decoration: underline; text-decoration-style: dotted; }
+    .citation-link:hover { text-decoration-style: solid; }
+    .citation-disclaimer { font-size: 11px; color: var(--text-dim); margin-top: 8px; padding-top: 8px; border-top: 1px solid var(--border-2); line-height: 1.5; }
 
-    .about-mini {
-      display: flex; align-items: center; justify-content: space-between;
-      background: var(--accent-bg); border: 1px solid var(--accent-dim); border-radius: 8px; padding: 9px 13px;
-    }
-    .about-mini span { font-size: 13px; font-weight: 800; color: var(--accent); }
-    .about-mini button { background: none; border: none; color: var(--text-muted); font-size: 12px; cursor: pointer; padding: 0; }
-    .about-mini button:hover { color: var(--accent); }
+    /* ── Font size toggle ── */
+    .font-size-btns { display: flex; align-items: center; gap: 2px; margin-right: 4px; }
+    .fs-btn { background: none; border: none; cursor: pointer; color: var(--text-muted); padding: 2px 4px; border-radius: 3px; line-height: 1; font-weight: 700; }
+    .fs-btn:hover, .fs-btn.active { color: var(--accent); }
+    .fs-btn:nth-child(1) { font-size: 11px; }
+    .fs-btn:nth-child(2) { font-size: 13px; }
+    .fs-btn:nth-child(3) { font-size: 15px; }
+    html[data-fontsize="l"]  .agent-desc, html[data-fontsize="l"]  .pillar-desc,
+    html[data-fontsize="l"]  .hook-desc,  html[data-fontsize="l"]  .about-body p,
+    html[data-fontsize="l"]  .brief-output { font-size: 15px; }
+    html[data-fontsize="xl"] .agent-desc, html[data-fontsize="xl"] .pillar-desc,
+    html[data-fontsize="xl"] .hook-desc,  html[data-fontsize="xl"] .about-body p,
+    html[data-fontsize="xl"] .brief-output { font-size: 17px; }
 
     /* ── Main content ── */
     main { flex: 1; padding: 24px; display: flex; flex-direction: column; gap: 20px; min-width: 0; }
@@ -660,6 +672,11 @@
       <div class="dot" id="health-dot"></div>
       <span id="health-label">Checking...</span>
     </div>
+    <div class="font-size-btns" aria-label="Text size">
+      <button class="fs-btn" data-fs="m"  aria-label="Medium text">A</button>
+      <button class="fs-btn" data-fs="l"  aria-label="Large text">A</button>
+      <button class="fs-btn" data-fs="xl" aria-label="Extra large text">A</button>
+    </div>
     <button class="icon-btn" onclick="toggleTheme()" title="Toggle theme">☀</button>
     <button class="icon-btn" onclick="toggleNav()" title="Navigation">☰</button>
 
@@ -677,9 +694,21 @@
   <aside id="sidebar">
 
     <div id="about-block" class="about-block">
-      <strong>What is AEGIS?</strong>
-      <p>AEGIS is a multi-agent AI system that turns raw emergency incident reports into validated, source-cited inter-agency routing briefs for 911 dispatchers and EOC supervisors.</p>
-      <p>It pulls live USGS seismic data, CDC Social Vulnerability Index scores, HHS electricity-dependency counts, and EPA hazmat facility records — then runs three governance checks before delivering a response. Every output cites its sources. When confidence is insufficient, it returns an honest fallback instead of fabricating certainty.</p>
+      <div class="about-name">Shawn Blackman</div>
+      <div class="about-tags">
+        <span class="about-tag">Remote Sensing</span>
+        <span class="about-tag">GIS</span>
+        <span class="about-tag">AI · ML · Deep Learning</span>
+        <span class="about-tag">Agentic Engineering</span>
+        <span class="about-tag">Neural Networks</span>
+        <span class="about-tag">Python · C++</span>
+        <span class="about-tag">Quantum Computing</span>
+        <span class="about-tag">Art · Music</span>
+      </div>
+      <div class="about-body">
+        <p>AEGIS is an agentic AI pipeline for emergency routing intelligence. Six specialized agents — intake, orchestration, RAG retrieval, live data bridging, governance, and synthesis — work in sequence to turn a plain-language incident report into a validated inter-agency dispatch brief.</p>
+        <p>Built for the <strong>IBM SkillsBuild AI Experiential Learning Lab 2026</strong> — a program where participants build agentic AI solutions for real industry problems using IBM watsonx.ai and IBM watsonx Orchestrate, grounded in open-source tools and IBM Granite foundation models.</p>
+      </div>
     </div>
 
     <div>
@@ -708,18 +737,12 @@
       <div class="incident-id" id="incident-id"></div>
     </div>
 
-    <!-- About collapsed -->
-    <div id="about-mini" class="about-mini" style="display:none">
-      <span>What is AEGIS?</span>
-      <button onclick="expandAbout()">▼ expand</button>
-    </div>
-
     <!-- Sidebar result panels -->
     <div id="sidebar-results" style="display:none; flex-direction:column; gap:12px;">
 
       <div class="sidebar-panel">
         <div class="sidebar-panel-header">Citations</div>
-        <div class="sidebar-panel-body"><div id="citation-box"></div></div>
+        <div class="sidebar-panel-body"><div id="citation-box"></div><div id="citation-disclaimer" class="citation-disclaimer" style="display:none">Links open published research in a new tab. External content is not controlled by AEGIS.</div></div>
       </div>
 
       <div class="sidebar-panel">
@@ -1176,10 +1199,28 @@
   }
 
   // ── Sidebar result panels ──
+  const CITATION_URLS = {
+    'Blackman (2025)':       'https://github.com/sh4wnbk/induced-seismicity-gis-analysis/raw/refs/heads/main/Shawn_Blackman_Mapping_Disparate_Risk_in_Oklahoma_and_Ohio.docx',
+    'Kim (2013)':            'https://doi.org/10.1002/jgrb.50247',
+    'Keranen et al. (2014)': 'https://doi.org/10.1126/science.1255802',
+    'Hincks et al. (2018)':  'https://doi.org/10.1126/science.aap7911',
+    'Skoumal et al. (2024)': 'https://doi.org/10.1029/2023JB028415',
+  };
+
+  function linkifyCitations(text) {
+    let result = text;
+    for (const [name, url] of Object.entries(CITATION_URLS)) {
+      const escaped = name.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+      result = result.replace(
+        new RegExp(escaped, 'g'),
+        `<a href="${url}" target="_blank" rel="noopener noreferrer" class="citation-link">${name}</a>`
+      );
+    }
+    return result;
+  }
+
   function populateSidebarResults(d) {
     const brief = d.brief || '';
-    document.getElementById('about-block').style.display = 'none';
-    document.getElementById('about-mini').style.display  = 'flex';
     const resultsEl = document.getElementById('sidebar-results');
     resultsEl.style.display = 'flex';
 
@@ -1195,16 +1236,17 @@
       let citHtml = '';
       if (synthesized.length) {
         citHtml += `<div class="citation-synth-label">Foundational Research</div>
-          <div class="citation-synth-list">${synthesized.map(a=>`<div class="citation-author">${a}</div>`).join('')}</div>`;
+          <div class="citation-synth-list">${synthesized.map(a=>`<div class="citation-author">${linkifyCitations(a)}</div>`).join('')}</div>`;
       }
       citHtml += `<div class="citation-primary" style="margin-top:${synthesized.length?'12px':'0'}">
         <div class="citation-primary-label">Synthesized by</div>
-        <div class="citation-primary-text">${primaryText}</div>
+        <div class="citation-primary-text">${linkifyCitations(primaryText)}</div>
       </div>`;
       if (d.citation && d.citation !== chain) {
         citHtml += `<div class="citation-retrieval"><div class="citation-retrieval-label">Retrieved Policy Context</div>${d.citation}</div>`;
       }
       citEl.innerHTML = citHtml;
+      document.getElementById('citation-disclaimer').style.display = 'block';
     } else {
       citEl.innerHTML = '<div style="font-size:13px;color:var(--text-dim)">No citation data.</div>';
     }
@@ -1259,10 +1301,20 @@
       '<div style="font-size:13px;color:var(--text-dim)">No routing data.</div>';
   }
 
-  function expandAbout() {
-    document.getElementById('about-block').style.display = 'block';
-    document.getElementById('about-mini').style.display  = 'none';
-  }
+  // ── Font size toggle ──
+  (function() {
+    const stored = localStorage.getItem('aegis-fontsize') || 'm';
+    document.documentElement.setAttribute('data-fontsize', stored);
+    document.querySelectorAll('.fs-btn').forEach(btn => {
+      btn.classList.toggle('active', btn.dataset.fs === stored);
+      btn.addEventListener('click', () => {
+        const fs = btn.dataset.fs;
+        document.documentElement.setAttribute('data-fontsize', fs);
+        localStorage.setItem('aegis-fontsize', fs);
+        document.querySelectorAll('.fs-btn').forEach(b => b.classList.toggle('active', b.dataset.fs === fs));
+      });
+    });
+  })();
 
   document.getElementById('input').addEventListener('keydown', e => {
     if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) runPipeline();
