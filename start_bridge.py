@@ -205,11 +205,17 @@ def main() -> None:
     regression_ok, failures = run_regression_pair(url)
 
     print()
+    # Open dashboard in browser
+    import webbrowser
+    dashboard_url = f"http://localhost:{PORT}"
+    webbrowser.open(dashboard_url)
+
     print("═" * 52)
     print("  BRIDGE ACTIVE")
-    print(f"  URL:   {url}")
-    print(f"  YAML:  {YAML_PATH}  (updated)")
-    print(f"  LOGS:  {uvicorn_log_path}, {ngrok_log_path}")
+    print(f"  Dashboard: {dashboard_url}")
+    print(f"  Tunnel:    {url}")
+    print(f"  YAML:      {YAML_PATH}  (updated)")
+    print(f"  LOGS:      {uvicorn_log_path}, {ngrok_log_path}")
     if regression_ok:
         print("  REGRESSION: safe/unsafe pair passed")
     else:
