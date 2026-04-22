@@ -280,6 +280,69 @@
       margin-top: 8px;
       font-family: monospace;
     }
+
+    .pillar-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+
+    @media (max-width: 768px) {
+      .pillar-grid { grid-template-columns: 1fr; }
+    }
+
+    .pillar {
+      background: #0d1117;
+      border: 1px solid #30363d;
+      border-radius: 6px;
+      padding: 14px;
+    }
+
+    .pillar-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 8px;
+    }
+
+    .pillar-name {
+      font-weight: 600;
+      font-size: 14px;
+      color: #e6edf3;
+    }
+
+    .pillar-badge {
+      font-size: 10px;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 20px;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+    }
+
+    .pillar-badge.implemented {
+      background: #0f2a1a;
+      color: #3fb950;
+      border: 1px solid #238636;
+    }
+
+    .pillar-badge.partial {
+      background: #2a1f0a;
+      color: #d29922;
+      border: 1px solid #9e6a03;
+    }
+
+    .pillar-badge.gap {
+      background: #2a0f0f;
+      color: #f85149;
+      border: 1px solid #da3633;
+    }
+
+    .pillar-desc {
+      font-size: 13px;
+      color: #8b949e;
+      line-height: 1.6;
+    }
   </style>
 </head>
 <body>
@@ -345,6 +408,61 @@
     <div class="panel-body">
       <div id="audit-log">
         <div class="empty-state">Governance hooks will appear here after a run.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Governance & Trust -->
+  <div class="panel full-width">
+    <div class="panel-header" style="cursor:pointer;user-select:none" onclick="toggleGov()">
+      Governance &amp; Trust — IBM Five Pillars
+      <span id="gov-toggle" style="float:right;color:#58a6ff">▼ show</span>
+    </div>
+    <div id="gov-body" style="display:none">
+      <div class="panel-body">
+        <div class="pillar-grid">
+
+          <div class="pillar">
+            <div class="pillar-header">
+              <span class="pillar-badge implemented">Implemented</span>
+              <span class="pillar-name">Explainability</span>
+            </div>
+            <p class="pillar-desc">Every brief cites its sources. The Overseer scores each candidate by citation alignment before selecting one. The audit log records every governance hook with pass/fail and reason. Verification links point to the live USGS event and Census tract used to generate the output.</p>
+          </div>
+
+          <div class="pillar">
+            <div class="pillar-header">
+              <span class="pillar-badge partial">Partial</span>
+              <span class="pillar-name">Transparency</span>
+            </div>
+            <p class="pillar-desc">The dashboard surfaces pipeline status, citation alignment, retrieval confidence, and the full audit log on every run. Users are always aware they are interacting with an AI system. A formal IBM AI FactSheet covering model capabilities and limitations has not been published.</p>
+          </div>
+
+          <div class="pillar">
+            <div class="pillar-header">
+              <span class="pillar-badge implemented">Implemented</span>
+              <span class="pillar-name">Fairness</span>
+            </div>
+            <p class="pillar-desc">CDC Social Vulnerability Index (SVI) is the primary vulnerability lens — designed to surface disproportionate burden. HHS emPOWER adds electricity-dependent Medicare beneficiaries as a second equity dimension. The Ohio/Oklahoma geography was selected because induced seismicity concentrates in high-SVI tracts (Blackman, 2025).</p>
+          </div>
+
+          <div class="pillar">
+            <div class="pillar-header">
+              <span class="pillar-badge implemented">Implemented</span>
+              <span class="pillar-name">Robustness</span>
+            </div>
+            <p class="pillar-desc">Granite Guardian moderates user input. The Overseer runs three hooks — input audit, retrieval audit, pre-delivery check — with a retry budget of 2. HONEST FALLBACK is a first-class output state; the system never fabricates confidence it does not have. Beam search selects by citation alignment, not token probability.</p>
+          </div>
+
+          <div class="pillar">
+            <div class="pillar-header">
+              <span class="pillar-badge partial">Partial</span>
+              <span class="pillar-name">Privacy</span>
+            </div>
+            <p class="pillar-desc">No user data is stored beyond the per-request audit log. All vector retrieval is local (ChromaDB on-server). Incident reports contain location and magnitude descriptions — no PII. Gap: the full prompt including retrieved context is transmitted to IBM watsonx for inference. For production EOC deployment, PII scrubbing on intake and a data processing agreement with IBM would be required.</p>
+          </div>
+
+        </div>
       </div>
     </div>
   </div>
@@ -459,6 +577,18 @@
   document.getElementById('input').addEventListener('keydown', e => {
     if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) runPipeline();
   });
+
+  function toggleGov() {
+    const body = document.getElementById('gov-body');
+    const toggle = document.getElementById('gov-toggle');
+    if (body.style.display === 'none') {
+      body.style.display = 'block';
+      toggle.textContent = '▲ hide';
+    } else {
+      body.style.display = 'none';
+      toggle.textContent = '▼ show';
+    }
+  }
 </script>
 </body>
 </html>
