@@ -101,15 +101,22 @@ class OrchestratorAgent:
         "reasoning_ohio": (
             "Blackman (2025) — Mapping Disparate Risk: Induced Seismicity and Social Vulnerability "
             "[synthesizing Kim (2013); Keranen et al. (2014); Hincks et al. (2018); "
-            "Skoumal et al. (2024)]"
+            "Skoumal et al. (2024); Ellsworth (2013); Weingarten et al. (2015); "
+            "Pollyea et al. (2019); Schultz et al. (2020); Cochran et al. (2024); "
+            "Allison (2014); Jones & Rowan (2023); Ohio DNR (n.d.)]"
         ),
         "reasoning_oklahoma": (
             "Blackman (2025) — Mapping Disparate Risk: Induced Seismicity and Social Vulnerability "
-            "[synthesizing Keranen et al. (2014); Hincks et al. (2018); Skoumal et al. (2024)]"
+            "[synthesizing Keranen et al. (2014); Hincks et al. (2018); Skoumal et al. (2024); "
+            "Skoumal et al. (2019); Ellsworth (2013); Weingarten et al. (2015); "
+            "Schultz et al. (2020); Cochran et al. (2024); Zhai et al. (2021); "
+            "Jones & Rowan (2023); Railroad Commission of Texas (2023)]"
         ),
         "reasoning": (
             "Blackman (2025) — Mapping Disparate Risk: Induced Seismicity and Social Vulnerability "
-            "[synthesizing Keranen et al. (2014); Kim (2013); Hincks et al. (2018)]"
+            "[synthesizing Keranen et al. (2014); Kim (2013); Hincks et al. (2018); "
+            "Ellsworth (2013); Weingarten et al. (2015); Schultz et al. (2020); "
+            "Cochran et al. (2024); Zang et al. (2014); Zhou et al. (2024)]"
         ),
         "default": "Blackman (2025) — Mapping Disparate Risk: Induced Seismicity and Social Vulnerability",
     }

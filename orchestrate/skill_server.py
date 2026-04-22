@@ -7,6 +7,7 @@ Not a 911 call-taker tool — no citizen-facing audio or voice reassurance.
 """
 
 import os
+import requests as _requests
 from typing import Any, Optional
 from uuid import uuid4
 
@@ -93,6 +94,43 @@ def dashboard():
 @app.get("/health")
 def health() -> dict[str, str]:
     return {"status": "ok"}
+
+
+# ── Railway platform status proxy ─────────────────────────────
+
+@app.get("/status/railway")
+def railway_status() -> dict[str, Any]:
+    """
+    Proxies Railway's public status API so the dashboard can check for
+    platform incidents without CORS issues. Returns indicator + description.
+    indicator values: "none" (all OK) | "minor" | "major" | "critical" | "unknown"
+    """
+    try:
+        r = _requests.get(
+            "https://status.railway.app/api/v2/summary.json",
+            timeout=5,
+        )
+        data = r.json()
+        indicator   = data.get("status", {}).get("indicator", "none")
+        description = data.get("status", {}).get("description", "All Systems Operational")
+        incidents   = data.get("incidents", [])
+        active      = [
+            i for i in incidents
+            if i.get("status") not in ("resolved", "postmortem")
+        ]
+        return {
+            "indicator":        indicator,
+            "description":      description,
+            "active_incidents": len(active),
+            "url":              "https://status.railway.app",
+        }
+    except Exception as exc:
+        return {
+            "indicator":        "unknown",
+            "description":      str(exc),
+            "active_incidents": 0,
+            "url":              "https://status.railway.app",
+        }
 
 
 # ── Skill endpoints (individual agents) ──────────────────────

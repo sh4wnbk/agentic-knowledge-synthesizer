@@ -573,6 +573,25 @@
     .pillar-badge.partial     { background: var(--yellow-bg); color: var(--yellow); border: 1px solid var(--yellow-border); }
     .pillar-desc { font-size: 14px; color: var(--text-muted); line-height: 1.6; }
 
+    /* ── Railway status banner ── */
+    #railway-banner {
+      display: none;
+      align-items: center;
+      gap: 10px;
+      background: var(--yellow-bg);
+      border-bottom: 1px solid var(--yellow-border);
+      padding: 9px 24px;
+      font-size: 13px;
+      color: var(--yellow);
+      position: sticky;
+      top: 68px;
+      z-index: 90;
+    }
+    #railway-banner.critical { background: var(--red-bg); border-color: var(--red-border); color: var(--red); }
+    #railway-banner.visible  { display: flex; }
+    #railway-banner a { color: inherit; text-decoration: underline; margin-left: auto; white-space: nowrap; }
+    .railway-icon { font-size: 15px; flex-shrink: 0; }
+
     /* ── Scroll to top ── */
     #scroll-top {
       position: fixed;
@@ -688,6 +707,13 @@
   </div>
 </header>
 
+<!-- Railway platform status banner — shown only on incidents -->
+<div id="railway-banner">
+  <span class="railway-icon">⚠</span>
+  <span id="railway-banner-text">Railway platform degraded service.</span>
+  <a href="https://status.railway.app" target="_blank" rel="noopener noreferrer">Status page →</a>
+</div>
+
 <div class="layout">
 
   <!-- Sidebar -->
@@ -724,6 +750,10 @@
       <div class="privacy-badge" style="margin-top:10px">
         <svg width="11" height="11" viewBox="0 0 16 16" fill="currentColor"><path d="M8 1a3 3 0 0 0-3 3v1H4a1 1 0 0 0-1 1v7a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V6a1 1 0 0 0-1-1h-1V4a3 3 0 0 0-3-3zm0 1a2 2 0 0 1 2 2v1H6V4a2 2 0 0 1 2-2z"/></svg>
         Session data is ephemeral. Zero PII retention. Prompts are not used for model training.
+      </div>
+      <div class="privacy-badge" style="margin-top:6px">
+        <svg width="11" height="11" viewBox="0 0 16 16" fill="currentColor"><path d="M8 3.5a.5.5 0 0 0-1 0V9a.5.5 0 0 0 .252.434l3.5 2a.5.5 0 0 0 .496-.868L8 8.71V3.5z"/><path d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zm7-8A7 7 0 1 1 1 8a7 7 0 0 1 14 0z"/></svg>
+        Response time typically 30–60 s — live API calls (USGS, CDC, HHS, EPA) and IBM watsonx.ai inference run on each request.
       </div>
     </div>
 
@@ -1200,11 +1230,26 @@
 
   // ── Sidebar result panels ──
   const CITATION_URLS = {
-    'Blackman (2025)':       'https://github.com/sh4wnbk/induced-seismicity-gis-analysis/raw/refs/heads/main/Shawn_Blackman_Mapping_Disparate_Risk_in_Oklahoma_and_Ohio.docx',
-    'Kim (2013)':            'https://doi.org/10.1002/jgrb.50247',
-    'Keranen et al. (2014)': 'https://doi.org/10.1126/science.1255802',
-    'Hincks et al. (2018)':  'https://doi.org/10.1126/science.aap7911',
-    'Skoumal et al. (2024)': 'https://doi.org/10.1029/2023JB028415',
+    // Synthesizer
+    'Blackman (2025)':                    'https://github.com/sh4wnbk/induced-seismicity-gis-analysis/raw/refs/heads/main/Shawn_Blackman_Mapping_Disparate_Risk_in_Oklahoma_and_Ohio.docx',
+    // Foundational peer-reviewed literature
+    'Kim (2013)':                         'https://doi.org/10.1002/jgrb.50247',
+    'Keranen et al. (2014)':              'https://doi.org/10.1126/science.1255802',
+    'Hincks et al. (2018)':              'https://doi.org/10.1126/science.aap7911',
+    'Skoumal et al. (2024)':             'https://doi.org/10.1785/0320240025',
+    'Skoumal et al. (2019)':             'https://doi.org/10.1785/0220180408',
+    'Skoumal et al. (2021)':             'https://doi.org/10.1029/2020JB020693',
+    'Ellsworth (2013)':                   'https://doi.org/10.1126/science.1225942',
+    'Weingarten et al. (2015)':          'https://doi.org/10.1126/science.aab1345',
+    'Pollyea et al. (2019)':             'https://doi.org/10.1038/s41467-019-11055-y',
+    'Schultz et al. (2020)':             'https://doi.org/10.1029/2019RG000695',
+    'Cochran et al. (2024)':             'https://doi.org/10.3133/cir1509',
+    'Zang et al. (2014)':                'https://doi.org/10.1016/j.geothermics.2014.06.002',
+    'Zhai et al. (2021)':                'https://doi.org/10.1073/pnas.2102338118',
+    'Zhou et al. (2024)':                'https://doi.org/10.1029/2024RG000849',
+    // Policy and regulatory sources
+    'Jones & Rowan (2023)':              'https://crsreports.congress.gov/product/pdf/R/R47386',
+    'Ohio DNR (n.d.)':                   'https://ohiodnr.gov/wps/portal/gov/odnr/discover-and-learn/safety-conservation/geologic-hazards/earthquakes-and-induced-seismicity',
   };
 
   function linkifyCitations(text) {
@@ -1315,6 +1360,26 @@
       });
     });
   })();
+
+  // ── Railway platform status ──
+  async function checkRailwayStatus() {
+    try {
+      const r = await fetch('/status/railway', { cache: 'no-store' });
+      const d = await r.json();
+      const banner = document.getElementById('railway-banner');
+      const text   = document.getElementById('railway-banner-text');
+      if (d.indicator && d.indicator !== 'none' && d.indicator !== 'unknown') {
+        text.textContent = `Railway platform: ${d.description}`;
+        banner.classList.remove('critical');
+        if (d.indicator === 'major' || d.indicator === 'critical') banner.classList.add('critical');
+        banner.classList.add('visible');
+      } else {
+        banner.classList.remove('visible', 'critical');
+      }
+    } catch (_) { /* silent — don't surface proxy errors to user */ }
+  }
+  checkRailwayStatus();
+  setInterval(checkRailwayStatus, 60000);
 
   document.getElementById('input').addEventListener('keydown', e => {
     if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) runPipeline();
