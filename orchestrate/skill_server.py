@@ -139,7 +139,11 @@ def crisis_brief(req: PipelineRequest) -> dict[str, Any]:
     cluster        = orchestrator.route(intent)
     agency_routing = orchestrator.get_agency_routing(cluster)
     citation_chain = orchestrator.get_citation_chain(cluster)
-    result         = run_pipeline(req.raw_input)
+    result         = run_pipeline(
+        req.raw_input,
+        intake=intake, orchestrator=orchestrator, rag=rag,
+        bridge=bridge, overseer=overseer, synthesis=synthesis,
+    )
 
     return {
         "output_status":        STATE_LABELS.get(result.state.value, result.state.value),
@@ -167,7 +171,11 @@ def incident_report(req: IncidentReportRequest) -> dict[str, Any]:
         cluster        = orchestrator.route(intent)
         agency_routing = orchestrator.get_agency_routing(cluster)
         citation_chain = orchestrator.get_citation_chain(cluster)
-        result         = run_pipeline(req.raw_input)
+        result         = run_pipeline(
+            req.raw_input,
+            intake=intake, orchestrator=orchestrator, rag=rag,
+            bridge=bridge, overseer=overseer, synthesis=synthesis,
+        )
         status_label   = STATE_LABELS.get(result.state.value, result.state.value)
 
         return {

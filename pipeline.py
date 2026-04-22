@@ -19,15 +19,30 @@ from governance.output_states   import AgentOutput, OutputState
 from config                     import MAX_RETRIES
 
 
-def run_pipeline(raw_input: str) -> AgentOutput:
-
-    # ── Instantiate agents ────────────────────────────────────
-    intake      = IntakeAgent()
-    orchestrator = OrchestratorAgent()
-    rag          = RAGKnowledgeAgent()
-    bridge       = DataBridgeAgent()
-    overseer     = OverseerAgent()
-    synthesis    = SynthesisAgent()
+def run_pipeline(
+    raw_input: str,
+    *,
+    intake: IntakeAgent           = None,
+    orchestrator: OrchestratorAgent = None,
+    rag: RAGKnowledgeAgent        = None,
+    bridge: DataBridgeAgent       = None,
+    overseer: OverseerAgent       = None,
+    synthesis: SynthesisAgent     = None,
+) -> AgentOutput:
+    # Use provided instances (avoids double model-load in server context)
+    # or create new ones when called standalone (tests, CLI).
+    if intake is None:
+        intake = IntakeAgent()
+    if orchestrator is None:
+        orchestrator = OrchestratorAgent()
+    if rag is None:
+        rag = RAGKnowledgeAgent()
+    if bridge is None:
+        bridge = DataBridgeAgent()
+    if overseer is None:
+        overseer = OverseerAgent()
+    if synthesis is None:
+        synthesis = SynthesisAgent()
 
     print("\n" + "═"*55)
     print("  AEGIS — INCIDENT ROUTING PIPELINE START")
