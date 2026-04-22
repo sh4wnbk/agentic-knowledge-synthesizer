@@ -1119,18 +1119,20 @@
             .split(';').map(s => s.trim()).filter(Boolean)
         : [];
 
-      let citHtml = `
-        <div class="citation-primary">
-          <div class="citation-primary-label">Primary Source</div>
-          <div class="citation-primary-text">${primaryText}</div>
-        </div>`;
+      let citHtml = '';
 
       if (synthesized.length) {
-        citHtml += `<div class="citation-synth-label">Synthesized From</div>
+        citHtml += `<div class="citation-synth-label">Foundational Research</div>
           <div class="citation-synth-list">
             ${synthesized.map(a => `<div class="citation-author">${a}</div>`).join('')}
           </div>`;
       }
+
+      citHtml += `
+        <div class="citation-primary" style="margin-top:${synthesized.length ? '12px' : '0'}">
+          <div class="citation-primary-label">Synthesized by</div>
+          <div class="citation-primary-text">${primaryText}</div>
+        </div>`;
 
       if (d.citation && d.citation !== chain) {
         citHtml += `<div class="citation-retrieval">
