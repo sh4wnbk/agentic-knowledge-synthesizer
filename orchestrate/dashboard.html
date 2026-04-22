@@ -459,6 +459,45 @@
     }
     .ibm-tech strong { color: #fff; }
 
+    /* ── Agent card state animations ── */
+    .agent-card { transition: border-color 0.3s, box-shadow 0.3s; }
+    .agent-card.active {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 1px var(--accent), 0 0 18px rgba(249,115,22,0.18);
+    }
+    .agent-card.complete { border-color: var(--green-border); }
+
+    .agent-step { transition: background 0.3s; }
+    .agent-step.active { animation: badge-pulse 1.1s ease-in-out infinite; }
+    .agent-step.complete { background: var(--green); }
+    @keyframes badge-pulse {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(249,115,22,0.6); }
+      50%       { box-shadow: 0 0 0 7px rgba(249,115,22,0); }
+    }
+
+    /* Status dot — top-right of each card */
+    .card-dot {
+      position: absolute;
+      top: 13px; right: 13px;
+      width: 10px; height: 10px;
+      border-radius: 50%;
+      background: var(--text-dim);
+      transition: background 0.3s, box-shadow 0.3s;
+    }
+    .card-dot.active {
+      background: var(--accent);
+      animation: dot-pulse 1s ease-in-out infinite;
+    }
+    .card-dot.done {
+      background: var(--green);
+      box-shadow: 0 0 7px var(--green);
+      animation: none;
+    }
+    @keyframes dot-pulse {
+      0%, 100% { transform: scale(1); opacity: 1; }
+      50%       { transform: scale(1.5); opacity: 0.6; }
+    }
+
     /* Governance hooks block */
     .gov-hooks {
       background: var(--surface-2);
@@ -675,40 +714,45 @@
 
         <div class="arch-flow">
 
-          <div class="agent-card">
-            <div class="agent-step">1</div>
+          <div class="agent-card" id="agent-card-1">
+            <div class="card-dot" id="dot-1"></div>
+            <div class="agent-step" id="step-1">1</div>
             <div class="agent-name">Intake Agent</div>
             <div class="agent-role">Parse &amp; Classify</div>
             <div class="agent-desc">Reads the raw incident report and extracts structured intent — crisis type, location, state, and whether the input is complete enough to act on.</div>
             <div class="agent-output">→ crisis_type · state · is_complete · raw_input</div>
           </div>
 
-          <div class="agent-card">
-            <div class="agent-step">2</div>
+          <div class="agent-card" id="agent-card-2">
+            <div class="card-dot" id="dot-2"></div>
+            <div class="agent-step" id="step-2">2</div>
             <div class="agent-name">Orchestrator Agent</div>
             <div class="agent-role">Route &amp; Resolve</div>
             <div class="agent-desc">Routes the intent to the correct specialist cluster (Ohio / Oklahoma), assigns the regulatory agency by name, constructs the semantic RAG query, and loads the citation chain.</div>
             <div class="agent-output">→ cluster · query · bbox · agency_routing · citation_chain</div>
           </div>
 
-          <div class="agent-card">
-            <div class="agent-step">3</div>
+          <div class="agent-card" id="agent-card-3">
+            <div class="card-dot" id="dot-3"></div>
+            <div class="agent-step" id="step-3">3</div>
             <div class="agent-name">RAG Knowledge Agent</div>
             <div class="agent-role">Retrieve</div>
             <div class="agent-desc">Performs semantic search over the policy document corpus (ChromaDB, local). Returns the most relevant context passages with a confidence score for the Overseer to validate.</div>
             <div class="agent-output">→ context · citation · confidence</div>
           </div>
 
-          <div class="agent-card">
-            <div class="agent-step">4</div>
+          <div class="agent-card" id="agent-card-4">
+            <div class="card-dot" id="dot-4"></div>
+            <div class="agent-step" id="step-4">4</div>
             <div class="agent-name">Data Bridge Agent</div>
             <div class="agent-role">Live Data Fetch</div>
             <div class="agent-desc">Queries four live APIs in sequence: USGS real-time seismic feed, CDC Social Vulnerability Index by census tract, HHS emPOWER electricity-dependent beneficiaries, and EPA TRI hazmat facilities. Promotes EPA to Tier 1 if hazmat is detected.</div>
             <div class="agent-output">→ usgs_live · svi_lookup · empower_data · epa_tri · agency_routing</div>
           </div>
 
-          <div class="agent-card">
-            <div class="agent-step">5</div>
+          <div class="agent-card" id="agent-card-5">
+            <div class="card-dot" id="dot-5"></div>
+            <div class="agent-step" id="step-5">5</div>
             <div class="ibm-badge">⬡ IBM</div>
             <div class="agent-name">Overseer Agent</div>
             <div class="agent-role">Govern &amp; Score</div>
@@ -717,8 +761,9 @@
             <div class="ibm-tech">Input moderation powered by <strong>IBM Granite Guardian</strong> via <strong>IBM watsonx.ai</strong></div>
           </div>
 
-          <div class="agent-card">
-            <div class="agent-step">6</div>
+          <div class="agent-card" id="agent-card-6">
+            <div class="card-dot" id="dot-6"></div>
+            <div class="agent-step" id="step-6">6</div>
             <div class="ibm-badge">⬡ IBM</div>
             <div class="agent-name">Synthesis Agent</div>
             <div class="agent-role">Generate &amp; Select</div>
@@ -885,6 +930,69 @@
   // ── Prompts ──
   function setPrompt(text) { document.getElementById('input').value = text; }
 
+  // ── Agent card animation ──
+  const AGENT_TIMINGS = [
+    { activate: 0,     complete: 1200  },  // 1 — Intake
+    { activate: 1200,  complete: 2500  },  // 2 — Orchestrator
+    { activate: 2500,  complete: 8000  },  // 3 — RAG
+    { activate: 8000,  complete: 22000 },  // 4 — Data Bridge
+    { activate: 22000, complete: 24000 },  // 5 — Overseer
+    { activate: 24000, complete: null  },  // 6 — Synthesis (completes on response)
+  ];
+  const _animTimers = [];
+
+  function _setAgentState(n, state) {
+    const card = document.getElementById('agent-card-' + n);
+    const step = document.getElementById('step-' + n);
+    const dot  = document.getElementById('dot-' + n);
+    if (!card) return;
+    card.classList.remove('active', 'complete');
+    step.classList.remove('active', 'complete');
+    dot.classList.remove('active', 'done');
+    if (state === 'active') {
+      card.classList.add('active');
+      step.classList.add('active');
+      dot.classList.add('active');
+    } else if (state === 'complete') {
+      card.classList.add('complete');
+      step.classList.add('complete');
+      step.textContent = '✓';
+      dot.classList.add('done');
+    }
+  }
+
+  function resetAgentCards() {
+    _animTimers.forEach(clearTimeout);
+    _animTimers.length = 0;
+    for (let n = 1; n <= 6; n++) {
+      const card = document.getElementById('agent-card-' + n);
+      const step = document.getElementById('step-' + n);
+      const dot  = document.getElementById('dot-' + n);
+      if (!card) continue;
+      card.classList.remove('active', 'complete');
+      step.classList.remove('active', 'complete');
+      step.textContent = n;
+      dot.classList.remove('active', 'done');
+    }
+  }
+
+  function animateAgents() {
+    resetAgentCards();
+    AGENT_TIMINGS.forEach((t, i) => {
+      const n = i + 1;
+      _animTimers.push(setTimeout(() => _setAgentState(n, 'active'), t.activate));
+      if (t.complete !== null) {
+        _animTimers.push(setTimeout(() => _setAgentState(n, 'complete'), t.complete));
+      }
+    });
+  }
+
+  function completeAllAgents() {
+    _animTimers.forEach(clearTimeout);
+    _animTimers.length = 0;
+    for (let n = 1; n <= 6; n++) _setAgentState(n, 'complete');
+  }
+
   // ── Pipeline ──
   async function runPipeline() {
     const input = document.getElementById('input').value.trim();
@@ -892,6 +1000,7 @@
     const btn = document.getElementById('submit');
     btn.disabled = true;
     btn.innerHTML = '<span class="spinner"></span>Running...';
+    animateAgents();
     setStatus('PROCESSING');
     document.getElementById('citation-val').textContent  = '—';
     document.getElementById('confidence-val').textContent = '—';
@@ -909,6 +1018,7 @@
         body: JSON.stringify({ raw_input: input }),
       });
       const d = await r.json();
+      completeAllAgents();
 
       setStatus(d.output_status || 'UNKNOWN');
       document.getElementById('citation-val').textContent  = d.citation_alignment  || '—';
@@ -967,6 +1077,7 @@
       populateSidebarResults(d);
 
     } catch (err) {
+      completeAllAgents();
       setStatus('ERROR');
       document.getElementById('brief-output').innerHTML =
         '<div style="color:var(--red)">Request failed: ' + err.message + '</div>';
