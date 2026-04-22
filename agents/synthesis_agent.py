@@ -235,7 +235,7 @@ OUTPUT ONLY THE RAW MARKDOWN. NO PREAMBLE. NO META-COMMENTARY. NO CODE BLOCKS.
 DO NOT add any other headings, clarifications, or parenthetical notes.
 DO NOT add any section before [HAZARD STATUS]. The first line of output must be **[HAZARD STATUS]** with no preceding text, bullets, or whitespace.
 Use only these three section headers and nothing else:
-**[HAZARD STATUS]** 1 sentence stating the confirmed USGS magnitude, depth, and location, followed by the geographic_note value exactly as it appears in the LIVE SEISMIC DATA above (do not paraphrase or add prefixes). If no seismic event is detected, state "No seismic events detected in the regional scope." Include: {hazmat_note}.
+**[HAZARD STATUS]** 1 sentence stating the USGS magnitude, depth, and place name exactly as it appears in the LIVE SEISMIC DATA above. Do NOT state that the event occurred at the reported incident location — only state the USGS place name. Do NOT include the geographic_note — it is injected separately. If no seismic event is detected, state "No seismic events detected in the regional scope." Include: {hazmat_note}.
 **[DEMOGRAPHIC RISK (SVI)]** 1 sentence detailing the vulnerability of the location based on retrieved context. If applicable, include: {svi_display}. {empower_display}. Tract: {svi_tract}.
 **[INTER-AGENCY ROUTING]** List the primary regulatory agency and its immediate action. Do not list all agencies — the full routing table is appended automatically.
 """

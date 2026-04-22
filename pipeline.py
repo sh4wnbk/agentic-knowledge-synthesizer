@@ -174,6 +174,40 @@ def run_pipeline(
         best_output = None
         best_score  = -1.0
 
+    # ── Inject geographic note as first line of [HAZARD STATUS] ──
+    # The LLM cannot reliably order this correctly — it conflates the USGS
+    # place name with the reported incident location. Injected deterministically:
+    # - Co-located / regional: prepended as context
+    # - Unverified (>50 km): must be FIRST — truthfulness requires leading with
+    #   "no verified activity at reported location" before any event details.
+    import re as _re
+    usgs_live = bridge_data.get("usgs_live", {})
+    geographic_note = usgs_live.get("geographic_note")
+    if geographic_note:
+        def _prepend_geo_note(m):
+            header  = "**[HAZARD STATUS]**"
+            content = m.group(1).strip()
+            # Strip any duplicate geographic note the LLM may have included
+            content = _re.sub(
+                r"(?:Co-located|Nearest regional event|No USGS-verified)[^.]*\.",
+                "",
+                content,
+            ).strip()
+            if geographic_note.startswith("No USGS-verified"):
+                # Unverified: note goes FIRST — do not lead with event details
+                return f"{header} {geographic_note} {content}"
+            else:
+                # Co-located / regional: append note after event description
+                return f"{header} {content} {geographic_note}"
+
+        best_output = _re.sub(
+            r"\*?\*?\[HAZARD STATUS\]\*?\*?\s*(.*?)(?=\n\n|\*?\*?\[DEMOGRAPHIC)",
+            _prepend_geo_note,
+            best_output,
+            count=1,
+            flags=_re.DOTALL,
+        )
+
     # ── Replace [INTER-AGENCY ROUTING] with deterministic table ──
     # The LLM reliably truncates table rows. Generate from bridge data
     # directly so every agency appears and tier promotion is reflected.
