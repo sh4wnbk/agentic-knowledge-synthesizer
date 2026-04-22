@@ -521,6 +521,22 @@
       50%       { transform: scale(1.5); opacity: 0.6; }
     }
 
+    .ibm-legend {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 12px;
+      margin-bottom: 4px;
+      font-size: 12px;
+      color: var(--text-dim);
+    }
+    .ibm-legend .ibm-badge {
+      flex-shrink: 0;
+      font-size: 10px;
+      padding: 2px 7px;
+    }
+    .ibm-legend strong { color: var(--text-muted); }
+
     /* Governance hooks block */
     .gov-hooks {
       background: var(--surface-2);
@@ -897,6 +913,11 @@
             <div class="agent-output">→ routing brief · CONFIRMED DELIVERY · RETRY-CORRECTED · HONEST FALLBACK</div>
           </div>
 
+        </div>
+
+        <div class="ibm-legend">
+          <div class="ibm-badge">IBM</div>
+          Cards marked IBM use <strong>IBM Granite Guardian</strong> for input moderation and <strong>IBM Granite</strong> for text generation via <strong>IBM watsonx.ai</strong>.
         </div>
 
         <!-- Governance hooks -->
@@ -1317,7 +1338,7 @@
     // Data sources
     const sources = [
       { name: 'USGS Seismic Feed',             ok: /magnitude|\bM\s*\d|\d+\.\d+\s*(km|Mw)/i.test(brief), url: 'https://earthquake.usgs.gov/earthquakes/map/' },
-      { name: 'CDC Social Vulnerability Index', ok: /SVI percentile/i.test(brief) },
+      { name: 'CDC Social Vulnerability Index', ok: /SVI percentile|social vulnerability|DEMOGRAPHIC RISK.*SVI|SVI.*score|vulnerability index/i.test(brief), url: 'https://www.atsdr.cdc.gov/placeandhealth/svi/interactive_map.html' },
       { name: 'HHS emPOWER',                   ok: /electricity.dependent|empower/i.test(brief) },
       { name: 'EPA TRI Facilities',             ok: /\bTRI\b|COMPOUND RISK/i.test(brief) },
       { name: 'Policy RAG (ChromaDB)',          ok: d.output_status && !d.output_status.includes('FALLBACK') },
