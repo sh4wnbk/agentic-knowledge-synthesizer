@@ -406,8 +406,6 @@
       border-radius: 8px;
       padding: 16px;
       position: relative;
-      display: flex;
-      flex-direction: column;
     }
     .agent-card:hover { border-color: var(--accent); }
 
@@ -442,7 +440,6 @@
       color: var(--text-muted);
       line-height: 1.6;
       margin-bottom: 10px;
-      flex-grow: 1;
     }
     .agent-output {
       font-size: 11px;
@@ -469,7 +466,8 @@
     }
     .ibm-tech {
       margin-top: 10px;
-      margin-bottom: 8px;
+      padding-top: 10px;
+      border-top: 1px solid var(--border-2);
       font-size: 13px;
       color: var(--text-muted);
       line-height: 1.6;
@@ -880,8 +878,8 @@
             <div class="agent-name">Overseer Agent</div>
             <div class="agent-role">Govern &amp; Score</div>
             <div class="agent-desc">Runs three governance hooks at fixed pipeline positions. Scores each beam candidate by citation alignment — not token probability. Can trigger retry or force HONEST FALLBACK.</div>
-            <div class="ibm-tech">Input moderation powered by <strong>IBM Granite Guardian</strong> via <strong>IBM watsonx.ai</strong></div>
             <div class="agent-output">→ passed · citation_score · audit_log · output_state</div>
+            <div class="ibm-tech">Input moderation powered by <strong>IBM Granite Guardian</strong> via <strong>IBM watsonx.ai</strong></div>
           </div>
 
           <div class="agent-card" id="agent-card-6">
@@ -891,8 +889,8 @@
             <div class="agent-name">Synthesis Agent</div>
             <div class="agent-role">Generate &amp; Select</div>
             <div class="agent-desc">Generates four beam candidates at varying temperatures. The Overseer selects the highest citation-aligned candidate — not the most probable token sequence.</div>
-            <div class="ibm-tech">Text generation powered by <strong>IBM Granite</strong> via <strong>IBM watsonx.ai</strong></div>
             <div class="agent-output">→ routing brief · CONFIRMED DELIVERY · RETRY-CORRECTED · HONEST FALLBACK</div>
+            <div class="ibm-tech">Text generation powered by <strong>IBM Granite</strong> via <strong>IBM watsonx.ai</strong></div>
           </div>
 
         </div>
