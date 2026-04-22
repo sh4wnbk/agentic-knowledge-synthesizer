@@ -398,16 +398,27 @@ class DataBridgeAgent:
     @staticmethod
     @lru_cache(maxsize=1)
     def _load_svi_index() -> dict:
+        # Load only Ohio (39) and Oklahoma (40) tracts, only the columns the
+        # pipeline actually reads. Reduces memory from ~400 MB to ~5 MB.
+        KEEP_COLS = {
+            "FIPS", "ST_ABBR", "STATE", "COUNTY", "LOCATION",
+            "RPL_THEMES", "RPL_THEME1", "RPL_THEME2", "RPL_THEME3", "RPL_THEME4",
+            "E_TOTPOP", "EP_POV150", "EP_POV", "EP_LIMENG", "EP_AGE65",
+        }
+        TARGET_STATES = {"OH", "OK"}
         index = {}
         try:
             with open(CDC_SVI_CSV, newline="", encoding="utf-8-sig") as f:
                 reader = csv.DictReader(f)
                 for row in reader:
+                    if row.get("ST_ABBR", "") not in TARGET_STATES:
+                        continue
                     fips = str(row.get("FIPS", "")).strip()
                     if fips:
-                        index[fips] = row
+                        index[fips] = {k: v for k, v in row.items() if k in KEEP_COLS}
         except Exception as e:
             print(f"[BRIDGE] Failed to load CDC SVI CSV: {e}")
+        print(f"[BRIDGE] SVI index loaded: {len(index)} tracts (OH + OK only)")
         return index
 
     @staticmethod
