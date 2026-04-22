@@ -16,8 +16,9 @@
       --text-2:      #c9d1d9;
       --text-muted:  #8b949e;
       --text-dim:    #484f58;
-      --accent:      #58a6ff;
-      --accent-bg:   #0c2d6b;
+      --accent:      #f97316;
+      --accent-bg:   #2d1400;
+      --accent-dim:  #7c3503;
       --green:       #3fb950;
       --green-bg:    #0f2a1a;
       --green-border:#238636;
@@ -27,7 +28,7 @@
       --red:         #f85149;
       --red-bg:      #2a0f0f;
       --red-border:  #da3633;
-      --shadow:      0 1px 3px rgba(0,0,0,0.4);
+      --shadow:      0 1px 4px rgba(0,0,0,0.5);
     }
     :root[data-theme="light"] {
       --bg:          #f6f8fa;
@@ -39,8 +40,9 @@
       --text-2:      #24292f;
       --text-muted:  #57606a;
       --text-dim:    #8c959f;
-      --accent:      #0969da;
-      --accent-bg:   #ddf4ff;
+      --accent:      #c2410c;
+      --accent-bg:   #fff7ed;
+      --accent-dim:  #f97316;
       --green:       #1a7f37;
       --green-bg:    #dafbe1;
       --green-border:#2da44e;
@@ -141,27 +143,27 @@
     }
     .theme-toggle:hover { color: var(--text); border-color: var(--accent); }
 
-    /* ── Layout ── */
+    /* ── Outer layout: left sidebar + main ── */
     .layout {
       display: flex;
       flex: 1;
       min-height: 0;
     }
 
-    /* ── Sidebar ── */
+    /* ── Left sidebar (input + status) ── */
     aside {
-      width: 300px;
+      width: 290px;
       flex-shrink: 0;
       background: var(--surface);
       border-right: 1px solid var(--border);
-      padding: 20px 16px;
+      padding: 18px 14px;
       position: sticky;
       top: 56px;
       height: calc(100vh - 56px);
       overflow-y: auto;
       display: flex;
       flex-direction: column;
-      gap: 16px;
+      gap: 14px;
     }
 
     .sidebar-section-label {
@@ -175,7 +177,7 @@
 
     textarea {
       width: 100%;
-      height: 130px;
+      height: 120px;
       background: var(--bg);
       border: 1px solid var(--border);
       border-radius: 6px;
@@ -213,17 +215,17 @@
     .btn-run {
       width: 100%;
       padding: 10px;
-      background: var(--green-bg);
-      border: 1px solid var(--green-border);
+      background: var(--accent-bg);
+      border: 1px solid var(--accent-dim);
       border-radius: 6px;
-      color: var(--green);
+      color: var(--accent);
       font-size: 13px;
       font-weight: 700;
       cursor: pointer;
       transition: all 0.2s;
       letter-spacing: 0.5px;
     }
-    .btn-run:hover { background: var(--green-border); color: #fff; }
+    .btn-run:hover { background: var(--accent-dim); color: #fff; }
     .btn-run:disabled {
       background: var(--surface-2);
       border-color: var(--border);
@@ -305,14 +307,57 @@
     }
     .privacy-badge svg { flex-shrink: 0; margin-top: 1px; }
 
-    /* ── Main content ── */
+    /* About block */
+    .about-block {
+      background: var(--accent-bg);
+      border: 1px solid var(--accent-dim);
+      border-radius: 8px;
+      padding: 13px;
+      font-size: 12px;
+      color: var(--text-2);
+      line-height: 1.65;
+    }
+    .about-block strong {
+      display: block;
+      font-size: 13px;
+      font-weight: 800;
+      letter-spacing: 0.5px;
+      color: var(--accent);
+      margin-bottom: 8px;
+    }
+    .about-block p { margin: 0; font-size: 13px; }
+    .about-block p + p { margin-top: 8px; }
+
+    /* ── Main content: two-column (audit | brief+governance) ── */
     main {
       flex: 1;
-      padding: 24px;
+      display: flex;
+      align-items: flex-start;
+      gap: 16px;
+      padding: 20px;
+      min-width: 0;
+    }
+
+    /* Audit column — sticky, scrolls independently */
+    .audit-col {
+      width: 260px;
+      flex-shrink: 0;
+      position: sticky;
+      top: 76px;
+      max-height: calc(100vh - 76px);
+      overflow-y: auto;
       display: flex;
       flex-direction: column;
-      gap: 20px;
+      gap: 0;
+    }
+
+    /* Brief + governance column */
+    .brief-col {
+      flex: 1;
       min-width: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
     }
 
     /* Robustness override */
@@ -338,10 +383,10 @@
     }
 
     .panel-header {
-      padding: 11px 16px;
+      padding: 10px 14px;
       background: var(--surface-2);
       border-bottom: 1px solid var(--border);
-      font-size: 11px;
+      font-size: 10px;
       font-weight: 700;
       letter-spacing: 1px;
       color: var(--text-muted);
@@ -354,16 +399,16 @@
     .panel-header-toggle {
       cursor: pointer;
       color: var(--accent);
-      font-size: 11px;
+      font-size: 10px;
       font-weight: 600;
     }
 
-    .panel-body { padding: 20px; }
+    .panel-body { padding: 16px; }
 
     /* Brief output */
     .brief-output {
       font-size: 14px;
-      line-height: 1.75;
+      line-height: 1.8;
       color: var(--text-2);
     }
     .brief-output p { margin: 6px 0; }
@@ -403,13 +448,13 @@
       color: var(--text-dim);
       font-size: 13px;
       text-align: center;
-      padding: 40px 0;
+      padding: 32px 0;
     }
 
     /* Spinner */
     .spinner {
       display: inline-block;
-      width: 14px; height: 14px;
+      width: 13px; height: 13px;
       border: 2px solid var(--border);
       border-top-color: var(--accent);
       border-radius: 50%;
@@ -422,16 +467,16 @@
     /* Audit entries */
     .audit-entry {
       border-left: 3px solid var(--border);
-      padding: 8px 14px;
+      padding: 8px 10px;
       margin-bottom: 8px;
-      font-size: 13px;
+      font-size: 12px;
       border-radius: 0 4px 4px 0;
       background: var(--bg);
     }
     .audit-entry.pass { border-color: var(--green-border); }
     .audit-entry.fail { border-color: var(--red-border); }
-    .audit-hook { font-weight: 700; color: var(--text); font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px; }
-    .audit-reason { color: var(--text-muted); margin-top: 2px; }
+    .audit-hook { font-weight: 700; color: var(--text); font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; }
+    .audit-reason { color: var(--text-muted); margin-top: 3px; font-size: 11px; line-height: 1.5; }
     .audit-time { font-size: 10px; color: var(--text-dim); margin-top: 3px; }
 
     /* Lineage block */
@@ -487,16 +532,16 @@
     .svi-info:hover + .svi-tooltip, .svi-tooltip:hover { display: block; }
 
     /* Pillar grid */
-    .pillar-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-    @media (max-width: 900px) { .pillar-grid { grid-template-columns: 1fr; } }
+    .pillar-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    @media (max-width: 1100px) { .pillar-grid { grid-template-columns: 1fr; } }
 
     .pillar {
       background: var(--bg);
       border: 1px solid var(--border);
       border-radius: 6px;
-      padding: 14px;
+      padding: 12px;
     }
-    .pillar-head { display: flex; align-items: center; gap: 8px; margin-bottom: 7px; }
+    .pillar-head { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
     .pillar-name { font-weight: 700; font-size: 13px; color: var(--text); }
     .pillar-badge {
       font-size: 9px; font-weight: 800;
@@ -510,29 +555,18 @@
     .pillar-badge.gap         { background: var(--red-bg);    color: var(--red);    border: 1px solid var(--red-border); }
     .pillar-desc { font-size: 12px; color: var(--text-muted); line-height: 1.6; }
 
-    /* About block */
-    .about-block {
-      background: var(--accent-bg);
-      border: 1px solid var(--accent);
-      border-radius: 8px;
-      padding: 14px;
-      font-size: 12px;
-      color: var(--text-2);
-      line-height: 1.65;
+    /* ── Responsive ── */
+    @media (max-width: 960px) {
+      main {
+        flex-direction: column-reverse; /* brief first on mobile */
+      }
+      .audit-col {
+        width: 100%;
+        position: static;
+        max-height: none;
+        overflow-y: visible;
+      }
     }
-    .about-block strong {
-      display: block;
-      font-size: 11px;
-      font-weight: 800;
-      letter-spacing: 1px;
-      text-transform: uppercase;
-      color: var(--accent);
-      margin-bottom: 7px;
-    }
-    .about-block p { margin: 0; }
-    .about-block p + p { margin-top: 8px; }
-
-    /* Responsive */
     @media (max-width: 768px) {
       .layout { flex-direction: column; }
       aside {
@@ -543,6 +577,7 @@
         border-bottom: 1px solid var(--border);
       }
       .subtitle { display: none; }
+      main { padding: 12px; gap: 12px; }
     }
   </style>
 </head>
@@ -564,7 +599,7 @@
 
 <div class="layout">
 
-  <!-- Sidebar -->
+  <!-- Left sidebar: about, input, status -->
   <aside>
 
     <div class="about-block">
@@ -607,28 +642,13 @@
 
   </aside>
 
-  <!-- Main content -->
+  <!-- Main: two columns -->
   <main>
 
-    <div id="robustness-override" class="robustness-override"></div>
-
-    <!-- Routing brief -->
-    <div class="panel">
-      <div class="panel-header">Routing Brief</div>
-      <div class="panel-body">
-        <div id="brief-output" class="brief-output">
-          <div class="empty-state">Submit an incident report to generate a routing brief.</div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Audit log -->
-    <div class="panel">
-      <div class="panel-header">
-        Audit Log
-        <span id="audit-toggle" class="panel-header-toggle" onclick="togglePanel('audit-body','audit-toggle')">▼ show</span>
-      </div>
-      <div id="audit-body" style="display:none">
+    <!-- Audit column — sticky, stays in view while brief scrolls -->
+    <div class="audit-col">
+      <div class="panel">
+        <div class="panel-header">Audit Log</div>
         <div class="panel-body">
           <div id="audit-log">
             <div class="empty-state">Governance hooks will appear here after a run.</div>
@@ -637,60 +657,77 @@
       </div>
     </div>
 
-    <!-- Governance & Trust -->
-    <div class="panel">
-      <div class="panel-header">
-        Governance &amp; Trust — IBM Five Pillars
-        <span id="gov-toggle" class="panel-header-toggle" onclick="togglePanel('gov-body','gov-toggle')">▼ show</span>
-      </div>
-      <div id="gov-body" style="display:none">
+    <!-- Brief + governance column -->
+    <div class="brief-col">
+
+      <div id="robustness-override" class="robustness-override"></div>
+
+      <!-- Routing brief -->
+      <div class="panel">
+        <div class="panel-header">Routing Brief</div>
         <div class="panel-body">
-          <div class="pillar-grid">
-
-            <div class="pillar">
-              <div class="pillar-head">
-                <span class="pillar-badge implemented">Implemented</span>
-                <span class="pillar-name">Explainability</span>
-              </div>
-              <p class="pillar-desc">Every brief cites its sources. The Overseer scores each candidate by citation alignment before selecting one. The audit log records every governance hook with pass/fail and reason. Verification links point to the live USGS event and Census tract used to generate the output.</p>
-            </div>
-
-            <div class="pillar">
-              <div class="pillar-head">
-                <span class="pillar-badge partial">Partial</span>
-                <span class="pillar-name">Transparency</span>
-              </div>
-              <p class="pillar-desc">The dashboard surfaces pipeline status, citation alignment, retrieval confidence, and the full audit log on every run. Users are always aware they are interacting with an AI system. A formal IBM AI FactSheet covering model capabilities and limitations has not been published.</p>
-            </div>
-
-            <div class="pillar">
-              <div class="pillar-head">
-                <span class="pillar-badge implemented">Implemented</span>
-                <span class="pillar-name">Fairness</span>
-              </div>
-              <p class="pillar-desc">CDC Social Vulnerability Index (SVI) is the primary vulnerability lens — designed to surface disproportionate burden. HHS emPOWER adds electricity-dependent Medicare beneficiaries as a second equity dimension. The Ohio/Oklahoma geography was selected because induced seismicity concentrates in high-SVI tracts (Blackman, 2025).</p>
-            </div>
-
-            <div class="pillar">
-              <div class="pillar-head">
-                <span class="pillar-badge implemented">Implemented</span>
-                <span class="pillar-name">Robustness</span>
-              </div>
-              <p class="pillar-desc">Granite Guardian moderates user input. The Overseer runs three hooks — input audit, retrieval audit, pre-delivery check — with a retry budget of 2. HONEST FALLBACK is a first-class output state; the system never fabricates confidence it does not have. Beam search selects by citation alignment, not token probability.</p>
-            </div>
-
-            <div class="pillar" style="grid-column: 1 / -1">
-              <div class="pillar-head">
-                <span class="pillar-badge partial">Partial</span>
-                <span class="pillar-name">Privacy</span>
-              </div>
-              <p class="pillar-desc">No user data is stored beyond the per-request audit log. All vector retrieval is local (ChromaDB on-server). Incident reports contain location and magnitude descriptions — no PII. Gap: the full prompt including retrieved context is transmitted to IBM watsonx for inference. For production EOC deployment, PII scrubbing on intake and a data processing agreement with IBM would be required.</p>
-            </div>
-
+          <div id="brief-output" class="brief-output">
+            <div class="empty-state">Submit an incident report to generate a routing brief.</div>
           </div>
         </div>
       </div>
-    </div>
+
+      <!-- Governance & Trust -->
+      <div class="panel">
+        <div class="panel-header">
+          Governance &amp; Trust
+          <span id="gov-toggle" class="panel-header-toggle" onclick="togglePanel('gov-body','gov-toggle')">▼ show</span>
+        </div>
+        <div id="gov-body" style="display:none">
+          <div class="panel-body">
+            <div class="pillar-grid">
+
+              <div class="pillar">
+                <div class="pillar-head">
+                  <span class="pillar-badge implemented">Implemented</span>
+                  <span class="pillar-name">Explainability</span>
+                </div>
+                <p class="pillar-desc">Every brief cites its sources. The Overseer scores each candidate by citation alignment before selecting one. The audit log records every governance hook with pass/fail and reason. Verification links point to the live USGS event and Census tract used to generate the output.</p>
+              </div>
+
+              <div class="pillar">
+                <div class="pillar-head">
+                  <span class="pillar-badge partial">Partial</span>
+                  <span class="pillar-name">Transparency</span>
+                </div>
+                <p class="pillar-desc">The dashboard surfaces pipeline status, citation alignment, retrieval confidence, and the full audit log on every run. Users are always aware they are interacting with an AI system. A formal IBM AI FactSheet covering model capabilities and limitations has not been published.</p>
+              </div>
+
+              <div class="pillar">
+                <div class="pillar-head">
+                  <span class="pillar-badge implemented">Implemented</span>
+                  <span class="pillar-name">Fairness</span>
+                </div>
+                <p class="pillar-desc">CDC Social Vulnerability Index (SVI) is the primary vulnerability lens — designed to surface disproportionate burden. HHS emPOWER adds electricity-dependent Medicare beneficiaries as a second equity dimension. The Ohio/Oklahoma geography was selected because induced seismicity concentrates in high-SVI tracts (Blackman, 2025).</p>
+              </div>
+
+              <div class="pillar">
+                <div class="pillar-head">
+                  <span class="pillar-badge implemented">Implemented</span>
+                  <span class="pillar-name">Robustness</span>
+                </div>
+                <p class="pillar-desc">Granite Guardian moderates user input. The Overseer runs three hooks — input audit, retrieval audit, pre-delivery check — with a retry budget of 2. HONEST FALLBACK is a first-class output state; the system never fabricates confidence it does not have. Beam search selects by citation alignment, not token probability.</p>
+              </div>
+
+              <div class="pillar" style="grid-column: 1 / -1">
+                <div class="pillar-head">
+                  <span class="pillar-badge partial">Partial</span>
+                  <span class="pillar-name">Privacy</span>
+                </div>
+                <p class="pillar-desc">No user data is stored beyond the per-request audit log. All vector retrieval is local (ChromaDB on-server). Incident reports contain location and magnitude descriptions — no PII. Gap: the full prompt including retrieved context is transmitted to IBM watsonx for inference. For production EOC deployment, PII scrubbing on intake and a data processing agreement with IBM would be required.</p>
+              </div>
+
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /.brief-col -->
 
   </main>
 </div>
@@ -756,12 +793,6 @@
     document.getElementById('robustness-override').style.display = 'none';
     document.getElementById('brief-output').innerHTML =
       '<div class="empty-state"><span class="spinner"></span>Fetching seismic data, running RAG retrieval, generating candidates...</div>';
-
-    // Auto-open audit log while running
-    const auditBody = document.getElementById('audit-body');
-    const auditToggle = document.getElementById('audit-toggle');
-    auditBody.style.display = 'block';
-    auditToggle.textContent = '▲ hide';
     document.getElementById('audit-log').innerHTML =
       '<div class="empty-state"><span class="spinner"></span>Waiting for governance hooks...</div>';
 
