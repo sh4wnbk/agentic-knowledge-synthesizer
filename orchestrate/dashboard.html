@@ -406,6 +406,8 @@
       border-radius: 8px;
       padding: 16px;
       position: relative;
+      display: flex;
+      flex-direction: column;
     }
     .agent-card:hover { border-color: var(--accent); }
 
@@ -450,7 +452,7 @@
       border-radius: 4px;
       padding: 6px 8px;
       line-height: 1.7;
-      min-height: 3.4em;
+      margin-top: auto;
     }
     .ibm-badge {
       display: inline-flex;
@@ -880,7 +882,7 @@
             <div class="agent-role">Govern &amp; Score</div>
             <div class="agent-desc">Runs three governance hooks at fixed pipeline positions. Scores each beam candidate by citation alignment — not token probability. Can trigger retry or force HONEST FALLBACK.</div>
             <div class="agent-output">→ passed · citation_score · audit_log · output_state</div>
-            <div class="ibm-tech">Powered by <strong>IBM Granite Guardian</strong> · <strong>IBM watsonx.ai</strong></div>
+            <div class="ibm-tech">Input moderation powered by <strong>IBM Granite Guardian</strong> via <strong>IBM watsonx.ai</strong></div>
           </div>
 
           <div class="agent-card" id="agent-card-6">
@@ -891,7 +893,7 @@
             <div class="agent-role">Generate &amp; Select</div>
             <div class="agent-desc">Generates four beam candidates at varying temperatures. The Overseer selects the highest citation-aligned candidate — not the most probable token sequence.</div>
             <div class="agent-output">→ routing brief · CONFIRMED DELIVERY · RETRY-CORRECTED · HONEST FALLBACK</div>
-            <div class="ibm-tech">Powered by <strong>IBM Granite</strong> · <strong>IBM watsonx.ai</strong></div>
+            <div class="ibm-tech">Text generation powered by <strong>IBM Granite</strong> via <strong>IBM watsonx.ai</strong></div>
           </div>
 
         </div>
