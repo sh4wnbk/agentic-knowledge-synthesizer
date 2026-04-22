@@ -70,41 +70,27 @@
     header {
       background: var(--surface);
       border-bottom: 1px solid var(--border);
-      padding: 0 28px;
+      padding: 0 24px;
       height: 68px;
       display: flex;
       align-items: center;
       gap: 14px;
       position: sticky;
       top: 0;
-      z-index: 50;
+      z-index: 100;
       box-shadow: var(--shadow);
     }
 
-    .logo {
-      font-size: 26px;
-      font-weight: 800;
-      letter-spacing: 4px;
-      color: var(--accent);
-    }
-
-    .logo-sep {
-      width: 1px;
-      height: 24px;
-      background: var(--border);
-    }
-
-    .subtitle {
-      font-size: 14px;
-      color: var(--text-muted);
-      font-weight: 500;
-    }
+    .logo { font-size: 26px; font-weight: 800; letter-spacing: 4px; color: var(--accent); }
+    .logo-sep { width: 1px; height: 24px; background: var(--border); }
+    .subtitle { font-size: 14px; color: var(--text-muted); font-weight: 500; }
 
     .header-right {
       margin-left: auto;
       display: flex;
       align-items: center;
-      gap: 16px;
+      gap: 10px;
+      position: relative;
     }
 
     .health-indicator {
@@ -118,37 +104,53 @@
       border: 1px solid var(--border);
       background: var(--surface-2);
     }
-
-    .dot {
-      width: 7px; height: 7px;
-      border-radius: 50%;
-      background: var(--green);
-      box-shadow: 0 0 6px var(--green);
-    }
+    .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--green); box-shadow: 0 0 6px var(--green); }
     .dot.offline { background: var(--red); box-shadow: 0 0 6px var(--red); }
 
-    .theme-toggle {
+    .icon-btn {
       background: var(--surface-2);
       border: 1px solid var(--border);
       border-radius: 6px;
       color: var(--text-muted);
-      font-size: 14px;
+      font-size: 18px;
       cursor: pointer;
-      width: 32px;
-      height: 32px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+      width: 36px; height: 36px;
+      display: flex; align-items: center; justify-content: center;
       transition: color 0.2s, border-color 0.2s;
     }
-    .theme-toggle:hover { color: var(--text); border-color: var(--accent); }
+    .icon-btn:hover { color: var(--text); border-color: var(--accent); }
+
+    /* ── Hamburger nav ── */
+    #nav-menu {
+      display: none;
+      position: absolute;
+      top: calc(100% + 8px);
+      right: 0;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.4);
+      min-width: 220px;
+      overflow: hidden;
+      z-index: 200;
+    }
+    #nav-menu.open { display: block; }
+    .nav-item {
+      display: block;
+      padding: 13px 18px;
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text-2);
+      text-decoration: none;
+      border-bottom: 1px solid var(--border-2);
+      transition: background 0.15s, color 0.15s;
+    }
+    .nav-item:last-child { border-bottom: none; }
+    .nav-item:hover { background: var(--surface-2); color: var(--accent); }
+    .nav-item span { font-size: 12px; color: var(--text-dim); font-weight: 400; display: block; margin-top: 2px; }
 
     /* ── Layout ── */
-    .layout {
-      display: flex;
-      flex: 1;
-      min-height: 0;
-    }
+    .layout { display: flex; flex: 1; min-height: 0; }
 
     /* ── Sidebar ── */
     aside {
@@ -166,27 +168,19 @@
       display: flex;
       flex-direction: column;
       gap: 14px;
-      /* relative so the drag handle can be absolutely positioned */
       position: relative;
     }
 
-    /* Drag handle on the right edge of the sidebar */
     .resize-handle {
       position: absolute;
-      right: 0;
-      top: 0;
-      bottom: 0;
+      right: 0; top: 0; bottom: 0;
       width: 5px;
       cursor: col-resize;
       z-index: 20;
       background: transparent;
       transition: background 0.2s;
     }
-    .resize-handle:hover,
-    .resize-handle.dragging {
-      background: var(--accent);
-      opacity: 0.5;
-    }
+    .resize-handle:hover, .resize-handle.dragging { background: var(--accent); opacity: 0.5; }
 
     .sidebar-section-label {
       font-size: 14px;
@@ -198,8 +192,7 @@
     }
 
     textarea {
-      width: 100%;
-      height: 120px;
+      width: 100%; height: 120px;
       background: var(--bg);
       border: 1px solid var(--border);
       border-radius: 6px;
@@ -215,13 +208,7 @@
     textarea:focus { border-color: var(--accent); }
     textarea::placeholder { color: var(--text-dim); }
 
-    .chips {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 5px;
-      margin-top: 8px;
-    }
-
+    .chips { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 8px; }
     .chip {
       font-size: 13px;
       padding: 4px 11px;
@@ -248,30 +235,13 @@
       letter-spacing: 0.5px;
     }
     .btn-run:hover { background: var(--accent-dim); color: #fff; }
-    .btn-run:disabled {
-      background: var(--surface-2);
-      border-color: var(--border);
-      color: var(--text-dim);
-      cursor: not-allowed;
-    }
+    .btn-run:disabled { background: var(--surface-2); border-color: var(--border); color: var(--text-dim); cursor: not-allowed; }
 
-    /* Status card */
-    .status-card {
-      background: var(--bg);
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      padding: 14px;
-    }
-
+    .status-card { background: var(--bg); border: 1px solid var(--border); border-radius: 8px; padding: 14px; }
     .status-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      padding: 6px 14px;
-      border-radius: 20px;
-      font-size: 13px;
-      font-weight: 700;
-      letter-spacing: 0.5px;
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 6px 14px; border-radius: 20px;
+      font-size: 13px; font-weight: 700; letter-spacing: 0.5px;
       margin-bottom: 12px;
     }
     .status-pending  { background: var(--surface-2); color: var(--text-muted); border: 1px solid var(--border); }
@@ -279,445 +249,286 @@
     .status-retry    { background: var(--yellow-bg); color: var(--yellow);     border: 1px solid var(--yellow-border); }
     .status-fallback { background: var(--red-bg);    color: var(--red);        border: 1px solid var(--red-border); }
 
-    .metrics-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 8px;
-    }
+    .metrics-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+    .metric { text-align: center; padding: 10px 8px; background: var(--surface); border: 1px solid var(--border-2); border-radius: 6px; }
+    .metric-val { font-size: 28px; font-weight: 800; color: var(--accent); line-height: 1; }
+    .metric-label { font-size: 12px; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.5px; margin-top: 4px; }
+    .incident-id { font-size: 12px; color: var(--text-dim); font-family: monospace; margin-top: 8px; word-break: break-all; }
 
-    .metric {
-      text-align: center;
-      padding: 10px 8px;
-      background: var(--surface);
-      border: 1px solid var(--border-2);
-      border-radius: 6px;
-    }
-    .metric-val {
-      font-size: 28px;
-      font-weight: 800;
-      color: var(--accent);
-      line-height: 1;
-    }
-    .metric-label {
-      font-size: 12px;
-      color: var(--text-dim);
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      margin-top: 4px;
-    }
-
-    .incident-id {
-      font-size: 12px;
-      color: var(--text-dim);
-      font-family: monospace;
-      margin-top: 8px;
-      word-break: break-all;
-    }
-
-    /* Privacy badge */
     .privacy-badge {
-      display: flex;
-      align-items: flex-start;
-      gap: 7px;
-      font-size: 13px;
-      color: var(--text-dim);
+      display: flex; align-items: flex-start; gap: 7px;
+      font-size: 13px; color: var(--text-dim);
       padding: 8px 10px;
-      background: var(--bg);
-      border: 1px solid var(--border-2);
-      border-radius: 6px;
+      background: var(--bg); border: 1px solid var(--border-2); border-radius: 6px;
       line-height: 1.5;
     }
     .privacy-badge svg { flex-shrink: 0; margin-top: 1px; }
 
-    /* About block */
     .about-block {
-      background: var(--accent-bg);
-      border: 1px solid var(--accent-dim);
-      border-radius: 8px;
-      padding: 13px;
-      color: var(--text-2);
-      line-height: 1.65;
+      background: var(--accent-bg); border: 1px solid var(--accent-dim); border-radius: 8px;
+      padding: 13px; color: var(--text-2); line-height: 1.65;
     }
-    .about-block strong {
-      display: block;
-      font-size: 18px;
-      font-weight: 800;
-      color: var(--accent);
-      margin-bottom: 8px;
-    }
+    .about-block strong { display: block; font-size: 18px; font-weight: 800; color: var(--accent); margin-bottom: 8px; }
     .about-block p { margin: 0; font-size: 15px; }
     .about-block p + p { margin-top: 8px; }
 
-    /* ── Main content ── */
-    main {
-      flex: 1;
-      padding: 24px;
-      display: flex;
-      flex-direction: column;
-      gap: 20px;
-      min-width: 0;
-    }
-
-    /* Robustness override */
-    .robustness-override {
-      display: none;
-      background: var(--yellow-bg);
-      border: 1px solid var(--yellow-border);
-      border-radius: 8px;
-      padding: 16px 18px;
-      font-size: 15px;
-      color: var(--yellow);
-      line-height: 1.6;
-    }
-    .robustness-override strong { display: block; margin-bottom: 4px; font-size: 13px; letter-spacing: 0.5px; }
-
-    /* Panel */
-    .panel {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      overflow: hidden;
-      box-shadow: var(--shadow);
-    }
-
-    .panel-header {
-      padding: 13px 18px;
-      background: var(--surface-2);
-      border-bottom: 1px solid var(--border);
-      font-size: 13px;
-      font-weight: 700;
-      letter-spacing: 0.8px;
-      color: var(--text-muted);
-      text-transform: uppercase;
-    }
-
-    .panel-body { padding: 22px; }
-
-    /* Brief output */
-    .brief-output {
-      font-size: 16px;
-      line-height: 1.8;
-      color: var(--text-2);
-    }
-    .brief-output p { margin: 6px 0; }
-    .brief-output strong { color: var(--text); }
-    .brief-output h1, .brief-output h2, .brief-output h3 {
-      color: var(--text);
-      margin: 14px 0 6px;
-    }
-    .brief-output table {
-      width: 100%;
-      border-collapse: collapse;
-      margin: 14px 0;
-      font-size: 13px;
-    }
-    .brief-output th {
-      background: var(--surface-2);
-      padding: 10px 14px;
-      text-align: left;
-      color: var(--text-muted);
-      font-weight: 700;
-      border: 1px solid var(--border);
-      font-size: 13px;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-    }
-    .brief-output td {
-      padding: 10px 14px;
-      border: 1px solid var(--border);
-      color: var(--text-2);
-    }
-    .brief-output tr:nth-child(even) td { background: var(--surface-2); }
-    .brief-output a { color: var(--accent); text-decoration: none; }
-    .brief-output a:hover { text-decoration: underline; }
-    .brief-output hr { border: none; border-top: 1px solid var(--border); margin: 18px 0; }
-
-    .empty-state {
-      color: var(--text-dim);
-      font-size: 15px;
-      text-align: center;
-      padding: 40px 0;
-    }
-
-    /* Spinner */
-    .spinner {
-      display: inline-block;
-      width: 14px; height: 14px;
-      border: 2px solid var(--border);
-      border-top-color: var(--accent);
-      border-radius: 50%;
-      animation: spin 0.8s linear infinite;
-      vertical-align: middle;
-      margin-right: 6px;
-    }
-    @keyframes spin { to { transform: rotate(360deg); } }
-
-    /* Audit entries */
-    .audit-entry {
-      border-left: 3px solid var(--border);
-      padding: 10px 14px;
-      margin-bottom: 10px;
-      font-size: 14px;
-      border-radius: 0 4px 4px 0;
-      background: var(--bg);
-    }
-    .audit-entry.pass { border-color: var(--green-border); }
-    .audit-entry.fail { border-color: var(--red-border); }
-    .audit-hook { font-weight: 700; color: var(--text); font-size: 13px; text-transform: uppercase; letter-spacing: 0.5px; }
-    .audit-reason { color: var(--text-muted); margin-top: 3px; font-size: 13px; }
-    .audit-time { font-size: 12px; color: var(--text-dim); margin-top: 3px; }
-
-    /* Lineage block */
-    .lineage-block {
-      margin-top: 20px;
-      padding: 14px 16px;
-      background: var(--bg);
-      border: 1px solid var(--border-2);
-      border-radius: 6px;
-      font-size: 13px;
-      color: var(--text-dim);
-      font-family: monospace;
-      line-height: 1.9;
-    }
-    .lineage-block a { color: var(--accent); text-decoration: none; }
-    .lineage-label { font-size: 11px; letter-spacing: 1px; text-transform: uppercase; color: var(--border); margin-bottom: 6px; }
-
-    /* SVI tooltip */
-    .svi-tooltip-wrap { position: relative; display: inline; }
-    .svi-info {
-      display: inline-block;
-      width: 16px; height: 16px;
-      line-height: 16px;
-      text-align: center;
-      border-radius: 50%;
-      background: var(--surface-2);
-      border: 1px solid var(--border);
-      color: var(--text-muted);
-      font-size: 11px;
-      font-style: normal;
-      cursor: pointer;
-      margin-left: 3px;
-      vertical-align: middle;
-    }
-    .svi-tooltip {
-      display: none;
-      position: absolute;
-      bottom: 120%;
-      left: 0;
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 6px;
-      padding: 12px 14px;
-      font-size: 14px;
-      color: var(--text-2);
-      width: 280px;
-      z-index: 100;
-      line-height: 1.5;
-      font-style: normal;
-      font-family: inherit;
-      box-shadow: var(--shadow);
-    }
-    .svi-info:hover + .svi-tooltip, .svi-tooltip:hover { display: block; }
-
-    /* Pillar grid */
-    .pillar-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-    @media (max-width: 900px) { .pillar-grid { grid-template-columns: 1fr; } }
-
-    .pillar {
-      background: var(--bg);
-      border: 1px solid var(--border);
-      border-radius: 6px;
-      padding: 14px;
-    }
-    .pillar-head { display: flex; align-items: center; gap: 8px; margin-bottom: 7px; }
-    .pillar-name { font-weight: 700; font-size: 15px; color: var(--text); }
-    .pillar-badge {
-      font-size: 11px; font-weight: 800;
-      padding: 3px 8px;
-      border-radius: 20px;
-      letter-spacing: 0.8px;
-      text-transform: uppercase;
-    }
-    .pillar-badge.implemented { background: var(--green-bg);  color: var(--green);  border: 1px solid var(--green-border); }
-    .pillar-badge.partial     { background: var(--yellow-bg); color: var(--yellow); border: 1px solid var(--yellow-border); }
-    .pillar-badge.gap         { background: var(--red-bg);    color: var(--red);    border: 1px solid var(--red-border); }
-    .pillar-desc { font-size: 14px; color: var(--text-muted); line-height: 1.6; }
-
     /* ── Sidebar result panels ── */
-    .sidebar-panel {
-      background: var(--bg);
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      overflow: hidden;
-    }
+    .sidebar-panel { background: var(--bg); border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
     .sidebar-panel-header {
-      font-size: 15px;
-      font-weight: 700;
-      letter-spacing: 0.5px;
-      text-transform: uppercase;
-      color: var(--text-muted);
-      padding: 10px 14px;
-      background: var(--surface-2);
-      border-bottom: 1px solid var(--border);
+      font-size: 15px; font-weight: 700; letter-spacing: 0.5px;
+      text-transform: uppercase; color: var(--text-muted);
+      padding: 10px 14px; background: var(--surface-2); border-bottom: 1px solid var(--border);
     }
     .sidebar-panel-body { padding: 12px 14px; }
 
-    /* Data source rows */
-    .source-row {
-      display: flex;
-      align-items: center;
-      gap: 9px;
-      padding: 7px 0;
-      font-size: 13px;
-      color: var(--text-2);
-      border-bottom: 1px solid var(--border-2);
-    }
+    .source-row { display: flex; align-items: center; gap: 9px; padding: 7px 0; font-size: 13px; color: var(--text-2); border-bottom: 1px solid var(--border-2); }
     .source-row:last-child { border-bottom: none; }
-    .source-dot {
-      width: 8px; height: 8px;
-      border-radius: 50%;
-      flex-shrink: 0;
-    }
+    .source-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
     .source-dot.ok  { background: var(--green); box-shadow: 0 0 5px var(--green); }
     .source-dot.off { background: var(--text-dim); }
     .source-name { flex: 1; font-size: 13px; }
-    .source-link {
-      font-size: 13px;
-      color: var(--accent);
-      text-decoration: none;
-    }
+    .source-link { font-size: 13px; color: var(--accent); text-decoration: none; }
     .source-link:hover { text-decoration: underline; }
 
-    /* Verify pills */
     .verify-pill {
-      display: block;
-      padding: 7px 10px;
-      margin-bottom: 6px;
-      background: var(--surface-2);
-      border: 1px solid var(--border);
-      border-radius: 6px;
-      font-size: 13px;
-      color: var(--accent);
-      text-decoration: none;
-      word-break: break-word;
+      display: block; padding: 7px 10px; margin-bottom: 6px;
+      background: var(--surface-2); border: 1px solid var(--border); border-radius: 6px;
+      font-size: 13px; color: var(--accent); text-decoration: none; word-break: break-word;
       transition: border-color 0.15s, background 0.15s;
     }
     .verify-pill:last-child { margin-bottom: 0; }
     .verify-pill:hover { border-color: var(--accent); background: var(--accent-bg); }
 
-    /* Agency tier rows */
-    .tier-row {
-      padding: 8px 0;
-      border-bottom: 1px solid var(--border-2);
-    }
+    .tier-row { padding: 8px 0; border-bottom: 1px solid var(--border-2); }
     .tier-row:last-child { border-bottom: none; }
-    .tier-label {
-      font-size: 10px;
-      font-weight: 800;
-      letter-spacing: 0.8px;
-      text-transform: uppercase;
-      margin-bottom: 2px;
-    }
+    .tier-label { font-size: 10px; font-weight: 800; letter-spacing: 0.8px; text-transform: uppercase; margin-bottom: 2px; }
     .tier-1 { color: var(--red); }
     .tier-2 { color: var(--yellow); }
     .tier-3 { color: var(--text-muted); }
     .tier-agency { font-size: 13px; color: var(--text); font-weight: 600; }
     .tier-role { font-size: 12px; color: var(--text-muted); margin-top: 1px; line-height: 1.4; }
 
-    /* Citation box */
-    .citation-primary {
-      background: var(--accent-bg);
-      border: 1px solid var(--accent-dim);
-      border-radius: 6px;
-      padding: 10px 12px;
-      margin-bottom: 10px;
-    }
-    .citation-primary-label {
-      font-size: 10px;
-      font-weight: 800;
-      letter-spacing: 1px;
-      text-transform: uppercase;
-      color: var(--accent);
-      margin-bottom: 4px;
-    }
-    .citation-primary-text {
-      font-size: 13px;
-      color: var(--text-2);
-      font-weight: 600;
-      line-height: 1.5;
-    }
-    .citation-synth-label {
-      font-size: 11px;
-      font-weight: 700;
-      letter-spacing: 0.8px;
-      text-transform: uppercase;
-      color: var(--text-dim);
-      margin-bottom: 6px;
-    }
-    .citation-synth-list {
-      display: flex;
-      flex-direction: column;
-      gap: 5px;
-    }
-    .citation-author {
-      font-size: 13px;
-      color: var(--text-muted);
-      padding: 5px 10px;
-      background: var(--surface-2);
-      border: 1px solid var(--border-2);
-      border-radius: 5px;
-      line-height: 1.4;
-    }
-    .citation-retrieval {
-      margin-top: 10px;
-      padding-top: 10px;
-      border-top: 1px solid var(--border-2);
-      font-size: 12px;
-      color: var(--text-dim);
-      line-height: 1.5;
-    }
-    .citation-retrieval-label {
-      font-size: 10px;
-      font-weight: 700;
-      letter-spacing: 0.8px;
-      text-transform: uppercase;
-      color: var(--text-dim);
-      margin-bottom: 3px;
-    }
+    .citation-primary { background: var(--accent-bg); border: 1px solid var(--accent-dim); border-radius: 6px; padding: 10px 12px; margin-bottom: 10px; }
+    .citation-primary-label { font-size: 10px; font-weight: 800; letter-spacing: 1px; text-transform: uppercase; color: var(--accent); margin-bottom: 4px; }
+    .citation-primary-text { font-size: 13px; color: var(--text-2); font-weight: 600; line-height: 1.5; }
+    .citation-synth-label { font-size: 11px; font-weight: 700; letter-spacing: 0.8px; text-transform: uppercase; color: var(--text-dim); margin-bottom: 6px; }
+    .citation-synth-list { display: flex; flex-direction: column; gap: 5px; }
+    .citation-author { font-size: 13px; color: var(--text-muted); padding: 5px 10px; background: var(--surface-2); border: 1px solid var(--border-2); border-radius: 5px; line-height: 1.4; }
+    .citation-retrieval { margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--border-2); font-size: 12px; color: var(--text-dim); line-height: 1.5; }
+    .citation-retrieval-label { font-size: 10px; font-weight: 700; letter-spacing: 0.8px; text-transform: uppercase; color: var(--text-dim); margin-bottom: 3px; }
 
-    /* About block mini (collapsed state) */
     .about-mini {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      background: var(--accent-bg);
-      border: 1px solid var(--accent-dim);
-      border-radius: 8px;
-      padding: 9px 13px;
+      display: flex; align-items: center; justify-content: space-between;
+      background: var(--accent-bg); border: 1px solid var(--accent-dim); border-radius: 8px; padding: 9px 13px;
     }
     .about-mini span { font-size: 13px; font-weight: 800; color: var(--accent); }
-    .about-mini button {
-      background: none;
-      border: none;
-      color: var(--text-muted);
-      font-size: 12px;
-      cursor: pointer;
-      padding: 0;
-    }
+    .about-mini button { background: none; border: none; color: var(--text-muted); font-size: 12px; cursor: pointer; padding: 0; }
     .about-mini button:hover { color: var(--accent); }
 
-    /* Responsive */
+    /* ── Main content ── */
+    main { flex: 1; padding: 24px; display: flex; flex-direction: column; gap: 20px; min-width: 0; }
+
+    .robustness-override {
+      display: none;
+      background: var(--yellow-bg); border: 1px solid var(--yellow-border); border-radius: 8px;
+      padding: 16px 18px; font-size: 15px; color: var(--yellow); line-height: 1.6;
+    }
+    .robustness-override strong { display: block; margin-bottom: 4px; font-size: 13px; letter-spacing: 0.5px; }
+
+    .panel { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; overflow: hidden; box-shadow: var(--shadow); }
+    .panel-header {
+      padding: 13px 18px; background: var(--surface-2); border-bottom: 1px solid var(--border);
+      font-size: 13px; font-weight: 700; letter-spacing: 0.8px; color: var(--text-muted); text-transform: uppercase;
+    }
+    .panel-body { padding: 22px; }
+
+    .brief-output { font-size: 16px; line-height: 1.8; color: var(--text-2); }
+    .brief-output p { margin: 6px 0; }
+    .brief-output strong { color: var(--text); }
+    .brief-output h1, .brief-output h2, .brief-output h3 { color: var(--text); margin: 14px 0 6px; }
+    .brief-output table { width: 100%; border-collapse: collapse; margin: 14px 0; font-size: 13px; }
+    .brief-output th { background: var(--surface-2); padding: 10px 14px; text-align: left; color: var(--text-muted); font-weight: 700; border: 1px solid var(--border); font-size: 13px; text-transform: uppercase; letter-spacing: 0.5px; }
+    .brief-output td { padding: 10px 14px; border: 1px solid var(--border); color: var(--text-2); }
+    .brief-output tr:nth-child(even) td { background: var(--surface-2); }
+    .brief-output a { color: var(--accent); text-decoration: none; }
+    .brief-output a:hover { text-decoration: underline; }
+    .brief-output hr { border: none; border-top: 1px solid var(--border); margin: 18px 0; }
+
+    .empty-state { color: var(--text-dim); font-size: 15px; text-align: center; padding: 40px 0; }
+
+    .spinner { display: inline-block; width: 14px; height: 14px; border: 2px solid var(--border); border-top-color: var(--accent); border-radius: 50%; animation: spin 0.8s linear infinite; vertical-align: middle; margin-right: 6px; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .audit-entry { border-left: 3px solid var(--border); padding: 10px 14px; margin-bottom: 10px; font-size: 14px; border-radius: 0 4px 4px 0; background: var(--bg); }
+    .audit-entry.pass { border-color: var(--green-border); }
+    .audit-entry.fail { border-color: var(--red-border); }
+    .audit-hook { font-weight: 700; color: var(--text); font-size: 13px; text-transform: uppercase; letter-spacing: 0.5px; }
+    .audit-reason { color: var(--text-muted); margin-top: 3px; font-size: 13px; }
+    .audit-time { font-size: 12px; color: var(--text-dim); margin-top: 3px; }
+
+    .lineage-block { margin-top: 20px; padding: 14px 16px; background: var(--bg); border: 1px solid var(--border-2); border-radius: 6px; font-size: 13px; color: var(--text-dim); font-family: monospace; line-height: 1.9; }
+    .lineage-block a { color: var(--accent); text-decoration: none; }
+    .lineage-label { font-size: 11px; letter-spacing: 1px; text-transform: uppercase; color: var(--border); margin-bottom: 6px; }
+
+    .svi-tooltip-wrap { position: relative; display: inline; }
+    .svi-info { display: inline-block; width: 16px; height: 16px; line-height: 16px; text-align: center; border-radius: 50%; background: var(--surface-2); border: 1px solid var(--border); color: var(--text-muted); font-size: 11px; font-style: normal; cursor: pointer; margin-left: 3px; vertical-align: middle; }
+    .svi-tooltip { display: none; position: absolute; bottom: 120%; left: 0; background: var(--surface); border: 1px solid var(--border); border-radius: 6px; padding: 12px 14px; font-size: 14px; color: var(--text-2); width: 280px; z-index: 100; line-height: 1.5; font-style: normal; font-family: inherit; box-shadow: var(--shadow); }
+    .svi-info:hover + .svi-tooltip, .svi-tooltip:hover { display: block; }
+
+    /* ── Agentic Architecture ── */
+    .arch-flow {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+    @media (max-width: 1100px) { .arch-flow { grid-template-columns: repeat(2, 1fr); } }
+    @media (max-width: 700px)  { .arch-flow { grid-template-columns: 1fr; } }
+
+    .agent-card {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 16px;
+      position: relative;
+    }
+    .agent-card:hover { border-color: var(--accent); }
+
+    .agent-step {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 26px; height: 26px;
+      border-radius: 50%;
+      background: var(--accent);
+      color: #fff;
+      font-size: 12px;
+      font-weight: 800;
+      margin-bottom: 10px;
+    }
+    .agent-name {
+      font-size: 15px;
+      font-weight: 800;
+      color: var(--text);
+      margin-bottom: 4px;
+    }
+    .agent-role {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--accent);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 10px;
+    }
+    .agent-desc {
+      font-size: 13px;
+      color: var(--text-muted);
+      line-height: 1.6;
+      margin-bottom: 10px;
+    }
+    .agent-output {
+      font-size: 11px;
+      color: var(--text-dim);
+      font-family: monospace;
+      background: var(--surface-2);
+      border: 1px solid var(--border-2);
+      border-radius: 4px;
+      padding: 6px 8px;
+      line-height: 1.7;
+    }
+
+    /* Governance hooks block */
+    .gov-hooks {
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 18px;
+      margin-bottom: 20px;
+    }
+    .gov-hooks-title {
+      font-size: 13px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      color: var(--text-muted);
+      margin-bottom: 14px;
+    }
+    .hooks-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+    @media (max-width: 700px) { .hooks-grid { grid-template-columns: 1fr; } }
+    .hook-card {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 12px 14px;
+    }
+    .hook-num {
+      font-size: 10px; font-weight: 800; letter-spacing: 1px;
+      text-transform: uppercase; color: var(--accent); margin-bottom: 4px;
+    }
+    .hook-name { font-size: 14px; font-weight: 700; color: var(--text); margin-bottom: 6px; }
+    .hook-desc { font-size: 13px; color: var(--text-muted); line-height: 1.5; }
+
+    /* Archetypes bar */
+    .archetypes-bar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+      padding-top: 16px;
+      border-top: 1px solid var(--border-2);
+    }
+    .archetypes-label { font-size: 12px; color: var(--text-dim); font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px; margin-right: 4px; }
+    .archetype-tag {
+      font-size: 12px;
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-weight: 600;
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+    }
+    .archetype-tag.primary { background: var(--accent-bg); border-color: var(--accent-dim); color: var(--accent); }
+
+    /* Five Pillars */
+    .pillar-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    @media (max-width: 900px) { .pillar-grid { grid-template-columns: 1fr; } }
+    .pillar { background: var(--bg); border: 1px solid var(--border); border-radius: 6px; padding: 14px; }
+    .pillar-head { display: flex; align-items: center; gap: 8px; margin-bottom: 7px; }
+    .pillar-name { font-weight: 700; font-size: 15px; color: var(--text); }
+    .pillar-badge { font-size: 11px; font-weight: 800; padding: 3px 8px; border-radius: 20px; letter-spacing: 0.8px; text-transform: uppercase; }
+    .pillar-badge.implemented { background: var(--green-bg);  color: var(--green);  border: 1px solid var(--green-border); }
+    .pillar-badge.partial     { background: var(--yellow-bg); color: var(--yellow); border: 1px solid var(--yellow-border); }
+    .pillar-desc { font-size: 14px; color: var(--text-muted); line-height: 1.6; }
+
+    /* ── Scroll to top ── */
+    #scroll-top {
+      position: fixed;
+      bottom: 28px;
+      right: 28px;
+      width: 42px; height: 42px;
+      border-radius: 50%;
+      background: var(--accent);
+      border: none;
+      color: #fff;
+      font-size: 18px;
+      cursor: pointer;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.4);
+      z-index: 300;
+      transition: opacity 0.2s, transform 0.2s;
+    }
+    #scroll-top:hover { transform: translateY(-2px); }
+    #scroll-top.visible { display: flex; }
+
+    /* ── Responsive ── */
     @media (max-width: 768px) {
       .layout { flex-direction: column; }
-      aside {
-        width: 100% !important;
-        height: auto;
-        position: static;
-        border-right: none;
-        border-bottom: 1px solid var(--border);
-      }
+      aside { width: 100% !important; height: auto; position: static; border-right: none; border-bottom: 1px solid var(--border); }
       .resize-handle { display: none; }
       .subtitle { display: none; }
+      main { padding: 12px; gap: 12px; }
     }
   </style>
 </head>
@@ -733,7 +544,14 @@
       <div class="dot" id="health-dot"></div>
       <span id="health-label">Checking...</span>
     </div>
-    <button class="theme-toggle" onclick="toggleTheme()" title="Toggle light/dark mode">☀</button>
+    <button class="icon-btn" onclick="toggleTheme()" title="Toggle theme">☀</button>
+    <button class="icon-btn" onclick="toggleNav()" title="Navigation">☰</button>
+
+    <div id="nav-menu">
+      <a class="nav-item" href="#section-brief" onclick="closeNav()">Routing Brief <span>Generated dispatch intelligence</span></a>
+      <a class="nav-item" href="#section-arch" onclick="closeNav()">Agentic Architecture <span>Six agents · hybrid archetypes</span></a>
+      <a class="nav-item" href="#section-gov" onclick="closeNav()">Governance &amp; Trust <span>IBM Five Pillars</span></a>
+    </div>
   </div>
 </header>
 
@@ -742,7 +560,6 @@
   <!-- Sidebar -->
   <aside id="sidebar">
 
-    <!-- About (full) -->
     <div id="about-block" class="about-block">
       <strong>What is AEGIS?</strong>
       <p>AEGIS is a multi-agent AI system that turns raw emergency incident reports into validated, source-cited inter-agency routing briefs for 911 dispatchers and EOC supervisors.</p>
@@ -769,60 +586,49 @@
       <div class="sidebar-section-label">Pipeline Status</div>
       <div id="status-badge" class="status-badge status-pending">AWAITING INPUT</div>
       <div class="metrics-grid">
-        <div class="metric">
-          <div class="metric-val" id="citation-val">—</div>
-          <div class="metric-label">Citation</div>
-        </div>
-        <div class="metric">
-          <div class="metric-val" id="confidence-val">—</div>
-          <div class="metric-label">Confidence</div>
-        </div>
+        <div class="metric"><div class="metric-val" id="citation-val">—</div><div class="metric-label">Citation</div></div>
+        <div class="metric"><div class="metric-val" id="confidence-val">—</div><div class="metric-label">Confidence</div></div>
       </div>
       <div class="incident-id" id="incident-id"></div>
     </div>
 
-    <!-- About (collapsed, shown after run) -->
+    <!-- About collapsed -->
     <div id="about-mini" class="about-mini" style="display:none">
       <span>What is AEGIS?</span>
       <button onclick="expandAbout()">▼ expand</button>
     </div>
 
-    <!-- Sidebar result panels (shown after run) -->
+    <!-- Sidebar result panels -->
     <div id="sidebar-results" style="display:none; flex-direction:column; gap:12px;">
 
       <div class="sidebar-panel">
         <div class="sidebar-panel-header">Citations</div>
-        <div class="sidebar-panel-body">
-          <div id="citation-box"></div>
-        </div>
+        <div class="sidebar-panel-body"><div id="citation-box"></div></div>
       </div>
 
       <div class="sidebar-panel">
         <div class="sidebar-panel-header">Data Sources</div>
-        <div class="sidebar-panel-body">
-          <div id="source-list"></div>
-        </div>
+        <div class="sidebar-panel-body"><div id="source-list"></div></div>
       </div>
 
       <div class="sidebar-panel">
         <div class="sidebar-panel-header">Verify Sources</div>
-        <div class="sidebar-panel-body">
-          <div id="verify-list"></div>
-        </div>
+        <div class="sidebar-panel-body"><div id="verify-list"></div></div>
       </div>
 
       <div class="sidebar-panel">
         <div class="sidebar-panel-header">Agency Routing</div>
-        <div class="sidebar-panel-body">
-          <div id="agency-summary"></div>
-        </div>
+        <div class="sidebar-panel-body"><div id="agency-summary"></div></div>
+      </div>
+
+      <div class="sidebar-panel">
+        <div class="sidebar-panel-header">Audit Log</div>
+        <div class="sidebar-panel-body"><div id="audit-log"><div class="empty-state">Governance hooks will appear here after a run.</div></div></div>
       </div>
 
     </div>
 
-    <!-- Drag handle -->
     <div class="resize-handle" id="resize-handle"></div>
-
   </aside>
 
   <!-- Main content -->
@@ -830,8 +636,8 @@
 
     <div id="robustness-override" class="robustness-override"></div>
 
-    <!-- Routing brief -->
-    <div class="panel">
+    <!-- Routing Brief -->
+    <div class="panel" id="section-brief">
       <div class="panel-header">Routing Brief</div>
       <div class="panel-body">
         <div id="brief-output" class="brief-output">
@@ -840,59 +646,126 @@
       </div>
     </div>
 
-    <!-- Audit log -->
-    <div class="panel">
-      <div class="panel-header">Audit Log</div>
+    <!-- Agentic Architecture -->
+    <div class="panel" id="section-arch">
+      <div class="panel-header">Agentic Architecture</div>
       <div class="panel-body">
-        <div id="audit-log">
-          <div class="empty-state">Governance hooks will appear here after a run.</div>
+
+        <div class="arch-flow">
+
+          <div class="agent-card">
+            <div class="agent-step">1</div>
+            <div class="agent-name">Intake Agent</div>
+            <div class="agent-role">Parse &amp; Classify</div>
+            <div class="agent-desc">Reads the raw incident report and extracts structured intent — crisis type, location, state, and whether the input is complete enough to act on.</div>
+            <div class="agent-output">→ crisis_type · state · is_complete · raw_input</div>
+          </div>
+
+          <div class="agent-card">
+            <div class="agent-step">2</div>
+            <div class="agent-name">Orchestrator Agent</div>
+            <div class="agent-role">Route &amp; Resolve</div>
+            <div class="agent-desc">Routes the intent to the correct specialist cluster (Ohio / Oklahoma), assigns the regulatory agency by name, constructs the semantic RAG query, and loads the citation chain.</div>
+            <div class="agent-output">→ cluster · query · bbox · agency_routing · citation_chain</div>
+          </div>
+
+          <div class="agent-card">
+            <div class="agent-step">3</div>
+            <div class="agent-name">RAG Knowledge Agent</div>
+            <div class="agent-role">Retrieve</div>
+            <div class="agent-desc">Performs semantic search over the policy document corpus (ChromaDB, local). Returns the most relevant context passages with a confidence score for the Overseer to validate.</div>
+            <div class="agent-output">→ context · citation · confidence</div>
+          </div>
+
+          <div class="agent-card">
+            <div class="agent-step">4</div>
+            <div class="agent-name">Data Bridge Agent</div>
+            <div class="agent-role">Live Data Fetch</div>
+            <div class="agent-desc">Queries four live APIs in sequence: USGS real-time seismic feed, CDC Social Vulnerability Index by census tract, HHS emPOWER electricity-dependent beneficiaries, and EPA TRI hazmat facilities. Promotes EPA to Tier 1 if hazmat is detected.</div>
+            <div class="agent-output">→ usgs_live · svi_lookup · empower_data · epa_tri · agency_routing</div>
+          </div>
+
+          <div class="agent-card">
+            <div class="agent-step">5</div>
+            <div class="agent-name">Overseer Agent</div>
+            <div class="agent-role">Govern &amp; Score</div>
+            <div class="agent-desc">Runs three governance hooks at fixed pipeline positions. Scores each beam candidate by citation alignment — not token probability. Can trigger retry or force HONEST FALLBACK.</div>
+            <div class="agent-output">→ passed · citation_score · audit_log · output_state</div>
+          </div>
+
+          <div class="agent-card">
+            <div class="agent-step">6</div>
+            <div class="agent-name">Synthesis Agent</div>
+            <div class="agent-role">Generate &amp; Select</div>
+            <div class="agent-desc">Calls IBM Granite via watsonx.ai to generate four beam candidates at varying temperatures. The Overseer selects the highest citation-aligned candidate — not the most probable token sequence.</div>
+            <div class="agent-output">→ routing brief · CONFIRMED DELIVERY · RETRY-CORRECTED · HONEST FALLBACK</div>
+          </div>
+
         </div>
+
+        <!-- Governance hooks -->
+        <div class="gov-hooks">
+          <div class="gov-hooks-title">Overseer Governance — Three Hooks</div>
+          <div class="hooks-grid">
+            <div class="hook-card">
+              <div class="hook-num">Hook 1</div>
+              <div class="hook-name">Input Audit</div>
+              <div class="hook-desc">Fires after Intake. Flags unsafe, adversarial, or structurally incomplete input. Routes to HONEST FALLBACK immediately if failed — no downstream processing.</div>
+            </div>
+            <div class="hook-card">
+              <div class="hook-num">Hook 2</div>
+              <div class="hook-name">Retrieval Audit</div>
+              <div class="hook-desc">Fires after RAG retrieval. Validates that retrieved context meets minimum confidence threshold. Triggers re-retrieval up to MAX_RETRIES before fallback.</div>
+            </div>
+            <div class="hook-card">
+              <div class="hook-num">Hook 3</div>
+              <div class="hook-name">Pre-Delivery Check</div>
+              <div class="hook-desc">Fires after beam generation. Scores all candidates by semantic alignment with retrieved context. Selects the highest-scoring beam. Retries generation if no candidate passes.</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Archetypes -->
+        <div class="archetypes-bar">
+          <span class="archetypes-label">Hybrid Archetypes:</span>
+          <span class="archetype-tag primary">Knowledge Synthesizer</span>
+          <span class="archetype-tag primary">Cognitive Load Reducer</span>
+          <span class="archetype-tag primary">Human–AI Boundary Manager</span>
+          <span class="archetype-tag">Decision Gatekeeper</span>
+          <span class="archetype-tag">Invisible Coordinator</span>
+        </div>
+
       </div>
     </div>
 
     <!-- Governance & Trust -->
-    <div class="panel">
+    <div class="panel" id="section-gov">
       <div class="panel-header">Governance &amp; Trust</div>
       <div class="panel-body">
         <div class="pillar-grid">
 
           <div class="pillar">
-            <div class="pillar-head">
-              <span class="pillar-badge implemented">Implemented</span>
-              <span class="pillar-name">Explainability</span>
-            </div>
+            <div class="pillar-head"><span class="pillar-badge implemented">Implemented</span><span class="pillar-name">Explainability</span></div>
             <p class="pillar-desc">Every brief cites its sources. The Overseer scores each candidate by citation alignment before selecting one. The audit log records every governance hook with pass/fail and reason. Verification links point to the live USGS event and Census tract used to generate the output.</p>
           </div>
 
           <div class="pillar">
-            <div class="pillar-head">
-              <span class="pillar-badge partial">Partial</span>
-              <span class="pillar-name">Transparency</span>
-            </div>
+            <div class="pillar-head"><span class="pillar-badge partial">Partial</span><span class="pillar-name">Transparency</span></div>
             <p class="pillar-desc">The dashboard surfaces pipeline status, citation alignment, retrieval confidence, and the full audit log on every run. Users are always aware they are interacting with an AI system. A formal IBM AI FactSheet covering model capabilities and limitations has not been published.</p>
           </div>
 
           <div class="pillar">
-            <div class="pillar-head">
-              <span class="pillar-badge implemented">Implemented</span>
-              <span class="pillar-name">Fairness</span>
-            </div>
+            <div class="pillar-head"><span class="pillar-badge implemented">Implemented</span><span class="pillar-name">Fairness</span></div>
             <p class="pillar-desc">CDC Social Vulnerability Index (SVI) is the primary vulnerability lens — designed to surface disproportionate burden. HHS emPOWER adds electricity-dependent Medicare beneficiaries as a second equity dimension. The Ohio/Oklahoma geography was selected because induced seismicity concentrates in high-SVI tracts (Blackman, 2025).</p>
           </div>
 
           <div class="pillar">
-            <div class="pillar-head">
-              <span class="pillar-badge implemented">Implemented</span>
-              <span class="pillar-name">Robustness</span>
-            </div>
+            <div class="pillar-head"><span class="pillar-badge implemented">Implemented</span><span class="pillar-name">Robustness</span></div>
             <p class="pillar-desc">Granite Guardian moderates user input. The Overseer runs three hooks — input audit, retrieval audit, pre-delivery check — with a retry budget of 2. HONEST FALLBACK is a first-class output state; the system never fabricates confidence it does not have. Beam search selects by citation alignment, not token probability.</p>
           </div>
 
           <div class="pillar" style="grid-column: 1 / -1">
-            <div class="pillar-head">
-              <span class="pillar-badge partial">Partial</span>
-              <span class="pillar-name">Privacy</span>
-            </div>
+            <div class="pillar-head"><span class="pillar-badge partial">Partial</span><span class="pillar-name">Privacy</span></div>
             <p class="pillar-desc">No user data is stored beyond the per-request audit log. All vector retrieval is local (ChromaDB on-server). Incident reports contain location and magnitude descriptions — no PII. Gap: the full prompt including retrieved context is transmitted to IBM watsonx for inference. For production EOC deployment, PII scrubbing on intake and a data processing agreement with IBM would be required.</p>
           </div>
 
@@ -903,13 +776,16 @@
   </main>
 </div>
 
+<!-- Scroll to top -->
+<button id="scroll-top" onclick="window.scrollTo({top:0,behavior:'smooth'})" title="Back to top">↑</button>
+
 <script>
   // ── Theme ──
   function toggleTheme() {
     const html = document.documentElement;
     const next = html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
     html.setAttribute('data-theme', next);
-    document.querySelector('.theme-toggle').textContent = next === 'dark' ? '☀' : '☾';
+    document.querySelector('.icon-btn[onclick="toggleTheme()"]').textContent = next === 'dark' ? '☀' : '☾';
     localStorage.setItem('aegis-theme', next);
   }
   (function() {
@@ -917,44 +793,49 @@
     const preferred = window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
     const theme = saved || preferred;
     document.documentElement.setAttribute('data-theme', theme);
-    document.querySelector('.theme-toggle').textContent = theme === 'dark' ? '☀' : '☾';
+    document.querySelector('.icon-btn[onclick="toggleTheme()"]').textContent = theme === 'dark' ? '☀' : '☾';
   })();
+
+  // ── Hamburger nav ──
+  function toggleNav() {
+    document.getElementById('nav-menu').classList.toggle('open');
+  }
+  function closeNav() {
+    document.getElementById('nav-menu').classList.remove('open');
+  }
+  document.addEventListener('click', e => {
+    if (!e.target.closest('.header-right')) closeNav();
+  });
+
+  // ── Scroll to top ──
+  const scrollBtn = document.getElementById('scroll-top');
+  window.addEventListener('scroll', () => {
+    scrollBtn.classList.toggle('visible', window.scrollY > 300);
+  });
 
   // ── Sidebar resize ──
   (function() {
     const sidebar = document.getElementById('sidebar');
     const handle  = document.getElementById('resize-handle');
-    const MIN_W   = 200;
-    const MAX_W   = 440;
-    let dragging  = false;
-    let startX, startWidth;
-
-    // Restore saved width
+    const MIN_W = 200, MAX_W = 440;
+    let dragging = false, startX, startWidth;
     const saved = localStorage.getItem('aegis-sidebar-width');
     if (saved) sidebar.style.width = saved + 'px';
-
     handle.addEventListener('mousedown', e => {
-      dragging   = true;
-      startX     = e.clientX;
-      startWidth = sidebar.offsetWidth;
+      dragging = true; startX = e.clientX; startWidth = sidebar.offsetWidth;
       handle.classList.add('dragging');
-      document.body.style.cursor    = 'col-resize';
+      document.body.style.cursor = 'col-resize';
       document.body.style.userSelect = 'none';
       e.preventDefault();
     });
-
     document.addEventListener('mousemove', e => {
       if (!dragging) return;
-      const newW = Math.min(MAX_W, Math.max(MIN_W, startWidth + (e.clientX - startX)));
-      sidebar.style.width = newW + 'px';
+      sidebar.style.width = Math.min(MAX_W, Math.max(MIN_W, startWidth + (e.clientX - startX))) + 'px';
     });
-
     document.addEventListener('mouseup', () => {
       if (!dragging) return;
-      dragging = false;
-      handle.classList.remove('dragging');
-      document.body.style.cursor    = '';
-      document.body.style.userSelect = '';
+      dragging = false; handle.classList.remove('dragging');
+      document.body.style.cursor = ''; document.body.style.userSelect = '';
       localStorage.setItem('aegis-sidebar-width', sidebar.offsetWidth);
     });
   })();
@@ -982,11 +863,9 @@
   async function runPipeline() {
     const input = document.getElementById('input').value.trim();
     if (!input) return;
-
     const btn = document.getElementById('submit');
     btn.disabled = true;
     btn.innerHTML = '<span class="spinner"></span>Running...';
-
     setStatus('PROCESSING');
     document.getElementById('citation-val').textContent  = '—';
     document.getElementById('confidence-val').textContent = '—';
@@ -999,20 +878,17 @@
 
     try {
       const r = await fetch('/workflow/incident-report', {
-        method:  'POST',
+        method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body:    JSON.stringify({ raw_input: input }),
+        body: JSON.stringify({ raw_input: input }),
       });
       const d = await r.json();
 
       setStatus(d.output_status || 'UNKNOWN');
       document.getElementById('citation-val').textContent  = d.citation_alignment  || '—';
       document.getElementById('confidence-val').textContent = d.retrieval_confidence || '—';
-      if (d.incident_id) {
-        document.getElementById('incident-id').textContent = 'ID: ' + d.incident_id;
-      }
+      if (d.incident_id) document.getElementById('incident-id').textContent = 'ID: ' + d.incident_id;
 
-      // Robustness override
       const robEl = document.getElementById('robustness-override');
       if (d.output_status && (d.output_status.includes('FALLBACK') || d.output_status.includes('ERROR'))) {
         robEl.style.display = 'block';
@@ -1021,21 +897,16 @@
           'Do not deploy resources on this output alone — verify via direct agency contact.';
       }
 
-      // Brief
       const briefEl = document.getElementById('brief-output');
       if (d.brief) {
         let briefText = d.brief.replace(/\n\n---\n\*\*Verify:\*\*.*/s, '');
         let html = marked.parse(briefText);
-
-        // SVI tooltip
         html = html.replace(
           /(SVI percentile:\s*[\d.]+[^<]*)/g,
           '$1<span class="svi-tooltip-wrap"><i class="svi-info">ⓘ</i><span class="svi-tooltip">Calculated using CDC Social Vulnerability Index 2022. Hazard correlation mapped via Blackman (2025) Disparate Risk methodology to ensure equitable resource allocation. Score 0–1; above 0.75 = top vulnerability quartile.</span></span>'
         );
-
-        // Governance lineage block
         const cluster = d.cluster || 'unknown';
-        const node    = cluster.includes('oklahoma') ? 'reasoning_oklahoma' : 'reasoning_ohio';
+        const node = cluster.includes('oklahoma') ? 'reasoning_oklahoma' : 'reasoning_ohio';
         const verifyMatch = d.brief.match(/\*\*Verify:\*\*\s*(.*)/s);
         let verifyLinks = '';
         if (verifyMatch) {
@@ -1043,23 +914,18 @@
             .replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank">$1</a>')
             .replace(/·/g, ' · ');
         }
-
         html += `<div class="lineage-block">
   <div class="lineage-label">[System Governance &amp; Lineage]</div>
   ${verifyLinks ? '<div>Verify: ' + verifyLinks + '</div>' : ''}
   <div>Logic Routing: AEGIS multi-agent pipeline · Cluster: ${node} · IBM watsonx us-south</div>
   <div>Citation Alignment: ${d.citation_alignment || '—'} · Retrieval Confidence: ${d.retrieval_confidence || '—'} · ID: ${d.incident_id || '—'}</div>
 </div>`;
-
         briefEl.innerHTML = html;
       } else if (d.error) {
         briefEl.innerHTML = '<div style="color:var(--red)">Error: ' + d.error + '</div>';
       } else {
         briefEl.innerHTML = '<div class="empty-state">No brief returned.</div>';
       }
-
-      // Sidebar result panels
-      populateSidebarResults(d);
 
       // Audit log
       const entries = d.audit_log || [];
@@ -1071,6 +937,8 @@
             <div class="audit-reason">${e.reason || ''}</div>
             <div class="audit-time">${new Date(e.timestamp).toLocaleTimeString()}</div>
           </div>`).join('');
+
+      populateSidebarResults(d);
 
     } catch (err) {
       setStatus('ERROR');
@@ -1092,63 +960,43 @@
     el.textContent = label;
   }
 
-  document.getElementById('input').addEventListener('keydown', e => {
-    if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) runPipeline();
-  });
-
   // ── Sidebar result panels ──
   function populateSidebarResults(d) {
     const brief = d.brief || '';
-
-    // Collapse about block, show mini header
     document.getElementById('about-block').style.display = 'none';
     document.getElementById('about-mini').style.display  = 'flex';
-
-    // Show results section
     const resultsEl = document.getElementById('sidebar-results');
     resultsEl.style.display = 'flex';
 
-    // ── Citations ──
+    // Citations
     const chain = d.citation_chain || d.citation || '';
     const citEl = document.getElementById('citation-box');
     if (chain) {
       const synthIdx = chain.indexOf('[synthesizing');
       const primaryText = synthIdx > 0 ? chain.substring(0, synthIdx).trim() : chain;
       const synthesized = synthIdx > 0
-        ? chain.substring(synthIdx + '[synthesizing'.length).replace(']', '').trim()
-            .split(';').map(s => s.trim()).filter(Boolean)
+        ? chain.substring(synthIdx + '[synthesizing'.length).replace(']','').trim().split(';').map(s=>s.trim()).filter(Boolean)
         : [];
-
       let citHtml = '';
-
       if (synthesized.length) {
         citHtml += `<div class="citation-synth-label">Foundational Research</div>
-          <div class="citation-synth-list">
-            ${synthesized.map(a => `<div class="citation-author">${a}</div>`).join('')}
-          </div>`;
+          <div class="citation-synth-list">${synthesized.map(a=>`<div class="citation-author">${a}</div>`).join('')}</div>`;
       }
-
-      citHtml += `
-        <div class="citation-primary" style="margin-top:${synthesized.length ? '12px' : '0'}">
-          <div class="citation-primary-label">Synthesized by</div>
-          <div class="citation-primary-text">${primaryText}</div>
-        </div>`;
-
+      citHtml += `<div class="citation-primary" style="margin-top:${synthesized.length?'12px':'0'}">
+        <div class="citation-primary-label">Synthesized by</div>
+        <div class="citation-primary-text">${primaryText}</div>
+      </div>`;
       if (d.citation && d.citation !== chain) {
-        citHtml += `<div class="citation-retrieval">
-          <div class="citation-retrieval-label">Retrieved Policy Context</div>
-          ${d.citation}
-        </div>`;
+        citHtml += `<div class="citation-retrieval"><div class="citation-retrieval-label">Retrieved Policy Context</div>${d.citation}</div>`;
       }
-
       citEl.innerHTML = citHtml;
     } else {
       citEl.innerHTML = '<div style="font-size:13px;color:var(--text-dim)">No citation data.</div>';
     }
 
-    // ── Data sources ──
+    // Data sources
     const sources = [
-      { name: 'USGS Seismic Feed',             ok: /magnitude|\bM\s*\d|\d+\.\d+\s*(km|Mw)/i.test(brief),   url: 'https://earthquake.usgs.gov/earthquakes/map/' },
+      { name: 'USGS Seismic Feed',             ok: /magnitude|\bM\s*\d|\d+\.\d+\s*(km|Mw)/i.test(brief), url: 'https://earthquake.usgs.gov/earthquakes/map/' },
       { name: 'CDC Social Vulnerability Index', ok: /SVI percentile/i.test(brief) },
       { name: 'HHS emPOWER',                   ok: /electricity.dependent|empower/i.test(brief) },
       { name: 'EPA TRI Facilities',             ok: /\bTRI\b|COMPOUND RISK/i.test(brief) },
@@ -1156,12 +1004,12 @@
     ];
     document.getElementById('source-list').innerHTML = sources.map(s => `
       <div class="source-row">
-        <div class="source-dot ${s.ok ? 'ok' : 'off'}"></div>
+        <div class="source-dot ${s.ok?'ok':'off'}"></div>
         <span class="source-name">${s.name}</span>
         ${s.ok && s.url ? `<a class="source-link" href="${s.url}" target="_blank">↗</a>` : ''}
       </div>`).join('');
 
-    // ── Verify links ──
+    // Verify links
     const verifyMatch = brief.match(/\*\*Verify:\*\*\s*(.*)/s);
     if (verifyMatch) {
       const links = [];
@@ -1172,11 +1020,10 @@
         ? links.map(l => `<a class="verify-pill" href="${l.url}" target="_blank">${l.label} ↗</a>`).join('')
         : '<div style="font-size:13px;color:var(--text-dim)">No links available.</div>';
     } else {
-      document.getElementById('verify-list').innerHTML =
-        '<div style="font-size:13px;color:var(--text-dim)">No links available.</div>';
+      document.getElementById('verify-list').innerHTML = '<div style="font-size:13px;color:var(--text-dim)">No links available.</div>';
     }
 
-    // ── Agency routing ──
+    // Agency routing
     const routing = d.agency_routing_baseline || {};
     const tiers = [
       { key: 'tier_1_immediate',    label: 'Tier 1 — Immediate',    cls: 'tier-1' },
@@ -1186,12 +1033,11 @@
     let agencyHtml = '';
     tiers.forEach(t => {
       (routing[t.key] || []).forEach(a => {
-        agencyHtml += `
-          <div class="tier-row">
-            <div class="tier-label ${t.cls}">${t.label}</div>
-            <div class="tier-agency">${a.name}</div>
-            ${a.role ? `<div class="tier-role">${a.role}</div>` : ''}
-          </div>`;
+        agencyHtml += `<div class="tier-row">
+          <div class="tier-label ${t.cls}">${t.label}</div>
+          <div class="tier-agency">${a.name}</div>
+          ${a.role ? `<div class="tier-role">${a.role}</div>` : ''}
+        </div>`;
       });
     });
     document.getElementById('agency-summary').innerHTML = agencyHtml ||
@@ -1202,6 +1048,10 @@
     document.getElementById('about-block').style.display = 'block';
     document.getElementById('about-mini').style.display  = 'none';
   }
+
+  document.getElementById('input').addEventListener('keydown', e => {
+    if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) runPipeline();
+  });
 </script>
 </body>
 </html>
