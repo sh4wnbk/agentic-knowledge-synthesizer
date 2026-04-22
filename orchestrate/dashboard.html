@@ -15,7 +15,7 @@
       --text:        #e6edf3;
       --text-2:      #c9d1d9;
       --text-muted:  #8b949e;
-      --text-dim:    #484f58;
+      --text-dim:    #7d8590;
       --accent:      #f97316;
       --accent-bg:   #2d1400;
       --accent-dim:  #7c3503;
@@ -39,7 +39,7 @@
       --text:        #1f2328;
       --text-2:      #24292f;
       --text-muted:  #57606a;
-      --text-dim:    #8c959f;
+      --text-dim:    #6e7681;
       --accent:      #c2410c;
       --accent-bg:   #fff7ed;
       --accent-dim:  #f97316;
@@ -336,6 +336,8 @@
     html[data-fontsize="xl"] .agent-desc, html[data-fontsize="xl"] .pillar-desc,
     html[data-fontsize="xl"] .hook-desc,  html[data-fontsize="xl"] .about-body p,
     html[data-fontsize="xl"] .brief-output { font-size: 17px; }
+    html[data-fontsize="xl"] .agent-desc, html[data-fontsize="xl"] .pillar-desc,
+    html[data-fontsize="xl"] .hook-desc,  html[data-fontsize="xl"] .about-body p { color: var(--text-2); }
 
     /* ── Main content ── */
     main { flex: 1; padding: 24px; display: flex; flex-direction: column; gap: 20px; min-width: 0; }
@@ -357,6 +359,7 @@
     .brief-output { font-size: 16px; line-height: 1.8; color: var(--text-2); }
     .brief-output p { margin: 6px 0; }
     .brief-output strong { color: var(--text); }
+    .brief-section-hdr { font-weight: 800; color: var(--accent); letter-spacing: 0.3px; }
     .brief-output h1, .brief-output h2, .brief-output h3 { color: var(--text); margin: 14px 0 6px; }
     .brief-output table { width: 100%; border-collapse: collapse; margin: 14px 0; font-size: 13px; }
     .brief-output th { background: var(--surface-2); padding: 10px 14px; text-align: left; color: var(--text-muted); font-weight: 700; border: 1px solid var(--border); font-size: 13px; text-transform: uppercase; letter-spacing: 0.5px; }
@@ -1168,6 +1171,10 @@
       if (d.brief) {
         let briefText = d.brief.replace(/\n\n---\n\*\*Verify:\*\*.*/s, '');
         let html = marked.parse(briefText);
+        // Style the three dispatch section headers consistently
+        html = html.replace(/<strong>\[HAZARD STATUS\]<\/strong>/gi,          '<span class="brief-section-hdr">[HAZARD STATUS]</span>');
+        html = html.replace(/<strong>\[DEMOGRAPHIC RISK \(SVI\)\]<\/strong>/gi,'<span class="brief-section-hdr">[DEMOGRAPHIC RISK (SVI)]</span>');
+        html = html.replace(/<strong>\[INTER-AGENCY ROUTING\]<\/strong>/gi,   '<span class="brief-section-hdr">[INTER-AGENCY ROUTING]</span>');
         html = html.replace(
           /(SVI percentile:\s*[\d.]+[^<]*)/g,
           '$1<span class="svi-tooltip-wrap"><i class="svi-info">ⓘ</i><span class="svi-tooltip">Calculated using CDC Social Vulnerability Index 2022. Hazard correlation mapped via Blackman (2025) Disparate Risk methodology to ensure equitable resource allocation. Score 0–1; above 0.75 = top vulnerability quartile.</span></span>'
@@ -1278,10 +1285,17 @@
       const synthesized = synthIdx > 0
         ? chain.substring(synthIdx + '[synthesizing'.length).replace(']','').trim().split(';').map(s=>s.trim()).filter(Boolean)
         : [];
+      // Show up to 3 randomly sampled from the full list
+      const shown = synthesized.length > 3
+        ? [...synthesized].sort(() => Math.random() - 0.5).slice(0, 3)
+        : synthesized;
       let citHtml = '';
-      if (synthesized.length) {
-        citHtml += `<div class="citation-synth-label">Foundational Research</div>
-          <div class="citation-synth-list">${synthesized.map(a=>`<div class="citation-author">${linkifyCitations(a)}</div>`).join('')}</div>`;
+      if (shown.length) {
+        const countNote = synthesized.length > 3
+          ? ` <span style="font-weight:400;color:var(--text-dim)">(${synthesized.length} total)</span>`
+          : '';
+        citHtml += `<div class="citation-synth-label">Foundational Research${countNote}</div>
+          <div class="citation-synth-list">${shown.map(a=>`<div class="citation-author">${linkifyCitations(a)}</div>`).join('')}</div>`;
       }
       citHtml += `<div class="citation-primary" style="margin-top:${synthesized.length?'12px':'0'}">
         <div class="citation-primary-label">Synthesized by</div>
