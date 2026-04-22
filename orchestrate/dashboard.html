@@ -543,6 +543,108 @@
     .pillar-badge.gap         { background: var(--red-bg);    color: var(--red);    border: 1px solid var(--red-border); }
     .pillar-desc { font-size: 14px; color: var(--text-muted); line-height: 1.6; }
 
+    /* ── Sidebar result panels ── */
+    .sidebar-panel {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+    .sidebar-panel-header {
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      color: var(--text-dim);
+      padding: 9px 12px;
+      background: var(--surface-2);
+      border-bottom: 1px solid var(--border);
+    }
+    .sidebar-panel-body { padding: 10px 12px; }
+
+    /* Data source rows */
+    .source-row {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      padding: 7px 0;
+      font-size: 13px;
+      color: var(--text-2);
+      border-bottom: 1px solid var(--border-2);
+    }
+    .source-row:last-child { border-bottom: none; }
+    .source-dot {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+    .source-dot.ok  { background: var(--green); box-shadow: 0 0 5px var(--green); }
+    .source-dot.off { background: var(--text-dim); }
+    .source-name { flex: 1; font-size: 13px; }
+    .source-link {
+      font-size: 13px;
+      color: var(--accent);
+      text-decoration: none;
+    }
+    .source-link:hover { text-decoration: underline; }
+
+    /* Verify pills */
+    .verify-pill {
+      display: block;
+      padding: 7px 10px;
+      margin-bottom: 6px;
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      font-size: 13px;
+      color: var(--accent);
+      text-decoration: none;
+      word-break: break-word;
+      transition: border-color 0.15s, background 0.15s;
+    }
+    .verify-pill:last-child { margin-bottom: 0; }
+    .verify-pill:hover { border-color: var(--accent); background: var(--accent-bg); }
+
+    /* Agency tier rows */
+    .tier-row {
+      padding: 8px 0;
+      border-bottom: 1px solid var(--border-2);
+    }
+    .tier-row:last-child { border-bottom: none; }
+    .tier-label {
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 0.8px;
+      text-transform: uppercase;
+      margin-bottom: 2px;
+    }
+    .tier-1 { color: var(--red); }
+    .tier-2 { color: var(--yellow); }
+    .tier-3 { color: var(--text-muted); }
+    .tier-agency { font-size: 13px; color: var(--text); font-weight: 600; }
+    .tier-role { font-size: 12px; color: var(--text-muted); margin-top: 1px; line-height: 1.4; }
+
+    /* About block mini (collapsed state) */
+    .about-mini {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: var(--accent-bg);
+      border: 1px solid var(--accent-dim);
+      border-radius: 8px;
+      padding: 9px 13px;
+    }
+    .about-mini span { font-size: 13px; font-weight: 800; color: var(--accent); }
+    .about-mini button {
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      font-size: 12px;
+      cursor: pointer;
+      padding: 0;
+    }
+    .about-mini button:hover { color: var(--accent); }
+
     /* Responsive */
     @media (max-width: 768px) {
       .layout { flex-direction: column; }
@@ -579,7 +681,8 @@
   <!-- Sidebar -->
   <aside id="sidebar">
 
-    <div class="about-block">
+    <!-- About (full) -->
+    <div id="about-block" class="about-block">
       <strong>What is AEGIS?</strong>
       <p>AEGIS is a multi-agent AI system that turns raw emergency incident reports into validated, source-cited inter-agency routing briefs for 911 dispatchers and EOC supervisors.</p>
       <p>It pulls live USGS seismic data, CDC Social Vulnerability Index scores, HHS electricity-dependency counts, and EPA hazmat facility records — then runs three governance checks before delivering a response. Every output cites its sources. When confidence is insufficient, it returns an honest fallback instead of fabricating certainty.</p>
@@ -615,6 +718,38 @@
         </div>
       </div>
       <div class="incident-id" id="incident-id"></div>
+    </div>
+
+    <!-- About (collapsed, shown after run) -->
+    <div id="about-mini" class="about-mini" style="display:none">
+      <span>What is AEGIS?</span>
+      <button onclick="expandAbout()">▼ expand</button>
+    </div>
+
+    <!-- Sidebar result panels (shown after run) -->
+    <div id="sidebar-results" style="display:none; flex-direction:column; gap:12px;">
+
+      <div class="sidebar-panel">
+        <div class="sidebar-panel-header">Data Sources</div>
+        <div class="sidebar-panel-body">
+          <div id="source-list"></div>
+        </div>
+      </div>
+
+      <div class="sidebar-panel">
+        <div class="sidebar-panel-header">Verify Sources</div>
+        <div class="sidebar-panel-body">
+          <div id="verify-list"></div>
+        </div>
+      </div>
+
+      <div class="sidebar-panel">
+        <div class="sidebar-panel-header">Agency Routing</div>
+        <div class="sidebar-panel-body">
+          <div id="agency-summary"></div>
+        </div>
+      </div>
+
     </div>
 
     <!-- Drag handle -->
@@ -855,6 +990,9 @@
         briefEl.innerHTML = '<div class="empty-state">No brief returned.</div>';
       }
 
+      // Sidebar result panels
+      populateSidebarResults(d);
+
       // Audit log
       const entries = d.audit_log || [];
       document.getElementById('audit-log').innerHTML = entries.length === 0
@@ -889,6 +1027,75 @@
   document.getElementById('input').addEventListener('keydown', e => {
     if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) runPipeline();
   });
+
+  // ── Sidebar result panels ──
+  function populateSidebarResults(d) {
+    const brief = d.brief || '';
+
+    // Collapse about block, show mini header
+    document.getElementById('about-block').style.display = 'none';
+    document.getElementById('about-mini').style.display  = 'flex';
+
+    // Show results section
+    const resultsEl = document.getElementById('sidebar-results');
+    resultsEl.style.display = 'flex';
+
+    // ── Data sources ──
+    const sources = [
+      { name: 'USGS Seismic Feed',             ok: /magnitude|\bM\s*\d|\d+\.\d+\s*(km|Mw)/i.test(brief),   url: 'https://earthquake.usgs.gov/earthquakes/map/' },
+      { name: 'CDC Social Vulnerability Index', ok: /SVI percentile/i.test(brief) },
+      { name: 'HHS emPOWER',                   ok: /electricity.dependent|empower/i.test(brief) },
+      { name: 'EPA TRI Facilities',             ok: /\bTRI\b|COMPOUND RISK/i.test(brief) },
+      { name: 'Policy RAG (ChromaDB)',          ok: d.output_status && !d.output_status.includes('FALLBACK') },
+    ];
+    document.getElementById('source-list').innerHTML = sources.map(s => `
+      <div class="source-row">
+        <div class="source-dot ${s.ok ? 'ok' : 'off'}"></div>
+        <span class="source-name">${s.name}</span>
+        ${s.ok && s.url ? `<a class="source-link" href="${s.url}" target="_blank">↗</a>` : ''}
+      </div>`).join('');
+
+    // ── Verify links ──
+    const verifyMatch = brief.match(/\*\*Verify:\*\*\s*(.*)/s);
+    if (verifyMatch) {
+      const links = [];
+      const re = /\[([^\]]+)\]\(([^)]+)\)/g;
+      let m;
+      while ((m = re.exec(verifyMatch[1])) !== null) links.push({ label: m[1], url: m[2] });
+      document.getElementById('verify-list').innerHTML = links.length
+        ? links.map(l => `<a class="verify-pill" href="${l.url}" target="_blank">${l.label} ↗</a>`).join('')
+        : '<div style="font-size:13px;color:var(--text-dim)">No links available.</div>';
+    } else {
+      document.getElementById('verify-list').innerHTML =
+        '<div style="font-size:13px;color:var(--text-dim)">No links available.</div>';
+    }
+
+    // ── Agency routing ──
+    const routing = d.agency_routing_baseline || {};
+    const tiers = [
+      { key: 'tier_1_immediate',    label: 'Tier 1 — Immediate',    cls: 'tier-1' },
+      { key: 'tier_2_within_hour',  label: 'Tier 2 — Within Hour',  cls: 'tier-2' },
+      { key: 'tier_3_as_warranted', label: 'Tier 3 — As Warranted', cls: 'tier-3' },
+    ];
+    let agencyHtml = '';
+    tiers.forEach(t => {
+      (routing[t.key] || []).forEach(a => {
+        agencyHtml += `
+          <div class="tier-row">
+            <div class="tier-label ${t.cls}">${t.label}</div>
+            <div class="tier-agency">${a.name}</div>
+            ${a.role ? `<div class="tier-role">${a.role}</div>` : ''}
+          </div>`;
+      });
+    });
+    document.getElementById('agency-summary').innerHTML = agencyHtml ||
+      '<div style="font-size:13px;color:var(--text-dim)">No routing data.</div>';
+  }
+
+  function expandAbout() {
+    document.getElementById('about-block').style.display = 'block';
+    document.getElementById('about-mini').style.display  = 'none';
+  }
 </script>
 </body>
 </html>
