@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AEGIS — Emergency Routing Dashboard</title>
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      background: #0d1117;
+      color: #e6edf3;
+      min-height: 100vh;
+    }
+
+    header {
+      background: #161b22;
+      border-bottom: 1px solid #30363d;
+      padding: 16px 32px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    header .logo {
+      font-size: 22px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      color: #58a6ff;
+    }
+
+    header .subtitle {
+      font-size: 13px;
+      color: #8b949e;
+    }
+
+    header .health {
+      margin-left: auto;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 13px;
+      color: #8b949e;
+    }
+
+    .dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #3fb950;
+    }
+
+    .dot.offline { background: #f85149; }
+
+    main {
+      max-width: 1100px;
+      margin: 32px auto;
+      padding: 0 24px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+    }
+
+    @media (max-width: 768px) {
+      main { grid-template-columns: 1fr; }
+    }
+
+    .panel {
+      background: #161b22;
+      border: 1px solid #30363d;
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    .panel-header {
+      padding: 12px 16px;
+      background: #1c2128;
+      border-bottom: 1px solid #30363d;
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 1px;
+      color: #8b949e;
+      text-transform: uppercase;
+    }
+
+    .panel-body { padding: 16px; }
+
+    textarea {
+      width: 100%;
+      height: 140px;
+      background: #0d1117;
+      border: 1px solid #30363d;
+      border-radius: 6px;
+      color: #e6edf3;
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      font-size: 14px;
+      padding: 12px;
+      resize: vertical;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    textarea:focus { border-color: #58a6ff; }
+
+    .example-prompts {
+      margin-top: 10px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .chip {
+      font-size: 11px;
+      padding: 4px 10px;
+      background: #21262d;
+      border: 1px solid #30363d;
+      border-radius: 20px;
+      color: #8b949e;
+      cursor: pointer;
+      transition: border-color 0.2s, color 0.2s;
+    }
+
+    .chip:hover { border-color: #58a6ff; color: #58a6ff; }
+
+    button#submit {
+      margin-top: 14px;
+      width: 100%;
+      padding: 10px;
+      background: #238636;
+      border: 1px solid #2ea043;
+      border-radius: 6px;
+      color: #fff;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    button#submit:hover { background: #2ea043; }
+    button#submit:disabled { background: #21262d; border-color: #30363d; color: #484f58; cursor: not-allowed; }
+
+    .status-badge {
+      display: inline-block;
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+    }
+
+    .status-confirmed  { background: #0f2a1a; color: #3fb950; border: 1px solid #238636; }
+    .status-retry      { background: #2a1f0a; color: #d29922; border: 1px solid #9e6a03; }
+    .status-fallback   { background: #2a0f0f; color: #f85149; border: 1px solid #da3633; }
+    .status-pending    { background: #1c2128; color: #8b949e; border: 1px solid #30363d; }
+
+    .metrics {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-top: 12px;
+    }
+
+    .metric {
+      background: #0d1117;
+      border: 1px solid #30363d;
+      border-radius: 6px;
+      padding: 10px 14px;
+    }
+
+    .metric-label {
+      font-size: 11px;
+      color: #8b949e;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .metric-value {
+      font-size: 22px;
+      font-weight: 700;
+      color: #58a6ff;
+      margin-top: 2px;
+    }
+
+    .brief-output {
+      font-size: 14px;
+      line-height: 1.7;
+      color: #c9d1d9;
+    }
+
+    .brief-output h1, .brief-output h2, .brief-output h3 {
+      color: #e6edf3;
+      margin: 12px 0 6px;
+    }
+
+    .brief-output table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 12px 0;
+      font-size: 13px;
+    }
+
+    .brief-output th {
+      background: #21262d;
+      padding: 8px 12px;
+      text-align: left;
+      color: #8b949e;
+      font-weight: 600;
+      border: 1px solid #30363d;
+    }
+
+    .brief-output td {
+      padding: 8px 12px;
+      border: 1px solid #30363d;
+      color: #c9d1d9;
+    }
+
+    .brief-output tr:nth-child(even) td { background: #161b22; }
+
+    .brief-output strong { color: #e6edf3; }
+
+    .brief-output a { color: #58a6ff; text-decoration: none; }
+    .brief-output a:hover { text-decoration: underline; }
+
+    .brief-output hr {
+      border: none;
+      border-top: 1px solid #30363d;
+      margin: 16px 0;
+    }
+
+    .brief-output p { margin: 6px 0; }
+
+    .audit-entry {
+      border-left: 3px solid #30363d;
+      padding: 8px 12px;
+      margin-bottom: 8px;
+      font-size: 13px;
+    }
+
+    .audit-entry.pass { border-color: #238636; }
+    .audit-entry.fail { border-color: #da3633; }
+
+    .audit-hook {
+      font-weight: 600;
+      color: #e6edf3;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .audit-reason { color: #8b949e; margin-top: 2px; }
+
+    .spinner {
+      display: inline-block;
+      width: 16px;
+      height: 16px;
+      border: 2px solid #30363d;
+      border-top-color: #58a6ff;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      vertical-align: middle;
+      margin-right: 8px;
+    }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .empty-state {
+      color: #484f58;
+      font-size: 13px;
+      text-align: center;
+      padding: 32px 0;
+    }
+
+    .full-width { grid-column: 1 / -1; }
+
+    .incident-id {
+      font-size: 11px;
+      color: #484f58;
+      margin-top: 8px;
+      font-family: monospace;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="logo">AEGIS</div>
+  <div class="subtitle">Agentic Emergency Guidance &amp; Inter-agency Synthesis</div>
+  <div class="health">
+    <div class="dot" id="health-dot"></div>
+    <span id="health-label">Checking...</span>
+  </div>
+</header>
+
+<main>
+
+  <!-- Input panel -->
+  <div class="panel">
+    <div class="panel-header">Incident Report</div>
+    <div class="panel-body">
+      <textarea id="input" placeholder="Describe the incident — location, magnitude, observed effects..."></textarea>
+      <div class="example-prompts">
+        <span class="chip" onclick="setPrompt('Magnitude 2.8 earthquake near Youngstown, OH. Depth 5km. Reported shaking near downtown.')">Youngstown, OH</span>
+        <span class="chip" onclick="setPrompt('M2.5 event near Niles, OH. Residents reporting minor shaking.')">Niles, OH</span>
+        <span class="chip" onclick="setPrompt('Magnitude 3.1 earthquake near Cushing, OK. Near pipeline infrastructure.')">Cushing, OK</span>
+        <span class="chip" onclick="setPrompt('Seismic event near Pawnee, OK. Magnitude 2.9, shallow depth.')">Pawnee, OK</span>
+      </div>
+      <button id="submit" onclick="runPipeline()">Run Pipeline</button>
+    </div>
+  </div>
+
+  <!-- Status panel -->
+  <div class="panel">
+    <div class="panel-header">Pipeline Status</div>
+    <div class="panel-body">
+      <div id="status-badge" class="status-badge status-pending">AWAITING INPUT</div>
+      <div class="metrics">
+        <div class="metric">
+          <div class="metric-label">Citation Alignment</div>
+          <div class="metric-value" id="citation-val">—</div>
+        </div>
+        <div class="metric">
+          <div class="metric-label">Retrieval Confidence</div>
+          <div class="metric-value" id="confidence-val">—</div>
+        </div>
+      </div>
+      <div class="incident-id" id="incident-id"></div>
+    </div>
+  </div>
+
+  <!-- Brief output -->
+  <div class="panel full-width">
+    <div class="panel-header">Routing Brief</div>
+    <div class="panel-body">
+      <div id="brief-output" class="brief-output">
+        <div class="empty-state">Submit an incident report to generate a routing brief.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Audit log -->
+  <div class="panel full-width">
+    <div class="panel-header">Audit Log</div>
+    <div class="panel-body">
+      <div id="audit-log">
+        <div class="empty-state">Governance hooks will appear here after a run.</div>
+      </div>
+    </div>
+  </div>
+
+</main>
+
+<script>
+  // Health check
+  async function checkHealth() {
+    try {
+      const r = await fetch('/health');
+      const d = await r.json();
+      const dot = document.getElementById('health-dot');
+      const label = document.getElementById('health-label');
+      if (d.status === 'ok') {
+        dot.className = 'dot';
+        label.textContent = 'Pipeline online';
+      } else {
+        dot.className = 'dot offline';
+        label.textContent = 'Pipeline offline';
+      }
+    } catch {
+      document.getElementById('health-dot').className = 'dot offline';
+      document.getElementById('health-label').textContent = 'Unreachable';
+    }
+  }
+  checkHealth();
+  setInterval(checkHealth, 30000);
+
+  function setPrompt(text) {
+    document.getElementById('input').value = text;
+  }
+
+  function setStatus(label) {
+    const badge = document.getElementById('status-badge');
+    badge.className = 'status-badge';
+    if (label.includes('CONFIRMED')) badge.classList.add('status-confirmed');
+    else if (label.includes('RETRY')) badge.classList.add('status-retry');
+    else if (label.includes('FALLBACK') || label.includes('ERROR')) badge.classList.add('status-fallback');
+    else badge.classList.add('status-pending');
+    badge.textContent = label;
+  }
+
+  async function runPipeline() {
+    const input = document.getElementById('input').value.trim();
+    if (!input) return;
+
+    const btn = document.getElementById('submit');
+    btn.disabled = true;
+    btn.innerHTML = '<span class="spinner"></span>Running pipeline...';
+    setStatus('PROCESSING');
+    document.getElementById('citation-val').textContent = '—';
+    document.getElementById('confidence-val').textContent = '—';
+    document.getElementById('incident-id').textContent = '';
+    document.getElementById('brief-output').innerHTML = '<div class="empty-state"><span class="spinner"></span>Fetching seismic data, running RAG retrieval, generating candidates...</div>';
+    document.getElementById('audit-log').innerHTML = '<div class="empty-state"><span class="spinner"></span>Waiting for governance hooks...</div>';
+
+    try {
+      const r = await fetch('/workflow/incident-report', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ raw_input: input })
+      });
+      const d = await r.json();
+
+      // Status
+      setStatus(d.output_status || 'UNKNOWN');
+
+      // Metrics
+      document.getElementById('citation-val').textContent = d.citation_alignment || '—';
+      document.getElementById('confidence-val').textContent = d.retrieval_confidence || '—';
+
+      // Incident ID
+      if (d.incident_id) {
+        document.getElementById('incident-id').textContent = 'Incident ID: ' + d.incident_id;
+      }
+
+      // Brief
+      const briefEl = document.getElementById('brief-output');
+      if (d.brief) {
+        briefEl.innerHTML = marked.parse(d.brief);
+      } else if (d.error) {
+        briefEl.innerHTML = '<div style="color:#f85149">Error: ' + d.error + '</div>';
+      } else {
+        briefEl.innerHTML = '<div class="empty-state">No brief returned.</div>';
+      }
+
+      // Audit log
+      const auditEl = document.getElementById('audit-log');
+      const entries = d.audit_log || [];
+      if (entries.length === 0) {
+        auditEl.innerHTML = '<div class="empty-state">No audit entries.</div>';
+      } else {
+        auditEl.innerHTML = entries.map(e => `
+          <div class="audit-entry ${e.passed ? 'pass' : 'fail'}">
+            <div class="audit-hook">${e.hook.replace(/_/g,' ')} — ${e.passed ? '✓ PASS' : '✗ FAIL'}</div>
+            <div class="audit-reason">${e.reason || ''}</div>
+            <div class="audit-reason" style="font-size:11px;margin-top:4px;color:#484f58">${new Date(e.timestamp).toLocaleTimeString()}</div>
+          </div>`).join('');
+      }
+
+    } catch (err) {
+      setStatus('ERROR');
+      document.getElementById('brief-output').innerHTML = '<div style="color:#f85149">Request failed: ' + err.message + '</div>';
+    }
+
+    btn.disabled = false;
+    btn.textContent = 'Run Pipeline';
+  }
+
+  // Allow Ctrl+Enter to submit
+  document.getElementById('input').addEventListener('keydown', e => {
+    if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) runPipeline();
+  });
+</script>
+</body>
+</html>

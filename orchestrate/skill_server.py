@@ -6,10 +6,12 @@ User: Emergency manager / EOC supervisor reviewing incident reports.
 Not a 911 call-taker tool — no citizen-facing audio or voice reassurance.
 """
 
+import os
 from typing import Any, Optional
 from uuid import uuid4
 
 from fastapi import FastAPI
+from fastapi.responses import FileResponse
 from pydantic import BaseModel, Field
 
 from agents.data_bridge_agent import DataBridgeAgent
@@ -76,6 +78,14 @@ STATE_LABELS = {
     "retry_corrected_delivery": "RETRY-CORRECTED DELIVERY",
     "honest_fallback":          "HONEST FALLBACK",
 }
+
+
+# ── Dashboard ─────────────────────────────────────────────────
+
+@app.get("/")
+def dashboard():
+    html_path = os.path.join(os.path.dirname(__file__), "dashboard.html")
+    return FileResponse(html_path, media_type="text/html")
 
 
 # ── Health ────────────────────────────────────────────────────
