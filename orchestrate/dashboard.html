@@ -70,11 +70,11 @@
     header {
       background: var(--surface);
       border-bottom: 1px solid var(--border);
-      padding: 0 24px;
-      height: 56px;
+      padding: 0 28px;
+      height: 68px;
       display: flex;
       align-items: center;
-      gap: 12px;
+      gap: 14px;
       position: sticky;
       top: 0;
       z-index: 50;
@@ -82,20 +82,20 @@
     }
 
     .logo {
-      font-size: 18px;
+      font-size: 26px;
       font-weight: 800;
-      letter-spacing: 3px;
+      letter-spacing: 4px;
       color: var(--accent);
     }
 
     .logo-sep {
       width: 1px;
-      height: 20px;
+      height: 24px;
       background: var(--border);
     }
 
     .subtitle {
-      font-size: 12px;
+      font-size: 14px;
       color: var(--text-muted);
       font-weight: 500;
     }
@@ -111,9 +111,9 @@
       display: flex;
       align-items: center;
       gap: 6px;
-      font-size: 12px;
+      font-size: 14px;
       color: var(--text-muted);
-      padding: 4px 10px;
+      padding: 5px 12px;
       border-radius: 20px;
       border: 1px solid var(--border);
       background: var(--surface-2);
@@ -160,8 +160,8 @@
       border-right: 1px solid var(--border);
       padding: 18px 14px;
       position: sticky;
-      top: 56px;
-      height: calc(100vh - 56px);
+      top: 68px;
+      height: calc(100vh - 68px);
       overflow-y: auto;
       display: flex;
       flex-direction: column;
@@ -189,9 +189,9 @@
     }
 
     .sidebar-section-label {
-      font-size: 10px;
+      font-size: 12px;
       font-weight: 700;
-      letter-spacing: 1.2px;
+      letter-spacing: 1px;
       text-transform: uppercase;
       color: var(--text-dim);
       margin-bottom: 8px;
@@ -205,7 +205,7 @@
       border-radius: 6px;
       color: var(--text);
       font-family: inherit;
-      font-size: 13px;
+      font-size: 15px;
       padding: 10px;
       resize: vertical;
       outline: none;
@@ -223,8 +223,8 @@
     }
 
     .chip {
-      font-size: 11px;
-      padding: 3px 9px;
+      font-size: 13px;
+      padding: 4px 11px;
       background: var(--surface-2);
       border: 1px solid var(--border);
       border-radius: 20px;
@@ -236,12 +236,12 @@
 
     .btn-run {
       width: 100%;
-      padding: 10px;
+      padding: 12px;
       background: var(--accent-bg);
       border: 1px solid var(--accent-dim);
       border-radius: 6px;
       color: var(--accent);
-      font-size: 13px;
+      font-size: 15px;
       font-weight: 700;
       cursor: pointer;
       transition: all 0.2s;
@@ -267,9 +267,9 @@
       display: inline-flex;
       align-items: center;
       gap: 6px;
-      padding: 5px 12px;
+      padding: 6px 14px;
       border-radius: 20px;
-      font-size: 11px;
+      font-size: 13px;
       font-weight: 700;
       letter-spacing: 0.5px;
       margin-bottom: 12px;
@@ -293,13 +293,13 @@
       border-radius: 6px;
     }
     .metric-val {
-      font-size: 20px;
+      font-size: 28px;
       font-weight: 800;
       color: var(--accent);
       line-height: 1;
     }
     .metric-label {
-      font-size: 10px;
+      font-size: 12px;
       color: var(--text-dim);
       text-transform: uppercase;
       letter-spacing: 0.5px;
@@ -307,7 +307,7 @@
     }
 
     .incident-id {
-      font-size: 10px;
+      font-size: 12px;
       color: var(--text-dim);
       font-family: monospace;
       margin-top: 8px;
@@ -319,7 +319,7 @@
       display: flex;
       align-items: flex-start;
       gap: 7px;
-      font-size: 11px;
+      font-size: 13px;
       color: var(--text-dim);
       padding: 8px 10px;
       background: var(--bg);
@@ -340,12 +340,12 @@
     }
     .about-block strong {
       display: block;
-      font-size: 13px;
+      font-size: 15px;
       font-weight: 800;
       color: var(--accent);
       margin-bottom: 8px;
     }
-    .about-block p { margin: 0; font-size: 13px; }
+    .about-block p { margin: 0; font-size: 15px; }
     .about-block p + p { margin-top: 8px; }
 
     /* ── Main content ── */
@@ -364,12 +364,12 @@
       background: var(--yellow-bg);
       border: 1px solid var(--yellow-border);
       border-radius: 8px;
-      padding: 14px 16px;
-      font-size: 13px;
+      padding: 16px 18px;
+      font-size: 15px;
       color: var(--yellow);
       line-height: 1.6;
     }
-    .robustness-override strong { display: block; margin-bottom: 4px; font-size: 12px; letter-spacing: 0.5px; }
+    .robustness-override strong { display: block; margin-bottom: 4px; font-size: 13px; letter-spacing: 0.5px; }
 
     /* Panel */
     .panel {
@@ -381,21 +381,21 @@
     }
 
     .panel-header {
-      padding: 11px 16px;
+      padding: 13px 18px;
       background: var(--surface-2);
       border-bottom: 1px solid var(--border);
-      font-size: 11px;
+      font-size: 13px;
       font-weight: 700;
-      letter-spacing: 1px;
+      letter-spacing: 0.8px;
       color: var(--text-muted);
       text-transform: uppercase;
     }
 
-    .panel-body { padding: 20px; }
+    .panel-body { padding: 22px; }
 
     /* Brief output */
     .brief-output {
-      font-size: 14px;
+      font-size: 16px;
       line-height: 1.8;
       color: var(--text-2);
     }
@@ -413,17 +413,17 @@
     }
     .brief-output th {
       background: var(--surface-2);
-      padding: 9px 12px;
+      padding: 10px 14px;
       text-align: left;
       color: var(--text-muted);
       font-weight: 700;
       border: 1px solid var(--border);
-      font-size: 11px;
+      font-size: 13px;
       text-transform: uppercase;
       letter-spacing: 0.5px;
     }
     .brief-output td {
-      padding: 9px 12px;
+      padding: 10px 14px;
       border: 1px solid var(--border);
       color: var(--text-2);
     }
@@ -434,7 +434,7 @@
 
     .empty-state {
       color: var(--text-dim);
-      font-size: 13px;
+      font-size: 15px;
       text-align: center;
       padding: 40px 0;
     }
@@ -455,45 +455,45 @@
     /* Audit entries */
     .audit-entry {
       border-left: 3px solid var(--border);
-      padding: 8px 14px;
-      margin-bottom: 8px;
-      font-size: 13px;
+      padding: 10px 14px;
+      margin-bottom: 10px;
+      font-size: 14px;
       border-radius: 0 4px 4px 0;
       background: var(--bg);
     }
     .audit-entry.pass { border-color: var(--green-border); }
     .audit-entry.fail { border-color: var(--red-border); }
-    .audit-hook { font-weight: 700; color: var(--text); font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px; }
-    .audit-reason { color: var(--text-muted); margin-top: 2px; }
-    .audit-time { font-size: 10px; color: var(--text-dim); margin-top: 3px; }
+    .audit-hook { font-weight: 700; color: var(--text); font-size: 13px; text-transform: uppercase; letter-spacing: 0.5px; }
+    .audit-reason { color: var(--text-muted); margin-top: 3px; font-size: 13px; }
+    .audit-time { font-size: 12px; color: var(--text-dim); margin-top: 3px; }
 
     /* Lineage block */
     .lineage-block {
       margin-top: 20px;
-      padding: 12px 14px;
+      padding: 14px 16px;
       background: var(--bg);
       border: 1px solid var(--border-2);
       border-radius: 6px;
-      font-size: 11px;
+      font-size: 13px;
       color: var(--text-dim);
       font-family: monospace;
       line-height: 1.9;
     }
     .lineage-block a { color: var(--accent); text-decoration: none; }
-    .lineage-label { font-size: 9px; letter-spacing: 1.2px; text-transform: uppercase; color: var(--border); margin-bottom: 4px; }
+    .lineage-label { font-size: 11px; letter-spacing: 1px; text-transform: uppercase; color: var(--border); margin-bottom: 6px; }
 
     /* SVI tooltip */
     .svi-tooltip-wrap { position: relative; display: inline; }
     .svi-info {
       display: inline-block;
-      width: 13px; height: 13px;
-      line-height: 13px;
+      width: 16px; height: 16px;
+      line-height: 16px;
       text-align: center;
       border-radius: 50%;
       background: var(--surface-2);
       border: 1px solid var(--border);
       color: var(--text-muted);
-      font-size: 9px;
+      font-size: 11px;
       font-style: normal;
       cursor: pointer;
       margin-left: 3px;
@@ -507,8 +507,8 @@
       background: var(--surface);
       border: 1px solid var(--border);
       border-radius: 6px;
-      padding: 10px 12px;
-      font-size: 12px;
+      padding: 12px 14px;
+      font-size: 14px;
       color: var(--text-2);
       width: 280px;
       z-index: 100;
@@ -530,10 +530,10 @@
       padding: 14px;
     }
     .pillar-head { display: flex; align-items: center; gap: 8px; margin-bottom: 7px; }
-    .pillar-name { font-weight: 700; font-size: 13px; color: var(--text); }
+    .pillar-name { font-weight: 700; font-size: 15px; color: var(--text); }
     .pillar-badge {
-      font-size: 9px; font-weight: 800;
-      padding: 2px 7px;
+      font-size: 11px; font-weight: 800;
+      padding: 3px 8px;
       border-radius: 20px;
       letter-spacing: 0.8px;
       text-transform: uppercase;
@@ -541,7 +541,7 @@
     .pillar-badge.implemented { background: var(--green-bg);  color: var(--green);  border: 1px solid var(--green-border); }
     .pillar-badge.partial     { background: var(--yellow-bg); color: var(--yellow); border: 1px solid var(--yellow-border); }
     .pillar-badge.gap         { background: var(--red-bg);    color: var(--red);    border: 1px solid var(--red-border); }
-    .pillar-desc { font-size: 12px; color: var(--text-muted); line-height: 1.6; }
+    .pillar-desc { font-size: 14px; color: var(--text-muted); line-height: 1.6; }
 
     /* Responsive */
     @media (max-width: 768px) {
