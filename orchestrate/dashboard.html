@@ -457,7 +457,7 @@
       color: var(--text-muted);
       line-height: 1.6;
     }
-    .ibm-tech strong { color: #fff; }
+    .ibm-tech strong { color: var(--text); }
 
     /* ── Agent card state animations ── */
     .agent-card { transition: border-color 0.3s, box-shadow 0.3s; }
@@ -583,6 +583,61 @@
     #scroll-top:hover { transform: translateY(-2px); }
     #scroll-top.visible { display: flex; }
 
+    /* ── Pipeline progress strip ── */
+    #pipeline-strip {
+      display: none;
+      align-items: center;
+      gap: 0;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 10px 16px;
+      margin-bottom: 12px;
+      overflow-x: auto;
+    }
+    #pipeline-strip.visible { display: flex; }
+    .ps-step {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 5px;
+      flex: 1;
+      min-width: 60px;
+      position: relative;
+    }
+    .ps-step:not(:last-child)::after {
+      content: '';
+      position: absolute;
+      top: 9px;
+      left: calc(50% + 10px);
+      right: calc(-50% + 10px);
+      height: 2px;
+      background: var(--border);
+      transition: background 0.3s;
+    }
+    .ps-step.ps-complete:not(:last-child)::after { background: var(--green-border); }
+    .ps-dot {
+      width: 18px; height: 18px;
+      border-radius: 50%;
+      background: var(--surface-2);
+      border: 2px solid var(--border);
+      transition: background 0.3s, border-color 0.3s, box-shadow 0.3s;
+      position: relative;
+      z-index: 1;
+    }
+    .ps-step.ps-active  .ps-dot { background: var(--accent); border-color: var(--accent); animation: dot-pulse 1s ease-in-out infinite; }
+    .ps-step.ps-complete .ps-dot { background: var(--green); border-color: var(--green-border); box-shadow: 0 0 6px var(--green); animation: none; }
+    .ps-label {
+      font-size: 10px;
+      font-weight: 600;
+      color: var(--text-dim);
+      text-align: center;
+      white-space: nowrap;
+      transition: color 0.3s;
+    }
+    .ps-step.ps-active   .ps-label { color: var(--accent); }
+    .ps-step.ps-complete .ps-label { color: var(--green); }
+
     /* ── Responsive ── */
     @media (max-width: 768px) {
       .layout { flex-direction: column; }
@@ -696,6 +751,16 @@
   <main>
 
     <div id="robustness-override" class="robustness-override"></div>
+
+    <!-- Pipeline progress strip -->
+    <div id="pipeline-strip">
+      <div class="ps-step" id="ps-1"><div class="ps-dot"></div><div class="ps-label">Intake</div></div>
+      <div class="ps-step" id="ps-2"><div class="ps-dot"></div><div class="ps-label">Orchestrate</div></div>
+      <div class="ps-step" id="ps-3"><div class="ps-dot"></div><div class="ps-label">RAG</div></div>
+      <div class="ps-step" id="ps-4"><div class="ps-dot"></div><div class="ps-label">Bridge</div></div>
+      <div class="ps-step" id="ps-5"><div class="ps-dot"></div><div class="ps-label">Overseer</div></div>
+      <div class="ps-step" id="ps-6"><div class="ps-dot"></div><div class="ps-label">Synthesis</div></div>
+    </div>
 
     <!-- Routing Brief -->
     <div class="panel" id="section-brief">
@@ -942,22 +1007,31 @@
   const _animTimers = [];
 
   function _setAgentState(n, state) {
+    // Agent cards (in architecture section)
     const card = document.getElementById('agent-card-' + n);
     const step = document.getElementById('step-' + n);
     const dot  = document.getElementById('dot-' + n);
-    if (!card) return;
-    card.classList.remove('active', 'complete');
-    step.classList.remove('active', 'complete');
-    dot.classList.remove('active', 'done');
-    if (state === 'active') {
-      card.classList.add('active');
-      step.classList.add('active');
-      dot.classList.add('active');
-    } else if (state === 'complete') {
-      card.classList.add('complete');
-      step.classList.add('complete');
-      step.textContent = '✓';
-      dot.classList.add('done');
+    if (card) {
+      card.classList.remove('active', 'complete');
+      step.classList.remove('active', 'complete');
+      dot.classList.remove('active', 'done');
+      if (state === 'active') {
+        card.classList.add('active');
+        step.classList.add('active');
+        dot.classList.add('active');
+      } else if (state === 'complete') {
+        card.classList.add('complete');
+        step.classList.add('complete');
+        step.textContent = '✓';
+        dot.classList.add('done');
+      }
+    }
+    // Pipeline strip (always visible above brief)
+    const ps = document.getElementById('ps-' + n);
+    if (ps) {
+      ps.classList.remove('ps-active', 'ps-complete');
+      if (state === 'active')   ps.classList.add('ps-active');
+      if (state === 'complete') ps.classList.add('ps-complete');
     }
   }
 
@@ -968,16 +1042,20 @@
       const card = document.getElementById('agent-card-' + n);
       const step = document.getElementById('step-' + n);
       const dot  = document.getElementById('dot-' + n);
-      if (!card) continue;
-      card.classList.remove('active', 'complete');
-      step.classList.remove('active', 'complete');
-      step.textContent = n;
-      dot.classList.remove('active', 'done');
+      if (card) {
+        card.classList.remove('active', 'complete');
+        step.classList.remove('active', 'complete');
+        step.textContent = n;
+        dot.classList.remove('active', 'done');
+      }
+      const ps = document.getElementById('ps-' + n);
+      if (ps) ps.classList.remove('ps-active', 'ps-complete');
     }
   }
 
   function animateAgents() {
     resetAgentCards();
+    document.getElementById('pipeline-strip').classList.add('visible');
     AGENT_TIMINGS.forEach((t, i) => {
       const n = i + 1;
       _animTimers.push(setTimeout(() => _setAgentState(n, 'active'), t.activate));
