@@ -343,6 +343,104 @@
       color: #8b949e;
       line-height: 1.6;
     }
+
+    /* Privacy badge */
+    .privacy-badge {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 11px;
+      color: #484f58;
+      margin-top: 10px;
+      padding: 6px 10px;
+      background: #0d1117;
+      border: 1px solid #21262d;
+      border-radius: 6px;
+    }
+
+    .privacy-badge svg { flex-shrink: 0; }
+
+    /* Robustness override banner */
+    .robustness-override {
+      display: none;
+      background: #2a1a00;
+      border: 1px solid #9e6a03;
+      border-radius: 6px;
+      padding: 12px 16px;
+      margin-bottom: 14px;
+      font-size: 13px;
+      color: #d29922;
+    }
+
+    .robustness-override strong { color: #e3a519; }
+
+    /* Governance lineage block */
+    .lineage-block {
+      margin-top: 20px;
+      padding: 12px 14px;
+      background: #0d1117;
+      border: 1px solid #21262d;
+      border-radius: 6px;
+      font-size: 12px;
+      color: #484f58;
+      font-family: monospace;
+      line-height: 1.8;
+    }
+
+    .lineage-block a { color: #58a6ff; text-decoration: none; }
+    .lineage-block a:hover { text-decoration: underline; }
+    .lineage-block .lineage-label {
+      font-size: 10px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      color: #30363d;
+      margin-bottom: 6px;
+    }
+
+    /* SVI tooltip */
+    .svi-tooltip-wrap {
+      position: relative;
+      display: inline-block;
+    }
+
+    .svi-info {
+      display: inline-block;
+      width: 14px;
+      height: 14px;
+      line-height: 14px;
+      text-align: center;
+      border-radius: 50%;
+      background: #21262d;
+      border: 1px solid #30363d;
+      color: #8b949e;
+      font-size: 10px;
+      font-style: normal;
+      cursor: pointer;
+      margin-left: 4px;
+      vertical-align: middle;
+    }
+
+    .svi-tooltip {
+      display: none;
+      position: absolute;
+      bottom: 120%;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #161b22;
+      border: 1px solid #30363d;
+      border-radius: 6px;
+      padding: 10px 12px;
+      font-size: 12px;
+      color: #c9d1d9;
+      width: 280px;
+      z-index: 100;
+      line-height: 1.5;
+      font-style: normal;
+      font-family: 'Segoe UI', system-ui, sans-serif;
+    }
+
+    .svi-info:hover + .svi-tooltip,
+    .svi-tooltip:hover { display: block; }
   </style>
 </head>
 <body>
@@ -370,6 +468,10 @@
         <span class="chip" onclick="setPrompt('Seismic event near Pawnee, OK. Magnitude 2.9, shallow depth.')">Pawnee, OK</span>
       </div>
       <button id="submit" onclick="runPipeline()">Run Pipeline</button>
+      <div class="privacy-badge">
+        <svg width="12" height="12" viewBox="0 0 16 16" fill="#484f58"><path d="M8 1a3 3 0 0 0-3 3v1H4a1 1 0 0 0-1 1v7a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V6a1 1 0 0 0-1-1h-1V4a3 3 0 0 0-3-3zm0 1a2 2 0 0 1 2 2v1H6V4a2 2 0 0 1 2-2z"/></svg>
+        Session data is ephemeral. Zero PII retention. Prompts are not used for model training.
+      </div>
     </div>
   </div>
 
@@ -396,6 +498,7 @@
   <div class="panel full-width">
     <div class="panel-header">Routing Brief</div>
     <div class="panel-body">
+      <div id="robustness-override" class="robustness-override"></div>
       <div id="brief-output" class="brief-output">
         <div class="empty-state">Submit an incident report to generate a routing brief.</div>
       </div>
@@ -540,10 +643,56 @@
         document.getElementById('incident-id').textContent = 'Incident ID: ' + d.incident_id;
       }
 
+      // Robustness override banner
+      const robustnessEl = document.getElementById('robustness-override');
+      if (d.output_status && (d.output_status.includes('FALLBACK') || d.output_status.includes('ERROR'))) {
+        robustnessEl.style.display = 'block';
+        robustnessEl.innerHTML = '<strong>⚠ ROBUSTNESS OVERRIDE</strong> — Pipeline could not produce a fully validated brief. ' +
+          'Retrieval confidence or citation alignment fell below threshold after ' +
+          'exhausting retry budget. Do not deploy resources on this output alone. ' +
+          'Verify via direct agency contact.';
+      } else {
+        robustnessEl.style.display = 'none';
+        robustnessEl.innerHTML = '';
+      }
+
       // Brief
       const briefEl = document.getElementById('brief-output');
       if (d.brief) {
-        briefEl.innerHTML = marked.parse(d.brief);
+        // Strip the raw verify footer — we replace it with the lineage block below
+        let briefText = d.brief.replace(/\n\n---\n\*\*Verify:\*\*.*/s, '');
+        let html = marked.parse(briefText);
+
+        // Inject SVI tooltip after any SVI percentile value
+        html = html.replace(
+          /(SVI percentile:\s*[\d.]+[^<]*)/g,
+          '$1<span class="svi-tooltip-wrap"><i class="svi-info">ⓘ</i><span class="svi-tooltip">Calculated using CDC Social Vulnerability Index 2022. Hazard correlation mapped via Blackman (2025) Disparate Risk methodology to ensure equitable resource allocation. Score range: 0 (lowest) to 1 (highest vulnerability). Scores above 0.75 represent the top vulnerability quartile.</span></span>'
+        );
+
+        // Build governance lineage block
+        const cluster  = d.cluster || 'unknown';
+        const node     = cluster.includes('oklahoma') ? 'reasoning_oklahoma' : 'reasoning_ohio';
+        const citation = d.citation_alignment || '—';
+        const conf     = d.retrieval_confidence || '—';
+
+        // Extract verify links from original brief
+        const verifyMatch = d.brief.match(/\*\*Verify:\*\*\s*(.*)/s);
+        let verifyLinks = '';
+        if (verifyMatch) {
+          // Convert markdown links to HTML
+          verifyLinks = verifyMatch[1].trim()
+            .replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank">$1</a>')
+            .replace(/·/g, '·');
+        }
+
+        const lineage = `<div class="lineage-block">
+  <div class="lineage-label">[System Governance &amp; Lineage]</div>
+  ${verifyLinks ? '<div>Verify: ' + verifyLinks + '</div>' : ''}
+  <div>Logic Routing: Task executed by AEGIS multi-agent pipeline · Cluster: ${node} · IBM watsonx us-south</div>
+  <div>Citation Alignment: ${citation} &nbsp;·&nbsp; Retrieval Confidence: ${conf} &nbsp;·&nbsp; Incident: ${d.incident_id || '—'}</div>
+</div>`;
+
+        briefEl.innerHTML = html + lineage;
       } else if (d.error) {
         briefEl.innerHTML = '<div style="color:#f85149">Error: ' + d.error + '</div>';
       } else {
