@@ -1338,7 +1338,7 @@
     // Data sources
     const sources = [
       { name: 'USGS Seismic Feed',             ok: /magnitude|\bM\s*\d|\d+\.\d+\s*(km|Mw)/i.test(brief), url: 'https://earthquake.usgs.gov/earthquakes/map/' },
-      { name: 'CDC Social Vulnerability Index', ok: /SVI percentile|social vulnerability|DEMOGRAPHIC RISK.*SVI|SVI.*score|vulnerability index/i.test(brief), url: 'https://www.atsdr.cdc.gov/placeandhealth/svi/interactive_map.html' },
+      { name: 'CDC Social Vulnerability Index', ok: /SVI percentile|social vulnerability|DEMOGRAPHIC RISK.*SVI|SVI.*score|vulnerability index/i.test(brief), url: 'https://www.atsdr.cdc.gov/place-health/php/svi/svi-interactive-map.html' },
       { name: 'HHS emPOWER',                   ok: /electricity.dependent|empower/i.test(brief) },
       { name: 'EPA TRI Facilities',             ok: /\bTRI\b|COMPOUND RISK/i.test(brief) },
       { name: 'Policy RAG (ChromaDB)',          ok: d.output_status && !d.output_status.includes('FALLBACK') },
