@@ -19,8 +19,13 @@ audit_log.json
 # TTS output — generated during testing
 orchestrate/generated_audio/
 
-# IBM program materials — do not publish
+# IBM program materials and internal presentation docs — do not publish
 assets/IBM*
+assets/AEGIS_NotebookLM_*.md
+assets/AEGIS_FEMA_Outreach_Letter.md
+assets/AEGIS_Video_Script_RunOfShow.md
+assets/Project_Presentation_Basic_Template.md
+assets/V2_AI_Agent_Pitch_Final.md
 
 # IDE
 .vscode/
