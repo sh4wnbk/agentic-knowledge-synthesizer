@@ -16,6 +16,9 @@ env/
 # Audit logs — generated at runtime
 audit_log.json
 
+# TTS output — generated during testing
+orchestrate/generated_audio/
+
 # IBM program materials — do not publish
 assets/IBM*
 
