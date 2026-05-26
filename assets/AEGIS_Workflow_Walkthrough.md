@@ -3,7 +3,7 @@
 **IBM SkillsBuild AI Experiential Learning Lab 2026 | Government & Public Services**
 **Author: Shawn Blackman | Lehman College CUNY | B.S. Environmental Science**
 
-Follow along with the live prototype: **[aegis-skill-server-433469729276.us-central1.run.app](https://aegis-skill-server-433469729276.us-central1.run.app/)**
+Follow along with the live prototype: **[Live Prototype](https://aegis-skill-server-433469729276.us-central1.run.app/)**
 
 This walkthrough steps through each stage of the AEGIS pipeline using annotated screenshots from a live run. A dispatcher submits a plain-language incident report; AEGIS fuses data from five federal sources, runs three governance checkpoints, and returns a validated inter-agency routing brief in under 30 seconds.
 
