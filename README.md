@@ -4,7 +4,7 @@
 **Track: Government & Public Services**  
 **Author: Shawn Blackman** | B.S. Environmental Science, Lehman College (CUNY)
 
-**[Live Prototype](https://aegis-skill-server-433469729276.us-central1.run.app/)** — deployed on GCP Cloud Run
+**[Live Prototype](https://aegis-synthesizer.web.app/)** — deployed on GCP Cloud Run
 
 ---
 
@@ -332,7 +332,7 @@ pytest tests/test_units.py -v
 
 ## Resources
 
-- [Live Prototype](https://aegis-skill-server-433469729276.us-central1.run.app/) — deployed on GCP Cloud Run
+- [Live Prototype](https://aegis-synthesizer.web.app/) — deployed on GCP Cloud Run
 - [Video Presentation](https://drive.google.com/file/d/1Xl7nQWA-gNO77lZW76bUXIq8h8cYpHNv/view?usp=share_link) — full demo walkthrough
 - [Presentation Slides](https://docs.google.com/presentation/d/1fHDn6w3vWFFAbAfMxkuEIsoe0jSonjt5_6lIMFWwuRE/edit?usp=sharing) — IBM SkillsBuild AI Experiential Learning Lab 2026
 - [Workflow Walkthrough](assets/AEGIS_Workflow_Walkthrough.md) — annotated screenshots of every pipeline stage

@@ -1,0 +1,16 @@
+{
+  "hosting": {
+    "target": "aegis",
+    "public": "public",
+    "ignore": ["firebase.json", "**/.*"],
+    "rewrites": [
+      {
+        "source": "**",
+        "run": {
+          "serviceId": "aegis-skill-server",
+          "region": "us-central1"
+        }
+      }
+    ]
+  }
+}
