@@ -4,7 +4,7 @@
 **Track: Government & Public Services**  
 **Author: Shawn Blackman** | B.S. Environmental Science, Lehman College (CUNY)
 
-**[Live Prototype](https://agentic-knowledge-synthesizer-production.up.railway.app/)** — deployed on Railway
+**[Live Prototype](https://aegis-skill-server-433469729276.us-central1.run.app/)** — deployed on GCP Cloud Run
 
 ---
 
@@ -324,7 +324,7 @@ pytest tests/test_units.py -v
 - **Live USGS lag** — seismic events appear in the USGS catalogue 5–15 minutes after occurrence. The geographic distance note explicitly flags when no verified activity exists at the reported location.
 - **emPOWER and TRI are local snapshots** — fetched at project time, not real-time. Production would call live APIs on each request.
 - **FEMA and IFRC** — verification links only; no live disaster declaration data is ingested.
-- **ngrok tunnel** — the bridge is exposed via a development tunnel tied to the local machine. Production deployment requires a persistent host (IBM Code Engine or equivalent).
+- **ngrok tunnel** — used only for local development and Orchestrate re-registration. Production is deployed on GCP Cloud Run (`deploy/cloudrun/`).
 - **Citation alignment threshold** — 0.55 is calibrated for the local `all-MiniLM-L6-v2` model against the Ohio/Oklahoma-weighted knowledge base. Production with IBM watsonx embeddings would raise this to 0.65+.
 - **Semantic match evaluation in Orchestrate** — Orchestrate's built-in semantic match metric is not valid for this system. AEGIS returns live data; the USGS event, SVI score, and TRI facilities change between runs. The authoritative quality signal is the internal governance layer (Overseer audit log), not a fixed expected-output comparison. See `orchestrate/registration_guide.md`.
 
@@ -332,7 +332,7 @@ pytest tests/test_units.py -v
 
 ## Resources
 
-- [Live Prototype](https://agentic-knowledge-synthesizer-production.up.railway.app/) — deployed on Railway
+- [Live Prototype](https://aegis-skill-server-433469729276.us-central1.run.app/) — deployed on GCP Cloud Run
 - [Video Presentation](https://drive.google.com/file/d/1Xl7nQWA-gNO77lZW76bUXIq8h8cYpHNv/view?usp=share_link) — full demo walkthrough
 - [Presentation Slides](https://docs.google.com/presentation/d/1fHDn6w3vWFFAbAfMxkuEIsoe0jSonjt5_6lIMFWwuRE/edit?usp=sharing) — IBM SkillsBuild AI Experiential Learning Lab 2026
 - [Workflow Walkthrough](assets/AEGIS_Workflow_Walkthrough.md) — annotated screenshots of every pipeline stage

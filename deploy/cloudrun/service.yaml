@@ -1,0 +1,53 @@
+# Cloud Run service manifest for AEGIS skill server.
+# Usage: gcloud run services replace deploy/cloudrun/service.yaml --region us-central1
+#
+# Before use: replace PROJECT_ID with your actual GCP project ID.
+apiVersion: serving.knative.dev/v1
+kind: Service
+metadata:
+  name: aegis-skill-server
+  labels:
+    cloud.googleapis.com/location: us-central1
+spec:
+  template:
+    metadata:
+      annotations:
+        autoscaling.knative.dev/minScale: "0"
+        autoscaling.knative.dev/maxScale: "3"
+        run.googleapis.com/cpu-throttling: "true"
+    spec:
+      containerConcurrency: 4
+      containers:
+        - image: us-central1-docker.pkg.dev/PROJECT_ID/aegis/aegis-skill-server:latest
+          ports:
+            - containerPort: 8080
+          resources:
+            limits:
+              memory: 2Gi
+              cpu: "1"
+          env:
+            - name: VECTOR_STORE_BACKEND
+              value: chroma
+            - name: CHROMA_PERSIST_DIR
+              value: /tmp/chroma_db
+            - name: CDC_SVI_CSV
+              value: /app/data/svi_2022_us_tract.csv
+            - name: POLICY_DOCS_DIR
+              value: /app/data/policy_docs
+            - name: WATSONX_URL
+              value: https://us-south.ml.cloud.ibm.com
+            - name: USE_GRANITE_GUARDIAN
+              value: "false"
+            - name: WATSONX_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: WATSONX_API_KEY
+                  key: latest
+            - name: WATSONX_PROJECT_ID
+              valueFrom:
+                secretKeyRef:
+                  name: WATSONX_PROJECT_ID
+                  key: latest
+  traffic:
+    - percent: 100
+      latestRevision: true

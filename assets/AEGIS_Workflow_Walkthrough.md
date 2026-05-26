@@ -3,7 +3,7 @@
 **IBM SkillsBuild AI Experiential Learning Lab 2026 | Government & Public Services**
 **Author: Shawn Blackman | Lehman College CUNY | B.S. Environmental Science**
 
-Follow along with the live prototype: **[agentic-knowledge-synthesizer-production.up.railway.app](https://agentic-knowledge-synthesizer-production.up.railway.app/)**
+Follow along with the live prototype: **[aegis-skill-server-433469729276.us-central1.run.app](https://aegis-skill-server-433469729276.us-central1.run.app/)**
 
 This walkthrough steps through each stage of the AEGIS pipeline using annotated screenshots from a live run. A dispatcher submits a plain-language incident report; AEGIS fuses data from five federal sources, runs three governance checkpoints, and returns a validated inter-agency routing brief in under 30 seconds.
 
@@ -115,6 +115,6 @@ The final entries show alignment scores converging: early candidates score 0.54�
 
 ## Resources
 
-- [Live Prototype](https://agentic-knowledge-synthesizer-production.up.railway.app/) — deployed on Railway
+- [Live Prototype](https://aegis-skill-server-433469729276.us-central1.run.app/) — deployed on GCP Cloud Run
 - [Video Presentation](https://drive.google.com/file/d/1Xl7nQWA-gNO77lZW76bUXIq8h8cYpHNv/view?usp=share_link) — full demo walkthrough
 - [Presentation Slides](https://docs.google.com/presentation/d/1fHDn6w3vWFFAbAfMxkuEIsoe0jSonjt5_6lIMFWwuRE/edit?usp=sharing) — IBM SkillsBuild AI Experiential Learning Lab 2026

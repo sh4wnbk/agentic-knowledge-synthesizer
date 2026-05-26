@@ -8,7 +8,7 @@ info:
     The agent calls this tool once with the dispatcher's incident text and receives
     a governed inter-agency routing brief in return.
 servers:
-  - url: https://agentic-knowledge-synthesizer-production.up.railway.app
+  - url: https://aegis-skill-server-433469729276.us-central1.run.app
 paths:
   /health:
     get:
