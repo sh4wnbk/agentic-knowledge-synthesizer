@@ -29,7 +29,7 @@ spec:
             - name: VECTOR_STORE_BACKEND
               value: chroma
             - name: CHROMA_PERSIST_DIR
-              value: /tmp/chroma_db
+              value: /app/chroma_db
             - name: CDC_SVI_CSV
               value: /app/data/svi_2022_us_tract.csv
             - name: POLICY_DOCS_DIR

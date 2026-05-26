@@ -96,7 +96,7 @@ gcloud run deploy "$SERVICE_NAME" \
   --max-instances         3 \
   --concurrency           4 \
   --allow-unauthenticated \
-  --set-env-vars          "VECTOR_STORE_BACKEND=chroma,CHROMA_PERSIST_DIR=/tmp/chroma_db,CDC_SVI_CSV=/app/data/svi_2022_us_tract.csv,POLICY_DOCS_DIR=/app/data/policy_docs,WATSONX_URL=${WATSONX_URL:-https://us-south.ml.cloud.ibm.com},USE_GRANITE_GUARDIAN=${USE_GRANITE_GUARDIAN:-false}" \
+  --set-env-vars          "VECTOR_STORE_BACKEND=chroma,CHROMA_PERSIST_DIR=/app/chroma_db,CDC_SVI_CSV=/app/data/svi_2022_us_tract.csv,POLICY_DOCS_DIR=/app/data/policy_docs,WATSONX_URL=${WATSONX_URL:-https://us-south.ml.cloud.ibm.com},USE_GRANITE_GUARDIAN=${USE_GRANITE_GUARDIAN:-false}" \
   --set-secrets           "WATSONX_API_KEY=WATSONX_API_KEY:latest,WATSONX_PROJECT_ID=WATSONX_PROJECT_ID:latest"
 
 # ── Output ───────────────────────────────────────────────────────────────────

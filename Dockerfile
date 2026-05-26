@@ -20,6 +20,10 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Copy application
 COPY . .
 
+# Bake the ChromaDB vector store into the image so cold starts don't need to re-ingest.
+ENV CHROMA_PERSIST_DIR=/app/chroma_db
+RUN python -m rag.ingest
+
 EXPOSE 8080
 
 CMD uvicorn orchestrate.skill_server:app --host 0.0.0.0 --port ${PORT:-8080}
