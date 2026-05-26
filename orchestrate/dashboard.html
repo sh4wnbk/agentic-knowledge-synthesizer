@@ -600,8 +600,8 @@
     .pillar-badge.partial     { background: var(--yellow-bg); color: var(--yellow); border: 1px solid var(--yellow-border); }
     .pillar-desc { font-size: 14px; color: var(--text-muted); line-height: 1.6; }
 
-    /* ── Railway status banner ── */
-    #railway-banner {
+    /* ── GCP Cloud Run status banner ── */
+    #cloudrun-banner {
       display: none;
       align-items: center;
       gap: 10px;
@@ -614,10 +614,10 @@
       top: 68px;
       z-index: 90;
     }
-    #railway-banner.critical { background: var(--red-bg); border-color: var(--red-border); color: var(--red); }
-    #railway-banner.visible  { display: flex; }
-    #railway-banner a { color: inherit; text-decoration: underline; margin-left: auto; white-space: nowrap; }
-    .railway-icon { font-size: 15px; flex-shrink: 0; }
+    #cloudrun-banner.critical { background: var(--red-bg); border-color: var(--red-border); color: var(--red); }
+    #cloudrun-banner.visible  { display: flex; }
+    #cloudrun-banner a { color: inherit; text-decoration: underline; margin-left: auto; white-space: nowrap; }
+    .cloud-icon { font-size: 15px; flex-shrink: 0; }
 
     /* ── Scroll to top ── */
     #scroll-top {
@@ -734,11 +734,11 @@
   </div>
 </header>
 
-<!-- Railway platform status banner — shown only on incidents -->
-<div id="railway-banner">
-  <span class="railway-icon">⚠</span>
-  <span id="railway-banner-text">Railway platform degraded service.</span>
-  <a href="https://status.railway.app" target="_blank" rel="noopener noreferrer">Status page →</a>
+<!-- GCP Cloud Run status banner — shown only on incidents -->
+<div id="cloudrun-banner">
+  <span class="cloud-icon">☁️</span>
+  <span id="cloudrun-banner-text">GCP Cloud Run degraded service.</span>
+  <a href="https://status.cloud.google.com" target="_blank" rel="noopener noreferrer">Status page →</a>
 </div>
 
 <div class="layout">
@@ -1400,15 +1400,15 @@
     });
   })();
 
-  // ── Railway platform status ──
-  async function checkRailwayStatus() {
+  // ── GCP Cloud Run platform status ──
+  async function checkCloudRunStatus() {
     try {
-      const r = await fetch('/status/railway', { cache: 'no-store' });
+      const r = await fetch('/status/cloudrun', { cache: 'no-store' });
       const d = await r.json();
-      const banner = document.getElementById('railway-banner');
-      const text   = document.getElementById('railway-banner-text');
+      const banner = document.getElementById('cloudrun-banner');
+      const text   = document.getElementById('cloudrun-banner-text');
       if (d.indicator && d.indicator !== 'none' && d.indicator !== 'unknown') {
-        text.textContent = `Railway platform: ${d.description}`;
+        text.textContent = `GCP Cloud Run: ${d.description}`;
         banner.classList.remove('critical');
         if (d.indicator === 'major' || d.indicator === 'critical') banner.classList.add('critical');
         banner.classList.add('visible');
@@ -1417,8 +1417,8 @@
       }
     } catch (_) { /* silent — don't surface proxy errors to user */ }
   }
-  checkRailwayStatus();
-  setInterval(checkRailwayStatus, 60000);
+  checkCloudRunStatus();
+  setInterval(checkCloudRunStatus, 60000);
 
   document.getElementById('input').addEventListener('keydown', e => {
     if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) runPipeline();

@@ -96,40 +96,47 @@ def health() -> dict[str, str]:
     return {"status": "ok"}
 
 
-# ── Railway platform status proxy ─────────────────────────────
+# ── GCP Cloud Run platform status proxy ───────────────────────
 
-@app.get("/status/railway")
-def railway_status() -> dict[str, Any]:
+@app.get("/status/cloudrun")
+def cloudrun_status() -> dict[str, Any]:
     """
-    Proxies Railway's public status API so the dashboard can check for
-    platform incidents without CORS issues. Returns indicator + description.
+    Proxies GCP's public incidents feed and filters for active Cloud Run
+    incidents. Returns indicator + description without CORS issues.
     indicator values: "none" (all OK) | "minor" | "major" | "critical" | "unknown"
     """
     try:
         r = _requests.get(
-            "https://status.railway.app/api/v2/summary.json",
+            "https://status.cloud.google.com/incidents.json",
             timeout=5,
         )
-        data = r.json()
-        indicator   = data.get("status", {}).get("indicator", "none")
-        description = data.get("status", {}).get("description", "All Systems Operational")
-        incidents   = data.get("incidents", [])
-        active      = [
+        incidents = r.json()
+        active = [
             i for i in incidents
-            if i.get("status") not in ("resolved", "postmortem")
+            if not i.get("end") and any(
+                "Cloud Run" in s.get("title", "") or "cloud-run" in s.get("id", "")
+                for s in i.get("affected_products", [])
+            )
         ]
+        if active:
+            severity  = active[0].get("severity", "medium").lower()
+            indicator = "critical" if severity in ("high", "critical") else "minor"
+            description = active[0].get("external_desc", "Cloud Run incident in progress")
+        else:
+            indicator   = "none"
+            description = "All Systems Operational"
         return {
             "indicator":        indicator,
             "description":      description,
             "active_incidents": len(active),
-            "url":              "https://status.railway.app",
+            "url":              "https://status.cloud.google.com",
         }
     except Exception as exc:
         return {
             "indicator":        "unknown",
             "description":      str(exc),
             "active_incidents": 0,
-            "url":              "https://status.railway.app",
+            "url":              "https://status.cloud.google.com",
         }
 
 
