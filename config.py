@@ -14,6 +14,30 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
+# ── LLM provider selection ───────────────────────────────
+# AEGIS is provider-agnostic. The Synthesis Agent needs BEAM_WIDTH
+# candidate briefs as plain text; it does not care which model wrote them.
+# Leave LLM_PROVIDER unset to auto-detect from whichever credentials exist.
+# Options: anthropic, openai, watsonx
+LLM_PROVIDER = os.getenv("LLM_PROVIDER", "").strip().lower() or None
+
+# OpenAI-compatible endpoints (OpenAI, Groq, Together, OpenRouter, vLLM,
+# Ollama, LM Studio). Set LLM_BASE_URL to the host that serves /chat/completions.
+LLM_API_KEY  = os.getenv("LLM_API_KEY")
+LLM_BASE_URL = os.getenv("LLM_BASE_URL", "https://api.openai.com/v1")
+LLM_MODEL    = os.getenv("LLM_MODEL", "gpt-4o-mini")
+
+# Anthropic
+ANTHROPIC_API_KEY = os.getenv("ANTHROPIC_API_KEY")
+ANTHROPIC_MODEL   = os.getenv("ANTHROPIC_MODEL", "claude-sonnet-4-5")
+
+# ── Decoding temperatures ────────────────────────────────
+# Beam n runs at BEAM_BASE_TEMPERATURE + (n * BEAM_TEMPERATURE_STEP).
+# Beam 0 is near-greedy; later beams sample more freely so the Overseer
+# has genuinely different candidates to score.
+BEAM_BASE_TEMPERATURE = float(os.getenv("BEAM_BASE_TEMPERATURE", "0.30"))
+BEAM_TEMPERATURE_STEP = float(os.getenv("BEAM_TEMPERATURE_STEP", "0.15"))
+
 # ── IBM Credentials ──────────────────────────────────────
 WATSONX_API_KEY    = os.getenv("WATSONX_API_KEY")
 WATSONX_PROJECT_ID = os.getenv("WATSONX_PROJECT_ID")

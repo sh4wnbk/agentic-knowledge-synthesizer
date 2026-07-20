@@ -1,27 +1,44 @@
 """
 agents/synthesis_agent.py
-Agent 6 — Action & Execution Layer
-Generates candidate responses via Granite LLM (watsonx.ai).
-Beam search: generates BEAM_WIDTH candidates.
-The Overseer selects by citation alignment — not token probability.
+Agent 6, the Action and Execution Layer.
+
+Generates candidate responses through a pluggable LLM provider (see
+providers/). Beam search produces BEAM_WIDTH candidates and the Overseer
+selects by citation alignment, not by token probability.
+
 Key decision: which output state does validation authorize?
+
+The model vendor is an implementation detail. Everything that makes this
+AEGIS (the prompt contract, the three required section headers, the beam
+schedule, the refusal to deliver an unvalidated brief) lives here and is
+provider-agnostic.
 """
 
-import time
-import requests
 import json
 import re
 from config import (
-    WATSONX_API_KEY, WATSONX_PROJECT_ID, WATSONX_URL,
-    GRANITE_MODEL, BEAM_WIDTH, MAX_NEW_TOKENS
+    BEAM_WIDTH, MAX_NEW_TOKENS,
+    BEAM_BASE_TEMPERATURE, BEAM_TEMPERATURE_STEP,
 )
 
 
 class SynthesisAgent:
 
-    def __init__(self):
-        self._token = None
-        self._token_expiry = 0  # Unix timestamp
+    def __init__(self, provider=None):
+        """
+        provider: an LLMProvider instance. Injected for testing, or left
+        None to resolve from LLM_PROVIDER / auto-detected credentials on
+        first use. Resolution is lazy so importing this module never
+        requires credentials.
+        """
+        self._provider = provider
+
+    @property
+    def provider(self):
+        if self._provider is None:
+            from providers import get_provider
+            self._provider = get_provider()
+        return self._provider
 
     def generate_candidates(
         self,
@@ -38,65 +55,52 @@ class SynthesisAgent:
         with a selection process grounded in logical consistency
         with the retrieved source — not token probability.
         """
-        token   = self._get_iam_token()
-        prompt  = self._build_prompt(intent, retrieval, bridge)
+        prompt = self._build_prompt(intent, retrieval, bridge)
         candidates = []
 
         for beam in range(BEAM_WIDTH):
-            response = self._call_granite(token, prompt, beam)
+            response = self._generate_candidate(prompt, beam)
             if response:
                 candidates.append(response)
 
         print(f"[SYNTHESIS] Generated {len(candidates)} candidates "
-              f"for Overseer evaluation.")
+              f"via {self.provider.name} for Overseer evaluation.")
         return candidates
 
-    def _call_granite(self, token: str, prompt: str, beam_idx: int) -> str:
+    def _generate_candidate(self, prompt: str, beam_idx: int) -> str:
         """
-        Single Granite LLM call.
-        Temperature varies slightly per beam to produce
-        meaningfully different candidates.
-        beam_idx=0 is near-greedy; subsequent beams allow more sampling.
+        One beam. Temperature varies per beam so the candidates differ
+        meaningfully: beam 0 is near-greedy, later beams sample more freely.
+        A provider failure returns an empty string and the beam is dropped.
         """
-        temperature = 0.3 + (beam_idx * 0.15)  # 0.3, 0.45, 0.60, 0.75
-
-        payload = {
-            "model_id":   GRANITE_MODEL,
-            "project_id": WATSONX_PROJECT_ID,
-            "input":      prompt,
-            "parameters": {
-                "decoding_method": "sample",   # Sampling, not greedy
-                "temperature":     temperature,
-                "max_new_tokens":  MAX_NEW_TOKENS,
-                "repetition_penalty": 1.1
-            }
-        }
-
-        try:
-            r = requests.post(
-                f"{WATSONX_URL}/ml/v1/text/generation?version=2023-05-29",
-                headers={
-                    "Authorization": f"Bearer {token}",
-                    "Content-Type":  "application/json"
-                },
-                json=payload,
-                timeout=30
-            )
-            result = r.json()
-            raw_text = result.get("results", [{}])[0].get("generated_text", "")
-            raw_text = raw_text.replace("```markdown", "").replace("```", "").strip()
-            # Strip any preamble Granite generates before the first section header.
-            # The output contract requires [HAZARD STATUS] to be the opening line.
-            for marker in ["**[HAZARD STATUS]**", "[HAZARD STATUS]"]:
-                idx = raw_text.find(marker)
-                if idx > 0:
-                    raw_text = raw_text[idx:]
-                    break
-            raw_text = self._normalize_section_headers(raw_text)
-            return raw_text
-        except Exception as e:
-            print(f"[SYNTHESIS] Granite call failed (beam {beam_idx}): {e}")
+        temperature = round(
+            BEAM_BASE_TEMPERATURE + (beam_idx * BEAM_TEMPERATURE_STEP), 4
+        )
+        raw_text = self.provider.generate(
+            prompt=prompt,
+            temperature=temperature,
+            max_tokens=MAX_NEW_TOKENS,
+        )
+        if not raw_text:
             return ""
+        return self._clean_candidate(raw_text)
+
+    @classmethod
+    def _clean_candidate(cls, raw_text: str) -> str:
+        """
+        Enforce the output contract on whatever the provider returned.
+        Provider-agnostic: every model tested wraps or prefaces its markdown
+        in some way, and the Overseer's structural check is unforgiving.
+        """
+        raw_text = raw_text.replace("```markdown", "").replace("```", "").strip()
+        # Strip any preamble before the first section header. The output
+        # contract requires [HAZARD STATUS] to be the opening line.
+        for marker in ["**[HAZARD STATUS]**", "[HAZARD STATUS]"]:
+            idx = raw_text.find(marker)
+            if idx > 0:
+                raw_text = raw_text[idx:]
+                break
+        return cls._normalize_section_headers(raw_text)
 
     @staticmethod
     def _normalize_section_headers(text: str) -> str:
@@ -239,24 +243,3 @@ Use only these three section headers and nothing else:
 **[DEMOGRAPHIC RISK (SVI)]** 1 sentence detailing the vulnerability of the location based on retrieved context. If applicable, include: {svi_display}. {empower_display}. Tract: {svi_tract}.
 **[INTER-AGENCY ROUTING]** List the primary regulatory agency and its immediate action. Do not list all agencies — the full routing table is appended automatically.
 """
-
-    def _get_iam_token(self) -> str:
-        # Refresh if missing or expiring within 60 seconds
-        if self._token and time.time() < self._token_expiry - 60:
-            return self._token
-        try:
-            r = requests.post(
-                "https://iam.cloud.ibm.com/identity/token",
-                data={
-                    "grant_type": "urn:ibm:params:oauth:grant-type:apikey",
-                    "apikey":     WATSONX_API_KEY
-                },
-                timeout=15
-            )
-            payload = r.json()
-            self._token = payload.get("access_token", "")
-            self._token_expiry = time.time() + payload.get("expires_in", 3600)
-            return self._token
-        except Exception as e:
-            print(f"[SYNTHESIS] IAM token failed: {e}")
-            return ""
