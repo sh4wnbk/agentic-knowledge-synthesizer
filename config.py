@@ -38,20 +38,10 @@ ANTHROPIC_MODEL   = os.getenv("ANTHROPIC_MODEL", "claude-sonnet-4-5")
 BEAM_BASE_TEMPERATURE = float(os.getenv("BEAM_BASE_TEMPERATURE", "0.30"))
 BEAM_TEMPERATURE_STEP = float(os.getenv("BEAM_TEMPERATURE_STEP", "0.15"))
 
-# ── IBM Credentials ──────────────────────────────────────
+# ── IBM watsonx credentials (optional provider) ──────────
 WATSONX_API_KEY    = os.getenv("WATSONX_API_KEY")
 WATSONX_PROJECT_ID = os.getenv("WATSONX_PROJECT_ID")
 WATSONX_URL        = os.getenv("WATSONX_URL", "https://us-south.ml.cloud.ibm.com")
-WATSON_STT_KEY     = os.getenv("WATSON_STT_API_KEY")
-WATSON_STT_URL     = os.getenv(
-    "WATSON_STT_URL",
-    "https://api.us-south.speech-to-text.watson.cloud.ibm.com"
-)
-WATSON_TTS_KEY     = os.getenv("WATSON_TTS_API_KEY") or WATSONX_API_KEY
-WATSON_TTS_URL     = os.getenv(
-    "WATSON_TTS_URL",
-    "https://api.us-south.text-to-speech.watson.cloud.ibm.com"
-)
 
 # ── IBM Granite Guardian guardrail ───────────────────────
 USE_GRANITE_GUARDIAN = os.getenv("USE_GRANITE_GUARDIAN", "false").strip().lower() in (
@@ -63,8 +53,8 @@ USE_GRANITE_GUARDIAN = os.getenv("USE_GRANITE_GUARDIAN", "false").strip().lower(
 GRANITE_GUARDIAN_MODEL = os.getenv("GRANITE_GUARDIAN_MODEL", "ibm/granite-guardian-3-8b")
 GRANITE_GUARDIAN_THRESHOLD = float(os.getenv("GRANITE_GUARDIAN_THRESHOLD", "0.5"))
 
-# ── Model ────────────────────────────────────────────────
-# granite-3-8b-instruct: current production Granite model (2024–2025)
+# ── watsonx default model ────────────────────────────────
+# Default Granite model id used by the optional watsonx provider.
 GRANITE_MODEL  = "ibm/granite-3-8b-instruct"
 
 # ── Decoding — beam search, not greedy ──────────────────
@@ -128,15 +118,15 @@ OKLAHOMA_BBOX = {
 }
 
 # ── Governance thresholds ────────────────────────────────
-# CONFIDENCE_THRESHOLD: production target for IBM embedding models.
-# Lowered to 0.45 for local prototype using all-MiniLM-L6-v2,
-# which has a compressed cosine similarity range (0.40–0.65 for
-# good matches). Restore to 0.70 when using IBM watsonx embeddings.
+# CONFIDENCE_THRESHOLD: lowered to 0.45 for the local prototype using
+# all-MiniLM-L6-v2, which has a compressed cosine similarity range
+# (0.40–0.65 for good matches). A higher-capacity embedding model would
+# support a stricter threshold (~0.70).
 CONFIDENCE_THRESHOLD     = 0.45   # Local prototype (all-MiniLM-L6-v2)
-# CONFIDENCE_THRESHOLD   = 0.70   # Production (IBM watsonx embeddings)
+# CONFIDENCE_THRESHOLD   = 0.70   # Higher-capacity embedding model
 
 CITATION_ALIGN_THRESHOLD = 0.55   # Local prototype (all-MiniLM-L6-v2 + OH-heavy knowledge base)
-# CITATION_ALIGN_THRESHOLD = 0.65 # Production (IBM watsonx embeddings + balanced knowledge base)
+# CITATION_ALIGN_THRESHOLD = 0.65 # Higher-capacity embedding model + balanced knowledge base
 MAX_RETRIES              = 2      # Retry budget cap — Overseer loop
 
 # ── External APIs ────────────────────────────────────────
@@ -151,7 +141,7 @@ TRI_FACILITIES_JSON = os.path.join(os.path.dirname(__file__), "data", "tri_facil
 VECTOR_STORE_BACKEND = os.getenv("VECTOR_STORE_BACKEND", "chroma")
 CHROMA_PERSIST_DIR     = os.getenv("CHROMA_PERSIST_DIR", "./chroma_db")
 CHROMA_COLLECTION_NAME = "crisis_knowledge_base"
-EMBEDDING_MODEL        = "all-MiniLM-L6-v2"  # Local; swap for IBM embeddings in production
+EMBEDDING_MODEL        = "all-MiniLM-L6-v2"  # Local embedding model
 
 # ── Data paths ───────────────────────────────────────────
 CDC_SVI_CSV      = os.getenv(

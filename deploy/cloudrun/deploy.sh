@@ -66,38 +66,53 @@ create_or_update_secret() {
   fi
 }
 
-echo
-echo "========================================"
-echo "SYNCING SECRETS"
-echo "========================================"
-create_or_update_secret "WATSONX_API_KEY"    "${WATSONX_API_KEY:?Set WATSONX_API_KEY in .env}"
-create_or_update_secret "WATSONX_PROJECT_ID" "${WATSONX_PROJECT_ID:?Set WATSONX_PROJECT_ID in .env}"
+# watsonx is an optional provider. Only sync and attach its secrets when both
+# credentials are present; otherwise deploy without them.
+SECRET_FLAGS=""
+if [[ -n "${WATSONX_API_KEY:-}" && -n "${WATSONX_PROJECT_ID:-}" ]]; then
+  echo
+  echo "========================================"
+  echo "SYNCING WATSONX SECRETS"
+  echo "========================================"
+  create_or_update_secret "WATSONX_API_KEY"    "$WATSONX_API_KEY"
+  create_or_update_secret "WATSONX_PROJECT_ID" "$WATSONX_PROJECT_ID"
 
-# Grant Cloud Run's default compute SA permission to read secrets
-PROJECT_NUMBER=$(gcloud projects describe "$PROJECT_ID" --format "value(projectNumber)")
-gcloud projects add-iam-policy-binding "$PROJECT_ID" \
-  --member="serviceAccount:${PROJECT_NUMBER}-compute@developer.gserviceaccount.com" \
-  --role="roles/secretmanager.secretAccessor" \
-  --condition=None >/dev/null
+  # Grant Cloud Run's default compute SA permission to read secrets
+  PROJECT_NUMBER=$(gcloud projects describe "$PROJECT_ID" --format "value(projectNumber)")
+  gcloud projects add-iam-policy-binding "$PROJECT_ID" \
+    --member="serviceAccount:${PROJECT_NUMBER}-compute@developer.gserviceaccount.com" \
+    --role="roles/secretmanager.secretAccessor" \
+    --condition=None >/dev/null
+
+  SECRET_FLAGS="WATSONX_API_KEY=WATSONX_API_KEY:latest,WATSONX_PROJECT_ID=WATSONX_PROJECT_ID:latest"
+else
+  echo
+  echo "No WATSONX_API_KEY/WATSONX_PROJECT_ID in .env — skipping watsonx secret sync."
+  echo "(Configure your active LLM provider's credentials on the service separately.)"
+fi
 
 # ── Deploy ───────────────────────────────────────────────────────────────────
 echo
 echo "========================================"
 echo "DEPLOYING TO CLOUD RUN"
 echo "========================================"
-gcloud run deploy "$SERVICE_NAME" \
-  --image                 "$IMAGE" \
-  --region                "$REGION" \
-  --project               "$PROJECT_ID" \
-  --port                  8080 \
-  --memory                2Gi \
-  --cpu                   1 \
-  --min-instances         0 \
-  --max-instances         3 \
-  --concurrency           4 \
-  --allow-unauthenticated \
-  --set-env-vars          "VECTOR_STORE_BACKEND=chroma,CHROMA_PERSIST_DIR=/app/chroma_db,CDC_SVI_CSV=/app/data/svi_2022_us_tract.csv,POLICY_DOCS_DIR=/app/data/policy_docs,WATSONX_URL=${WATSONX_URL:-https://us-south.ml.cloud.ibm.com},USE_GRANITE_GUARDIAN=${USE_GRANITE_GUARDIAN:-false}" \
-  --set-secrets           "WATSONX_API_KEY=WATSONX_API_KEY:latest,WATSONX_PROJECT_ID=WATSONX_PROJECT_ID:latest"
+DEPLOY_ARGS=(
+  --image                 "$IMAGE"
+  --region                "$REGION"
+  --project               "$PROJECT_ID"
+  --port                  8080
+  --memory                2Gi
+  --cpu                   1
+  --min-instances         0
+  --max-instances         3
+  --concurrency           4
+  --allow-unauthenticated
+  --set-env-vars          "VECTOR_STORE_BACKEND=chroma,CHROMA_PERSIST_DIR=/app/chroma_db,CDC_SVI_CSV=/app/data/svi_2022_us_tract.csv,POLICY_DOCS_DIR=/app/data/policy_docs,WATSONX_URL=${WATSONX_URL:-https://us-south.ml.cloud.ibm.com},USE_GRANITE_GUARDIAN=${USE_GRANITE_GUARDIAN:-false}"
+)
+if [[ -n "$SECRET_FLAGS" ]]; then
+  DEPLOY_ARGS+=(--set-secrets "$SECRET_FLAGS")
+fi
+gcloud run deploy "$SERVICE_NAME" "${DEPLOY_ARGS[@]}"
 
 # ── Output ───────────────────────────────────────────────────────────────────
 SERVICE_URL=$(gcloud run services describe "$SERVICE_NAME" \

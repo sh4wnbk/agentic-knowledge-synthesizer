@@ -1,7 +1,7 @@
 """
 rag/vector_store.py
 Vector store access layer.
-ChromaDB is the default local backend, with a backend switch for IBM Cloud migration.
+ChromaDB is the default local backend, with a pluggable backend switch.
 """
 
 import chromadb
@@ -31,8 +31,8 @@ def get_collection():
     """
     Returns the crisis knowledge base collection.
     Creates it if it does not exist.
-    Uses sentence-transformers for local embedding.
-    In production: replace with IBM watsonx.ai embedding endpoint.
+    Uses sentence-transformers for local embedding. A hosted embedding
+    endpoint could be substituted behind this function.
     """
     client = get_client()
     ef = embedding_functions.SentenceTransformerEmbeddingFunction(

@@ -1,8 +1,8 @@
 """
 governance/audit_log.py
 Every Overseer decision is recorded here.
-In production: writes to IBM watsonx.governance API.
-In prototype: writes to local JSON log and stdout.
+Writes to a local JSON log and stdout. A hosted governance store
+could be swapped in behind this interface, but none is implemented.
 """
 
 import json
@@ -81,7 +81,6 @@ class AuditLog:
     def export(self, path: str = "audit_log.json"):
         """
         Export full audit log to JSON.
-        In production: POST to watsonx.governance endpoint.
         """
         with open(path, "w") as f:
             json.dump(self.entries, f, indent=2)

@@ -1,7 +1,7 @@
 """
-main.py — Entry point and Validation Suite
-Demonstrates the 'Load-Bearing' geophysical logic (OH vs OK)
-and signals 'Proactive Mode' readiness.
+main.py — CLI validation run.
+Exercises the dual-basin geophysical logic (Ohio proximity vs Oklahoma
+basin-wide) end to end through the pipeline.
 """
 
 from rag.ingest import run_full_ingest
@@ -9,12 +9,11 @@ from rag.vector_store import collection_size
 from pipeline import run_pipeline
 
 def display_system_manifest():
-    """Signals architectural intent and proactive readiness to the reviewer."""
+    """Print a short banner describing the run."""
     print("\n" + "="*60)
-    print("SYSTEM MANIFEST: AGENTIC KNOWLEDGE SYNTHESIZER")
-    print("Track: Government & Public Services")
-    print("Mode: MVP (Reactive) | Status: Proactive-Ready")
-    print("Geophysical Logic: Blackman (2025) OH/OK Inference Clusters")
+    print("AEGIS — Agentic Emergency Geospatial Intelligence Synthesizer")
+    print("CLI validation run")
+    print("Geophysical logic: Blackman (2025) OH/OK inference clusters")
     print("="*60 + "\n")
 
 def main():
