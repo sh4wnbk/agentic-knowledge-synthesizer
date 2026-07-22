@@ -64,7 +64,11 @@ GRANITE_MODEL  = "ibm/granite-3-8b-instruct"
 # Beam search generates N candidates; the Overseer Agent
 # selects by citation alignment score, not token probability.
 BEAM_WIDTH     = 4      # Number of candidate responses generated
-MAX_NEW_TOKENS = 700
+# Output token budget per beam. Env-configurable so it can be tuned without a
+# rebuild. Reasoning models (e.g. gpt-oss) spend part of this budget on hidden
+# reasoning tokens before emitting content, so the default leaves headroom: too
+# small a budget is exhausted during reasoning and the model returns no content.
+MAX_NEW_TOKENS = int(os.getenv("MAX_NEW_TOKENS", "2048"))
 
 # ── Seismic threshold ────────────────────────────────────
 # M >= 3.0: the minimum magnitude used in Blackman (2025)

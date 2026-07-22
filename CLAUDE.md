@@ -123,14 +123,10 @@ paper), `EMBEDDING_MODEL` all-MiniLM-L6-v2, `SVI_THRESHOLD` 0.75.
 
 ## Known issues
 
-- `providers/*.is_configured()` only checks that a credential is non-empty, so
-  placeholder values from `.env.example` count as configured. After
-  `cp .env.example .env`, auto-detect selects a provider that cannot
-  authenticate, every beam returns empty, and the pipeline degrades to a
-  fallback instead of failing loudly.
-- `providers/openai_compat.py` discards the response body on failure, so a
-  non-2xx or unexpected shape surfaces only as a `KeyError` name. Log the status
-  code and body.
+- Reasoning models (e.g. `gpt-oss`) spend part of the token budget on hidden
+  reasoning before emitting content. `MAX_NEW_TOKENS` must be large enough to
+  cover reasoning plus the brief, or the model returns empty content. It is now
+  env-configurable (default 2048); tune it per model without a rebuild.
 - `_normalize_section_headers` in `synthesis_agent.py` only matches headers that
   already carry an asterisk, so a model emitting a bare `[HAZARD STATUS]` is
   left unnormalized. Validation still passes because the Overseer checks the

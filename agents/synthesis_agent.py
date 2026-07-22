@@ -22,6 +22,16 @@ from config import (
 )
 
 
+class SynthesisUnavailable(RuntimeError):
+    """
+    Every beam returned empty text: an infrastructure/provider failure, not an
+    evidence-based refusal. It must surface distinctly rather than collapse into
+    HONEST_FALLBACK, so a broken or misconfigured provider is loud instead of
+    masquerading as a governed "I could not support this claim."
+    """
+    pass
+
+
 class SynthesisAgent:
 
     def __init__(self, provider=None):

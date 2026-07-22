@@ -14,7 +14,7 @@ from agents.orchestrator_agent  import OrchestratorAgent
 from agents.rag_knowledge_agent import RAGKnowledgeAgent
 from agents.data_bridge_agent   import DataBridgeAgent
 from agents.overseer_agent      import OverseerAgent
-from agents.synthesis_agent     import SynthesisAgent
+from agents.synthesis_agent     import SynthesisAgent, SynthesisUnavailable
 from governance.output_states   import AgentOutput, OutputState
 from config                     import MAX_RETRIES
 
@@ -108,13 +108,13 @@ def run_pipeline(
     candidates = synthesis.generate_candidates(intent, retrieval, bridge_data)
 
     if not candidates:
-        return AgentOutput(
-            state          = OutputState.HONEST_FALLBACK,
-            content        = "Generation failed. Please contact emergency services directly.",
-            citation       = retrieval.get("citation"),
-            confidence     = retrieval.get("confidence", 0.0),
-            citation_score = 0.0,
-            audit_log      = overseer.get_audit_log()
+        # Every beam came back empty. This is a provider/infrastructure failure,
+        # not an evidence-based refusal, so it must surface loudly rather than as
+        # an HONEST_FALLBACK the dispatcher would read as a governed decision.
+        raise SynthesisUnavailable(
+            "All beams returned empty text. The LLM provider produced no usable "
+            "output (check credentials, endpoint, or MAX_NEW_TOKENS for reasoning "
+            "models). This is an infrastructure failure, not an honest fallback."
         )
 
     # ── HOOK 3: Pre-Delivery Check ────────────────────────────
@@ -169,6 +169,11 @@ def run_pipeline(
         retrieval   = rag.retrieve(query)
         bridge_data = bridge.fetch(intent, retrieval, bbox, agency_routing)
         candidates  = synthesis.generate_candidates(intent, retrieval, bridge_data)
+        if not candidates:
+            raise SynthesisUnavailable(
+                "All beams returned empty text on retry. Provider/infrastructure "
+                "failure, not an honest fallback."
+            )
         citation    = retrieval.get("citation")
         context     = retrieval.get("context", "")
         best_output = None

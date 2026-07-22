@@ -10,12 +10,30 @@ Everything AEGIS-specific (prompt construction, header normalization, beam
 scheduling, Overseer scoring) lives in agents/synthesis_agent.py, not here.
 """
 
+import re
 from abc import ABC, abstractmethod
 
 
 class ProviderNotConfigured(RuntimeError):
     """Raised when a provider is selected but its credentials are missing."""
     pass
+
+
+# Obvious dummy values from .env.example (e.g. "your_api_key_here",
+# "your_ibm_cloud_api_key_here"). A non-empty check alone treats these as
+# configured, which lets auto-detect select a provider that cannot authenticate.
+_PLACEHOLDER_RE = re.compile(
+    r"^(your[_-].*|.*_here|changeme|placeholder|todo|x{3,}|<.*>)$",
+    re.IGNORECASE,
+)
+
+
+def is_real_credential(value) -> bool:
+    """True when value is a non-empty string that is not an obvious placeholder."""
+    if not isinstance(value, str):
+        return False
+    v = value.strip()
+    return bool(v) and _PLACEHOLDER_RE.match(v) is None
 
 
 class LLMProvider(ABC):

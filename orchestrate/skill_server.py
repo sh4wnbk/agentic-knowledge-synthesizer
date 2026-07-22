@@ -22,6 +22,7 @@ from agents.overseer_agent import OverseerAgent
 from agents.rag_knowledge_agent import RAGKnowledgeAgent
 from agents.synthesis_agent import SynthesisAgent
 from pipeline import run_pipeline
+from agents.synthesis_agent import SynthesisUnavailable
 
 
 app = FastAPI(title="AEGIS — Incident Routing Skill Bridge", version="0.2.0")
@@ -244,6 +245,17 @@ def incident_report(req: IncidentReportRequest) -> dict[str, Any]:
             "agency_routing_baseline": agency_routing,
             "citation_chain":       citation_chain,
             "audit_log":            result.audit_log,
+        }
+    except SynthesisUnavailable as exc:
+        # Distinct from HONEST FALLBACK on purpose: the provider produced nothing,
+        # so this is a plumbing failure, not a governed refusal. Say so plainly.
+        print(f"[INCIDENT_REPORT] Synthesis unavailable: {exc}")
+        return {
+            "incident_id":   req.incident_id or "unknown",
+            "output_status": "SYNTHESIS UNAVAILABLE",
+            "error":         str(exc),
+            "detail":        ("The LLM provider returned no usable output. This is an "
+                              "infrastructure failure, not an evidence-based fallback."),
         }
     except Exception as exc:
         tb = traceback.format_exc()

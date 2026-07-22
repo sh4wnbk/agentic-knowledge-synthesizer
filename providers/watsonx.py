@@ -10,7 +10,7 @@ only way the pipeline can run.
 import time
 import requests
 
-from providers.base import LLMProvider
+from providers.base import LLMProvider, is_real_credential
 
 
 class WatsonxProvider(LLMProvider):
@@ -29,7 +29,7 @@ class WatsonxProvider(LLMProvider):
         self._token_expiry = 0
 
     def is_configured(self) -> bool:
-        return bool(self.api_key and self.project_id)
+        return is_real_credential(self.api_key) and is_real_credential(self.project_id)
 
     def generate(self, prompt: str, temperature: float, max_tokens: int) -> str:
         token = self._get_iam_token()

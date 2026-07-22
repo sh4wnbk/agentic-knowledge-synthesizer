@@ -12,7 +12,7 @@ and the test suite still runs from a bare clone.
 
 import requests
 
-from providers.base import LLMProvider
+from providers.base import LLMProvider, is_real_credential
 
 
 class OpenAICompatProvider(LLMProvider):
@@ -26,7 +26,7 @@ class OpenAICompatProvider(LLMProvider):
         self.model    = model    or LLM_MODEL
 
     def is_configured(self) -> bool:
-        return bool(self.api_key and self.base_url and self.model)
+        return is_real_credential(self.api_key) and bool(self.base_url and self.model)
 
     def generate(self, prompt: str, temperature: float, max_tokens: int) -> str:
         try:
@@ -42,13 +42,42 @@ class OpenAICompatProvider(LLMProvider):
                     "temperature": temperature,
                     "max_tokens":  max_tokens,
                 },
-                timeout=60,
+                timeout=90,
             )
-            result = r.json()
-            if "error" in result:
-                print(f"[PROVIDER:openai] API error: {result['error']}")
-                return ""
-            return result["choices"][0]["message"]["content"] or ""
         except Exception as e:
-            print(f"[PROVIDER:openai] generation failed: {e}")
+            print(f"[PROVIDER:openai] request failed: {type(e).__name__}: {e}")
             return ""
+
+        # Surface the real HTTP failure instead of letting it collapse into a
+        # bare KeyError downstream (log status and a slice of the body).
+        if r.status_code != 200:
+            print(f"[PROVIDER:openai] HTTP {r.status_code}: {r.text[:500]}")
+            return ""
+        try:
+            result = r.json()
+        except ValueError:
+            print(f"[PROVIDER:openai] non-JSON response: {r.text[:300]}")
+            return ""
+        if isinstance(result, dict) and result.get("error"):
+            print(f"[PROVIDER:openai] API error: {result['error']}")
+            return ""
+
+        try:
+            choice = result["choices"][0]
+        except (KeyError, IndexError, TypeError):
+            print(f"[PROVIDER:openai] unexpected response shape: {str(result)[:400]}")
+            return ""
+
+        content = (choice.get("message") or {}).get("content")
+        if content:
+            return content
+
+        # Empty content with tokens spent usually means a reasoning model hit the
+        # token ceiling during hidden reasoning (finish_reason=length) before it
+        # produced any answer. Report it so it does not masquerade as a refusal.
+        print(
+            f"[PROVIDER:openai] empty content "
+            f"(finish_reason={choice.get('finish_reason')}, usage={result.get('usage')}). "
+            f"If finish_reason=length on a reasoning model, raise MAX_NEW_TOKENS."
+        )
+        return ""

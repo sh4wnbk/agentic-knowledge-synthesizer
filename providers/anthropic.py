@@ -8,7 +8,7 @@ dependency and the test suite still runs from a bare clone.
 
 import requests
 
-from providers.base import LLMProvider
+from providers.base import LLMProvider, is_real_credential
 
 
 class AnthropicProvider(LLMProvider):
@@ -24,7 +24,7 @@ class AnthropicProvider(LLMProvider):
         self.model   = model   or ANTHROPIC_MODEL
 
     def is_configured(self) -> bool:
-        return bool(self.api_key and self.model)
+        return is_real_credential(self.api_key) and bool(self.model)
 
     def generate(self, prompt: str, temperature: float, max_tokens: int) -> str:
         try:
