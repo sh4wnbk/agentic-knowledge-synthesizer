@@ -110,8 +110,9 @@ Google Cloud Run runs `orchestrate.skill_server:app` via uvicorn, per the
 leftovers.** The front end is Firebase Hosting (`firebase.json`, `public/`),
 at aegis-synthesizer.web.app.
 
-Railway is gone. Comments and docs still referencing it are stale, including
-the `.gitignore` note explaining why `chroma_db/` is committed.
+Railway is gone. Any remaining comments or docs referencing it are stale.
+`chroma_db/` and `data/` are committed so the Cloud Run image build is
+self-contained (baked at build time via `RUN python -m rag.ingest`).
 
 ## Key config values
 
@@ -139,12 +140,11 @@ paper), `EMBEDDING_MODEL` all-MiniLM-L6-v2, `SVI_THRESHOLD` 0.75.
   exists in `usgs_live`, but the `DataBridgeAgent` CLEAR branch (no recent
   events in region) omits the key entirely. The test outcome therefore depends
   on real seismic activity at run time.
-- `app.py` imports streamlit, which is not in `requirements.txt`.
-- The README's IBM Tools table claims four watsonx components. Two are not
-  implemented: `governance/audit_log.py` writes locally and `rag/vector_store.py`
-  uses a local embedding model, both with comments describing what production
-  would do. The README also says the SVI CSV is not in git, but it is committed,
-  all 61 MB of it, covering 72,837 US tracts when only Ohio and Oklahoma are used.
+- `governance/audit_log.py` writes the audit log locally and `rag/vector_store.py`
+  uses a local embedding model (`all-MiniLM-L6-v2`). Neither has a production
+  embedding or governance backend behind it; treat any such capability as absent.
+- The SVI CSV (`data/svi_2022_us_tract.csv`) is committed, all 61 MB of it,
+  covering 72,837 US tracts when only Ohio and Oklahoma are used.
 
 ## Working style
 

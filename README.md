@@ -1,7 +1,5 @@
 # AEGIS — Agentic Emergency Geospatial Intelligence Synthesizer
 
-**IBM SkillsBuild AI Experiential Learning Lab 2026**  
-**Track: Government & Public Services**  
 **Author: Shawn Blackman** | B.S. Environmental Science, Lehman College (CUNY)
 
 **[Live Prototype](https://aegis-synthesizer.web.app/)** — deployed on GCP Cloud Run
@@ -59,7 +57,7 @@ flowchart TD
         E[Agent 4 — DataBridgeAgent\nUSGS live · Census geocoder\nCDC SVI · HHS emPOWER · EPA TRI\nGeographic distance verification\nEPA tier promotion if hazmat detected]
         E --> G
 
-        G[Agent 5 — SynthesisAgent\nGranite 3-8B-instruct\n4 beam candidates at varying temperature]
+        G[Agent 5 — SynthesisAgent\nLLM provider (configurable)\n4 beam candidates at varying temperature]
         G --> H3
 
         H3{Overseer Hook 3\nPre-Delivery Check\ncitation alignment ≥ 0.55}
@@ -102,10 +100,8 @@ graph LR
         USGS2["USGS seismic context\n50 event records"]
     end
 
-    subgraph IBM["IBM watsonx"]
-        G34["Granite 3-8B-instruct\nSynthesis"]
-        GG["Granite Guardian 3-8B\nInput moderation"]
-        IAM["IBM Cloud IAM\nAuthentication"]
+    subgraph LLM["LLM Provider — configurable"]
+        PROV["OpenAI-compatible · Anthropic · watsonx\nBeam synthesis via providers/ abstraction"]
     end
 
     USGS --> DataBridge
@@ -117,7 +113,7 @@ graph LR
     IFRC --> DataBridge
 
     KB --> RAG
-    IBM --> Synthesis
+    PROV --> Synthesis
 
     DataBridge["DataBridgeAgent\nAgent 4"]
     RAG["RAGKnowledgeAgent\nAgent 3"]
@@ -170,45 +166,29 @@ If EPA TRI-listed hazmat facilities are detected within ±0.25° of the reported
 
 ---
 
-## IBM Tools
+## Core Components
 
-| Tool | Role |
+| Component | Role |
 |---|---|
-| IBM watsonx.ai (Granite 3-8B-instruct) | SynthesisAgent — beam candidate generation |
-| IBM Granite Guardian 3-8B | OverseerAgent — input and retrieval moderation |
-| IBM watsonx Orchestrate | Front-end — single tool registration, ReAct agent |
-| IBM watsonx.governance | Overseer audit log, model monitoring |
+| LLM provider layer (`providers/`) | SynthesisAgent beam generation. Configurable and auto-detecting: OpenAI-compatible endpoints (OpenAI, Groq, Together, OpenRouter, vLLM, Ollama, LM Studio), Anthropic, or IBM watsonx. Default model `gpt-4o-mini` per `config.py`. |
+| Overseer moderation (`agents/overseer_agent.py`) | Heuristic input and retrieval screening. IBM Granite Guardian is an optional integration (`USE_GRANITE_GUARDIAN`, disabled by default). |
+| Local audit log (`governance/audit_log.py`) | Records every Overseer hook decision with timestamp, result, and reason. |
+| Firebase Hosting + GCP Cloud Run | Front end (`orchestrate/dashboard.html`) and API hosting (`orchestrate/skill_server.py`). |
+
+The provider abstraction means `SynthesisAgent` asks for text and gets text; it does not know or care which model answered. `get_provider()` resolves from `LLM_PROVIDER`, or auto-detects from whichever credentials are present.
 
 ---
 
-## Orchestrate Integration
+## API
 
-AEGIS is registered in watsonx Orchestrate as a **single tool**: `run_full_crisis_workflow` → `POST /workflow/incident-report`.
+The service exposes the pipeline as a single HTTP endpoint. See `orchestrate/skill_bridge_openapi.yaml` for the full OpenAPI spec.
 
-The agent receives a dispatcher's incident text, calls the tool once, and returns the full brief. No chaining, no multi-step decomposition.
-
-```mermaid
-sequenceDiagram
-    participant D as Dispatcher
-    participant O as Orchestrate Agent
-    participant B as AEGIS Bridge
-    participant P as Pipeline
-
-    D->>O: Incident report text
-    O->>B: POST /workflow/incident-report\n{raw_input, channel: "api"}
-    B->>P: run_pipeline(raw_input)
-    P-->>B: AgentOutput (state · brief · audit_log)
-    B-->>O: JSON response
-    O-->>D: Formatted brief
+```
+POST /workflow/incident-report   → run the full pipeline, return a governed routing brief
+GET  /health                     → service health check
 ```
 
-### Starting the bridge
-
-```bash
-python start_bridge.py
-```
-
-`start_bridge.py` handles uvicorn startup, ngrok tunnel, YAML URL patching, and a regression pair automatically. The ngrok URL is patched into `orchestrate/skill_bridge_openapi.yaml` on each startup.
+The request carries the dispatcher's raw incident text; the response is one of three output states (CONFIRMED DELIVERY, RETRY-CORRECTED DELIVERY, HONEST FALLBACK) with the brief, citation alignment, retrieval confidence, and the Overseer audit log.
 
 ---
 
@@ -218,7 +198,7 @@ python start_bridge.py
 agentic-knowledge-synthesizer/
 ├── pipeline.py                    # Six-agent orchestration + post-processing
 ├── config.py                      # All constants and thresholds
-├── start_bridge.py                # Bridge startup: uvicorn + ngrok + regression
+├── main.py                        # CLI validation run
 ├── requirements.txt
 │
 ├── agents/
@@ -227,7 +207,13 @@ agentic-knowledge-synthesizer/
 │   ├── rag_knowledge_agent.py     # Agent 3: ChromaDB semantic retrieval
 │   ├── data_bridge_agent.py       # Agent 4: USGS · SVI · emPOWER · TRI · distance
 │   ├── overseer_agent.py          # Agent 5: three-hook governance · moderation
-│   └── synthesis_agent.py         # Agent 6: Granite beam generation
+│   └── synthesis_agent.py         # Agent 6: LLM beam generation (configurable provider)
+│
+├── providers/                     # LLM provider abstraction
+│   ├── base.py                    # Provider interface
+│   ├── openai_compat.py           # OpenAI-compatible endpoints
+│   ├── anthropic.py               # Anthropic
+│   └── watsonx.py                 # IBM watsonx (optional)
 │
 ├── rag/
 │   ├── ingest.py                  # Knowledge base ingestion (run once)
@@ -239,12 +225,12 @@ agentic-knowledge-synthesizer/
 │   └── audit_log.py               # Overseer decision logging
 │
 ├── orchestrate/
-│   ├── skill_server.py            # FastAPI bridge · /workflow/incident-report
-│   ├── skill_bridge_openapi.yaml  # Single-tool OpenAPI spec for Orchestrate
-│   └── registration_guide.md      # Agent config · evaluation notes
+│   ├── skill_server.py            # FastAPI service · /workflow/incident-report
+│   ├── dashboard.html             # Live UI (served at /)
+│   └── skill_bridge_openapi.yaml  # OpenAPI spec for the crisis-workflow API
 │
 ├── data/
-│   ├── svi_2022_us_tract.csv      # CDC SVI 2022 (61MB · not in git)
+│   ├── svi_2022_us_tract.csv      # CDC SVI 2022 (61MB · committed)
 │   ├── empower_oh_ok.json         # HHS emPOWER OH/OK snapshot (165 counties)
 │   ├── tri_facilities_oh_ok.json  # EPA TRI OH/OK snapshot (3,463 facilities)
 │   └── policy_docs/
@@ -263,17 +249,19 @@ agentic-knowledge-synthesizer/
 ### Prerequisites
 - Python 3.11+
 - [uv](https://github.com/astral-sh/uv) — fast Python package manager
-- IBM Cloud account with watsonx.ai access
-- ngrok account (free tier)
+- Credentials for one LLM provider (an OpenAI-compatible endpoint, Anthropic, or watsonx)
 
 ### Install
+
+Install CPU-only torch **before** `requirements.txt`, or `sentence-transformers` pulls the CUDA-bundled wheel (~3 GB of `nvidia-*` packages):
 
 ```bash
 cd ~/src
 git clone https://github.com/sh4wnbk/agentic-knowledge-synthesizer.git
 cd agentic-knowledge-synthesizer
-uv venv .ibm_survival_gap
-source .ibm_survival_gap/bin/activate
+uv venv aegis
+source aegis/bin/activate
+uv pip install torch --index-url https://download.pytorch.org/whl/cpu
 uv pip install -r requirements.txt
 ```
 
@@ -281,19 +269,21 @@ uv pip install -r requirements.txt
 
 ```bash
 cp .env.example .env
-# Fill in: WATSONX_API_KEY, WATSONX_PROJECT_ID, WATSONX_URL
+# Fill in credentials for your chosen provider, e.g. LLM_API_KEY / LLM_BASE_URL / LLM_MODEL,
+# or ANTHROPIC_API_KEY. Leave LLM_PROVIDER blank to auto-detect from whichever keys are set.
 ```
 
 ### Seed the knowledge base (run once)
 
 ```bash
-python rag/ingest.py
+python -m rag.ingest
 ```
 
-### Start the bridge
+### Run
 
 ```bash
-python start_bridge.py
+python main.py                                 # CLI validation run
+uvicorn orchestrate.skill_server:app --reload  # the service Cloud Run runs
 ```
 
 ### Run unit tests
@@ -324,9 +314,7 @@ pytest tests/test_units.py -v
 - **Live USGS lag** — seismic events appear in the USGS catalogue 5–15 minutes after occurrence. The geographic distance note explicitly flags when no verified activity exists at the reported location.
 - **emPOWER and TRI are local snapshots** — fetched at project time, not real-time. Production would call live APIs on each request.
 - **FEMA and IFRC** — verification links only; no live disaster declaration data is ingested.
-- **ngrok tunnel** — used only for local development and Orchestrate re-registration. Production is deployed on GCP Cloud Run (`deploy/cloudrun/`).
-- **Citation alignment threshold** — 0.55 is calibrated for the local `all-MiniLM-L6-v2` model against the Ohio/Oklahoma-weighted knowledge base. Production with IBM watsonx embeddings would raise this to 0.65+.
-- **Semantic match evaluation in Orchestrate** — Orchestrate's built-in semantic match metric is not valid for this system. AEGIS returns live data; the USGS event, SVI score, and TRI facilities change between runs. The authoritative quality signal is the internal governance layer (Overseer audit log), not a fixed expected-output comparison. See `orchestrate/registration_guide.md`.
+- **Citation alignment threshold** — 0.55 is calibrated for the local `all-MiniLM-L6-v2` model against the Ohio/Oklahoma-weighted knowledge base. A higher-capacity embedding model would raise this to 0.65+.
 
 ---
 
@@ -334,8 +322,7 @@ pytest tests/test_units.py -v
 
 - [Live Prototype](https://aegis-synthesizer.web.app/) — deployed on GCP Cloud Run
 - [Video Presentation](https://drive.google.com/file/d/1Xl7nQWA-gNO77lZW76bUXIq8h8cYpHNv/view?usp=share_link) — full demo walkthrough
-- [Presentation Slides](https://docs.google.com/presentation/d/1fHDn6w3vWFFAbAfMxkuEIsoe0jSonjt5_6lIMFWwuRE/edit?usp=sharing) — IBM SkillsBuild AI Experiential Learning Lab 2026
-- [Workflow Walkthrough](assets/AEGIS_Workflow_Walkthrough.md) — annotated screenshots of every pipeline stage
+- [Presentation Slides](https://docs.google.com/presentation/d/1fHDn6w3vWFFAbAfMxkuEIsoe0jSonjt5_6lIMFWwuRE/edit?usp=sharing) — annotated deck
 
 ---
 
@@ -350,7 +337,3 @@ pytest tests/test_units.py -v
 - HHS emPOWER Map — Electricity-Dependent Medicare Beneficiaries
 - EPA Toxic Release Inventory (TRI) Program
 - Blackman, S. (2025) Mapping Disparate Risk: Disposal Well-Induced Seismicity and Social Vulnerability in Ohio and Oklahoma
-
----
-
-*IBM SkillsBuild AI Experiential Learning Lab | Government & Public Services Track*
