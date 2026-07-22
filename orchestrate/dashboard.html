@@ -461,26 +461,6 @@
       margin-bottom: 10px;
     }
     .agent-card-top .agent-step { margin-bottom: 0; }
-    .ibm-badge {
-      display: inline-flex;
-      align-items: center;
-      font-size: 11px;
-      font-weight: 800;
-      letter-spacing: 0.5px;
-      color: #fff;
-      background: #0f62fe;
-      border-radius: 4px;
-      padding: 3px 9px;
-    }
-    .ibm-tech {
-      margin-top: 10px;
-      padding-top: 10px;
-      border-top: 1px solid var(--border-2);
-      font-size: 13px;
-      color: var(--text-muted);
-      line-height: 1.6;
-    }
-    .ibm-tech strong { color: var(--text); }
 
     /* ── Agent card state animations ── */
     .agent-card { transition: border-color 0.3s, box-shadow 0.3s; }
@@ -520,22 +500,6 @@
       0%, 100% { transform: scale(1); opacity: 1; }
       50%       { transform: scale(1.5); opacity: 0.6; }
     }
-
-    .ibm-legend {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      margin-top: 12px;
-      margin-bottom: 4px;
-      font-size: 12px;
-      color: var(--text-dim);
-    }
-    .ibm-legend .ibm-badge {
-      flex-shrink: 0;
-      font-size: 10px;
-      padding: 2px 7px;
-    }
-    .ibm-legend strong { color: var(--text-muted); }
 
     /* Governance hooks block */
     .gov-hooks {
@@ -729,7 +693,7 @@
     <div id="nav-menu">
       <a class="nav-item" href="#section-brief" onclick="closeNav()">Routing Brief <span>Generated dispatch intelligence</span></a>
       <a class="nav-item" href="#section-arch" onclick="closeNav()">Agentic Architecture <span>Six agents · hybrid archetypes</span></a>
-      <a class="nav-item" href="#section-gov" onclick="closeNav()">Governance &amp; Trust <span>IBM Five Pillars</span></a>
+      <a class="nav-item" href="#section-gov" onclick="closeNav()">Governance &amp; Trust <span>Five governance pillars</span></a>
     </div>
   </div>
 </header>
@@ -760,7 +724,7 @@
       </div>
       <div class="about-body">
         <p>AEGIS is an agentic AI pipeline for emergency routing intelligence. Six specialized agents — intake, orchestration, RAG retrieval, live data bridging, governance, and synthesis — work in sequence to turn a plain-language incident report into a validated inter-agency dispatch brief.</p>
-        <p>Built for the <strong>IBM SkillsBuild AI Experiential Learning Lab 2026</strong> — a program where participants build agentic AI solutions for real industry problems using IBM watsonx.ai and IBM watsonx Orchestrate, grounded in open-source tools and IBM Granite foundation models.</p>
+        <p>A portfolio project demonstrating an agentic AI architecture for public-sector emergency response: a provider-agnostic LLM synthesis layer, retrieval-augmented grounding, and a governance layer that refuses rather than fabricates.</p>
       </div>
     </div>
 
@@ -780,7 +744,7 @@
       </div>
       <div class="privacy-badge" style="margin-top:6px">
         <svg width="11" height="11" viewBox="0 0 16 16" fill="currentColor"><path d="M8 3.5a.5.5 0 0 0-1 0V9a.5.5 0 0 0 .252.434l3.5 2a.5.5 0 0 0 .496-.868L8 8.71V3.5z"/><path d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zm7-8A7 7 0 1 1 1 8a7 7 0 0 1 14 0z"/></svg>
-        Response time typically 60–180 s — live API calls (USGS, CDC, HHS, EPA) and IBM watsonx.ai inference run on each request.
+        Response time typically 60–180 s — live API calls (USGS, CDC, HHS, EPA) and LLM inference run on each request.
       </div>
     </div>
 
@@ -835,7 +799,7 @@
     <!-- Pipeline progress strip -->
     <div id="pipeline-strip">
       <div class="ps-step" id="ps-1"><div class="ps-dot"></div><div class="ps-label">Intake</div></div>
-      <div class="ps-step" id="ps-2"><div class="ps-dot"></div><div class="ps-label">Orchestrate</div></div>
+      <div class="ps-step" id="ps-2"><div class="ps-dot"></div><div class="ps-label">Orchestrator</div></div>
       <div class="ps-step" id="ps-3"><div class="ps-dot"></div><div class="ps-label">RAG</div></div>
       <div class="ps-step" id="ps-4"><div class="ps-dot"></div><div class="ps-label">Bridge</div></div>
       <div class="ps-step" id="ps-5"><div class="ps-dot"></div><div class="ps-label">Overseer</div></div>
@@ -897,7 +861,7 @@
 
           <div class="agent-card" id="agent-card-5">
             <div class="card-dot" id="dot-5"></div>
-            <div class="agent-card-top"><div class="agent-step" id="step-5">5</div><div class="ibm-badge">IBM</div></div>
+            <div class="agent-card-top"><div class="agent-step" id="step-5">5</div></div>
             <div class="agent-name">Overseer Agent</div>
             <div class="agent-role">Govern &amp; Score</div>
             <div class="agent-desc">Runs three governance hooks at fixed pipeline positions. Scores each beam candidate by citation alignment — not token probability. Can trigger retry or force HONEST FALLBACK.</div>
@@ -906,18 +870,13 @@
 
           <div class="agent-card" id="agent-card-6">
             <div class="card-dot" id="dot-6"></div>
-            <div class="agent-card-top"><div class="agent-step" id="step-6">6</div><div class="ibm-badge">IBM</div></div>
+            <div class="agent-card-top"><div class="agent-step" id="step-6">6</div></div>
             <div class="agent-name">Synthesis Agent</div>
             <div class="agent-role">Generate &amp; Select</div>
             <div class="agent-desc">Generates four beam candidates at varying temperatures. The Overseer selects the highest citation-aligned candidate — not the most probable token sequence.</div>
             <div class="agent-output">→ routing brief · CONFIRMED DELIVERY · RETRY-CORRECTED · HONEST FALLBACK</div>
           </div>
 
-        </div>
-
-        <div class="ibm-legend">
-          <div class="ibm-badge">IBM</div>
-          Cards marked IBM use <strong>IBM Granite Guardian</strong> for input moderation and <strong>IBM Granite</strong> for text generation via <strong>IBM watsonx.ai</strong>.
         </div>
 
         <!-- Governance hooks -->
@@ -968,7 +927,7 @@
 
           <div class="pillar">
             <div class="pillar-head"><span class="pillar-badge partial">Partial</span><span class="pillar-name">Transparency</span></div>
-            <p class="pillar-desc">The dashboard surfaces pipeline status, citation alignment, retrieval confidence, and the full audit log on every run. This system is deployed in a professional EOC context where AI-assisted decision support is disclosed by policy. Model capability documentation follows IBM watsonx.ai platform standards.</p>
+            <p class="pillar-desc">The dashboard surfaces pipeline status, citation alignment, retrieval confidence, and the full audit log on every run. This system is deployed in a professional EOC context where AI-assisted decision support is disclosed by policy. The active LLM provider is configurable and documented in the project README.</p>
           </div>
 
           <div class="pillar">
@@ -978,12 +937,12 @@
 
           <div class="pillar">
             <div class="pillar-head"><span class="pillar-badge implemented">Implemented</span><span class="pillar-name">Robustness</span></div>
-            <p class="pillar-desc">Granite Guardian moderates user input. The Overseer runs three hooks — input audit, retrieval audit, pre-delivery check — with a retry budget of 2. HONEST FALLBACK is a first-class output state; the system never fabricates confidence it does not have. Beam search selects by citation alignment, not token probability.</p>
+            <p class="pillar-desc">Heuristic moderation screens user input (IBM Granite Guardian is an optional integration, disabled by default). The Overseer runs three hooks — input audit, retrieval audit, pre-delivery check — with a retry budget of 2. HONEST FALLBACK is a first-class output state; the system never fabricates confidence it does not have. Beam search selects by citation alignment, not token probability.</p>
           </div>
 
           <div class="pillar" style="grid-column: 1 / -1">
             <div class="pillar-head"><span class="pillar-badge partial">Partial</span><span class="pillar-name">Privacy</span></div>
-            <p class="pillar-desc">No user data is stored beyond the per-request audit log. All vector retrieval is local (ChromaDB on-server). Incident reports contain location and magnitude descriptions — no PII. Gap: the full prompt including retrieved context is transmitted to IBM watsonx for inference. For production EOC deployment, PII scrubbing on intake and a data processing agreement with IBM would be required.</p>
+            <p class="pillar-desc">No user data is stored beyond the per-request audit log. All vector retrieval is local (ChromaDB on-server). Incident reports contain location and magnitude descriptions — no PII. Gap: the full prompt including retrieved context is transmitted to the configured LLM provider for inference. For production EOC deployment, PII scrubbing on intake and a data processing agreement with the provider would be required.</p>
           </div>
 
         </div>
@@ -1216,7 +1175,7 @@
         html += `<div class="lineage-block">
   <div class="lineage-label">[System Governance &amp; Lineage]</div>
   ${verifyLinks ? '<div>Verify: ' + verifyLinks + '</div>' : ''}
-  <div>Logic Routing: AEGIS multi-agent pipeline · Cluster: ${node} · IBM watsonx us-south</div>
+  <div>Logic Routing: AEGIS multi-agent pipeline · Cluster: ${node}</div>
   <div>Citation Alignment: ${d.citation_alignment || '—'} · Retrieval Confidence: ${d.retrieval_confidence || '—'} · ID: ${d.incident_id || '—'}</div>
 </div>`;
         briefEl.innerHTML = html;
