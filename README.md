@@ -57,7 +57,7 @@ flowchart TD
         E[Agent 4 — DataBridgeAgent\nUSGS live · Census geocoder\nCDC SVI · HHS emPOWER · EPA TRI\nGeographic distance verification\nEPA tier promotion if hazmat detected]
         E --> G
 
-        G[Agent 5 — SynthesisAgent\nLLM provider (configurable)\n4 beam candidates at varying temperature]
+        G[Agent 5 — SynthesisAgent\nLLM provider · configurable\n4 beam candidates at varying temperature]
         G --> H3
 
         H3{Overseer Hook 3\nPre-Delivery Check\ncitation alignment ≥ 0.55}
