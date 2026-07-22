@@ -1,11 +1,11 @@
 openapi: 3.0.3
 info:
-  title: AEGIS — EOC Crisis Intelligence Skill
+  title: AEGIS — EOC Crisis Intelligence API
   version: 1.0.0
   description: >
-    Single-tool OpenAPI definition for watsonx Orchestrate registration.
-    Exposes the AEGIS full-pipeline endpoint as the `run_full_crisis_workflow` tool.
-    The agent calls this tool once with the dispatcher's incident text and receives
+    OpenAPI definition for the AEGIS crisis-workflow API.
+    Exposes the AEGIS full-pipeline endpoint as `run_full_crisis_workflow`.
+    A client calls it once with the dispatcher's incident text and receives
     a governed inter-agency routing brief in return.
 servers:
   - url: https://aegis-synthesizer.web.app
@@ -35,7 +35,7 @@ paths:
         Accepts a free-text incident report from an emergency manager and runs
         the complete 6-agent AEGIS pipeline: intake parsing → orchestrator routing
         → RAG retrieval → live data bridge (USGS, CDC SVI, HHS emPOWER, EPA TRI)
-        → Granite LLM synthesis → Overseer governance validation.
+        → LLM synthesis (configurable provider) → Overseer governance validation.
 
         Returns one of three output states:
           - CONFIRMED DELIVERY: passed all governance checks
@@ -75,11 +75,11 @@ components:
           nullable: true
           description: >
             Optional caller-assigned incident identifier. If omitted, the server
-            assigns a UUID automatically. Do not populate this field — leave blank.
+            assigns a UUID automatically.
         channel:
           type: string
           nullable: true
-          description: Originating channel. Use "api" for Orchestrate-initiated calls.
+          description: Originating channel for the request.
           enum:
             - text
             - api
