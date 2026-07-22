@@ -1,7 +1,7 @@
 # Credentials — never commit
 .env
 
-# ChromaDB local vector store — committed for Railway deployment
+# ChromaDB local vector store: committed so the Cloud Run image build is self-contained
 # chroma_db/
 
 # Python
@@ -19,7 +19,7 @@ audit_log.json
 # TTS output — generated during testing
 orchestrate/generated_audio/
 
-# IBM program materials and internal presentation docs — do not publish
+# Unpublished draft and internal presentation materials (do not publish)
 assets/IBM*
 assets/AEGIS_NotebookLM_*.md
 assets/AEGIS_FEMA_Outreach_Letter.md
@@ -38,7 +38,7 @@ Thumbs.db
 # Jupyter (if notebooks added later)
 .ipynb_checkpoints/
 *.ipynb
-# Data files — included for Railway deployment
+# Data files: committed so the Cloud Run image build is self-contained
 # Large CSV is 58 MB (under GitHub's 100 MB hard limit)
 !data/
 !data/svi_2022_us_tract.csv
@@ -49,3 +49,4 @@ Thumbs.db
 
 # Draft assessment variants (do not track)
 agents/assessments/
+aegis/
