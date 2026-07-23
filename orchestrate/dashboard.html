@@ -1156,9 +1156,12 @@
         let briefText = d.brief.replace(/\n\n---\n\*\*Verify:\*\*.*/s, '');
         let html = marked.parse(briefText);
         // Style the three dispatch section headers consistently
-        html = html.replace(/<strong>\[HAZARD STATUS\]<\/strong>/gi,          '<span class="brief-section-hdr">[HAZARD STATUS]</span>');
-        html = html.replace(/<strong>\[DEMOGRAPHIC RISK \(SVI\)\]<\/strong>/gi,'<span class="brief-section-hdr">[DEMOGRAPHIC RISK (SVI)]</span>');
-        html = html.replace(/<strong>\[INTER-AGENCY ROUTING\]<\/strong>/gi,   '<span class="brief-section-hdr">[INTER-AGENCY ROUTING]</span>');
+        // Anchor styling on the literal bracket header, tolerating stray
+        // asterisks or a <strong> wrapper (or neither). Deterministic
+        // presentation must not depend on the model emitting balanced markdown.
+        html = html.replace(/(?:<strong>)?\**\s*\[HAZARD STATUS\]\s*\**(?:<\/strong>)?/gi,           '<span class="brief-section-hdr">[HAZARD STATUS]</span>');
+        html = html.replace(/(?:<strong>)?\**\s*\[DEMOGRAPHIC RISK \(SVI\)\]\s*\**(?:<\/strong>)?/gi, '<span class="brief-section-hdr">[DEMOGRAPHIC RISK (SVI)]</span>');
+        html = html.replace(/(?:<strong>)?\**\s*\[INTER-AGENCY ROUTING\]\s*\**(?:<\/strong>)?/gi,     '<span class="brief-section-hdr">[INTER-AGENCY ROUTING]</span>');
         html = html.replace(
           /(SVI percentile:\s*[\d.]+[^<]*)/g,
           '$1<span class="svi-tooltip-wrap"><i class="svi-info">ⓘ</i><span class="svi-tooltip">Calculated using CDC Social Vulnerability Index 2022. Hazard correlation mapped via Blackman (2025) Disparate Risk methodology to ensure equitable resource allocation. Score 0–1; above 0.75 = top vulnerability quartile.</span></span>'

@@ -107,7 +107,11 @@ class SynthesisAgent:
         # contract requires [HAZARD STATUS] to be the opening line.
         for marker in ["**[HAZARD STATUS]**", "[HAZARD STATUS]"]:
             idx = raw_text.find(marker)
-            if idx > 0:
+            # Accept idx == 0 too: when the balanced "**[HAZARD STATUS]**" marker
+            # is already at the start, keep it. The old "> 0" skipped it and fell
+            # through to the bare "[HAZARD STATUS]" marker at idx 2, which sliced
+            # off the leading "**" and produced an unbalanced header.
+            if idx >= 0:
                 raw_text = raw_text[idx:]
                 break
         return cls._normalize_section_headers(raw_text)
