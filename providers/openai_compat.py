@@ -10,6 +10,8 @@ Uses requests rather than the openai SDK so the repo adds no new dependency
 and the test suite still runs from a bare clone.
 """
 
+import time
+
 import requests
 
 from providers.base import LLMProvider, is_real_credential
@@ -18,6 +20,12 @@ from providers.base import LLMProvider, is_real_credential
 class OpenAICompatProvider(LLMProvider):
 
     name = "openai"
+
+    # Transient statuses worth retrying: rate limit + gateway/5xx. A throttled
+    # beam should back off and retry rather than drop, which on a rate-limited
+    # key would otherwise fail every beam and trip SynthesisUnavailable.
+    _RETRYABLE = {429, 500, 502, 503, 504}
+    _MAX_ATTEMPTS = 3
 
     def __init__(self, api_key=None, base_url=None, model=None):
         from config import LLM_API_KEY, LLM_BASE_URL, LLM_MODEL
@@ -29,30 +37,50 @@ class OpenAICompatProvider(LLMProvider):
         return is_real_credential(self.api_key) and bool(self.base_url and self.model)
 
     def generate(self, prompt: str, temperature: float, max_tokens: int) -> str:
-        try:
-            r = requests.post(
-                f"{self.base_url}/chat/completions",
-                headers={
-                    "Authorization": f"Bearer {self.api_key}",
-                    "Content-Type":  "application/json",
-                },
-                json={
-                    "model":       self.model,
-                    "messages":    [{"role": "user", "content": prompt}],
-                    "temperature": temperature,
-                    "max_tokens":  max_tokens,
-                },
-                timeout=90,
-            )
-        except Exception as e:
-            print(f"[PROVIDER:openai] request failed: {type(e).__name__}: {e}")
-            return ""
+        headers = {
+            "Authorization": f"Bearer {self.api_key}",
+            "Content-Type":  "application/json",
+        }
+        body = {
+            "model":       self.model,
+            "messages":    [{"role": "user", "content": prompt}],
+            "temperature": temperature,
+            "max_tokens":  max_tokens,
+        }
 
-        # Surface the real HTTP failure instead of letting it collapse into a
-        # bare KeyError downstream (log status and a slice of the body).
-        if r.status_code != 200:
+        r = None
+        for attempt in range(self._MAX_ATTEMPTS):
+            try:
+                r = requests.post(
+                    f"{self.base_url}/chat/completions",
+                    headers=headers, json=body, timeout=90,
+                )
+            except Exception as e:
+                print(f"[PROVIDER:openai] request failed: {type(e).__name__}: {e}")
+                return ""
+
+            if r.status_code == 200:
+                break
+
+            if r.status_code in self._RETRYABLE and attempt < self._MAX_ATTEMPTS - 1:
+                # Respect Retry-After when the server sends it, else exponential
+                # backoff (2s, 4s), capped so a slow beam does not stall delivery.
+                retry_after = r.headers.get("Retry-After")
+                try:
+                    wait = float(retry_after) if retry_after else 2.0 * (2 ** attempt)
+                except ValueError:
+                    wait = 2.0 * (2 ** attempt)
+                wait = min(wait, 8.0)
+                print(f"[PROVIDER:openai] HTTP {r.status_code}, retrying in {wait:.1f}s "
+                      f"(attempt {attempt + 1}/{self._MAX_ATTEMPTS})")
+                time.sleep(wait)
+                continue
+
+            # Non-retryable, or retries exhausted: surface the real status/body
+            # instead of letting it collapse into a bare KeyError downstream.
             print(f"[PROVIDER:openai] HTTP {r.status_code}: {r.text[:500]}")
             return ""
+
         try:
             result = r.json()
         except ValueError:
