@@ -14,9 +14,128 @@ from agents.orchestrator_agent  import OrchestratorAgent
 from agents.rag_knowledge_agent import RAGKnowledgeAgent
 from agents.data_bridge_agent   import DataBridgeAgent
 from agents.overseer_agent      import OverseerAgent
+import re
+
 from agents.synthesis_agent     import SynthesisAgent, SynthesisUnavailable
 from governance.output_states   import AgentOutput, OutputState
 from config                     import MAX_RETRIES
+
+
+# ── Deterministic fact composition ────────────────────────────────────────────
+# Established facts are composed here and injected verbatim, the same rule the
+# routing table already follows. If a value was computed upstream, the model does
+# not get to restate it: it dropped qualifiers (attaching a county-level emPOWER
+# count to a census tract) and merged unrelated places. Each fact also carries
+# the source that produced it, so a citation is never stapled onto a fact it did
+# not support.
+
+def _incident_place_label(bridge_data: dict, intent: dict) -> str:
+    """Human label for the reported incident location, with county when known."""
+    svi = bridge_data.get("svi_lookup") or {}
+    label = (svi.get("resolved_location") or svi.get("location_text")
+             or intent.get("location") or "the reported incident location")
+    county = svi.get("county_name")
+    state = svi.get("state_abbr") or svi.get("state_name")
+    if county:
+        suffix = f"{county} County"
+        # Avoid "Youngstown, OH (Mahoning County, OH)" when the label already
+        # carries the state.
+        if state and state.upper() not in label.upper():
+            suffix += f", {state}"
+        return f"{label} ({suffix})"
+    return label
+
+
+def compose_hazard_facts(bridge_data: dict, intent: dict) -> str:
+    """
+    USGS event, its geographic relationship to the reported incident, and the EPA
+    TRI facility list. When the nearest catalogued event is not the reported
+    incident, that is stated explicitly rather than left for the reader to infer.
+    """
+    usgs = bridge_data.get("usgs_live") or {}
+    epa  = bridge_data.get("epa_tri") or {}
+    incident_place = _incident_place_label(bridge_data, intent)
+
+    parts = []
+    place = usgs.get("latest_event")
+    mag   = usgs.get("magnitude")
+    depth = usgs.get("depth_km")
+    dist  = usgs.get("distance_from_incident_km")
+
+    if place and mag is not None:
+        depth_txt = f", depth {depth} km" if isinstance(depth, (int, float)) else ""
+        parts.append(f"Nearest catalogued seismic event: M{mag} {place}{depth_txt} (USGS).")
+        if isinstance(dist, (int, float)):
+            if dist < 30:
+                parts.append(
+                    f"That event is {round(dist, 1)} km from the reported incident at "
+                    f"{incident_place} and is treated as co-located (USGS)."
+                )
+            else:
+                parts.append(
+                    f"This is NOT the reported incident location: the catalogued event is "
+                    f"{round(dist, 1)} km away, and the demographic data below describes "
+                    f"{incident_place}, not the event location (USGS)."
+                )
+    else:
+        parts.append("No seismic events detected in the regional scope (USGS).")
+
+    if epa.get("hazmat_detected"):
+        count = epa.get("facility_count")
+        names = ", ".join(f.get("name", "Unknown") for f in (epa.get("facilities") or [])[:5])
+        plural = "ies" if count != 1 else "y"
+        parts.append(
+            f"COMPOUND HAZMAT RISK: {count} TRI-listed facilit{plural} within the incident "
+            f"bounding box: {names} (EPA TRI)."
+        )
+    else:
+        parts.append("No TRI-listed hazmat facilities detected in the incident bounding box (EPA TRI).")
+
+    return " ".join(parts)
+
+
+def compose_demographic_facts(bridge_data: dict) -> str:
+    """
+    Tract-level SVI and county-level emPOWER, each labelled with the geographic
+    level it is actually reported at. emPOWER is a county figure and saying so is
+    not optional: attached to a tract it implies a wildly wrong share of residents.
+    """
+    svi_d = bridge_data.get("svi_data") or {}
+    svi_l = bridge_data.get("svi_lookup") or {}
+    emp   = bridge_data.get("empower_data") or {}
+
+    tract  = svi_d.get("tract_geoid") or svi_l.get("tract_geoid")
+    county = svi_d.get("county_name") or svi_l.get("county_name")
+    state  = svi_d.get("state_abbr") or svi_l.get("state_abbr")
+    score  = svi_d.get("svi_score", svi_l.get("overall_svi"))
+    approx = svi_d.get("approximate", svi_l.get("approximate", False))
+
+    parts = []
+    if tract:
+        where = f"Census Tract {tract}"
+        if county:
+            where += f", {county} County"
+        if state:
+            where += f", {state}"
+        parts.append(f"Location resolved to {where}{' (approximate match)' if approx else ''}.")
+
+    if isinstance(score, (int, float)):
+        band = " (HIGH vulnerability, top quartile)" if score > 0.75 else ""
+        parts.append(f"Tract-level SVI percentile {score:.4f}{band} (CDC/ATSDR SVI 2022).")
+    else:
+        parts.append("Tract-level SVI percentile unavailable (CDC/ATSDR SVI 2022).")
+
+    count = emp.get("electricity_dependent_count")
+    if emp.get("status") == "unavailable" or count is None:
+        parts.append("County-level electricity-dependent beneficiary count unavailable (HHS emPOWER).")
+    else:
+        emp_county = emp.get("county_name") or county or "the surrounding"
+        parts.append(
+            f"COUNTY-LEVEL figure, not tract-level: {count} electricity-dependent Medicare "
+            f"beneficiaries across all of {emp_county} County (HHS emPOWER, reported by county)."
+        )
+
+    return " ".join(parts)
 
 
 def run_pipeline(
@@ -179,39 +298,40 @@ def run_pipeline(
         best_output = None
         best_score  = -1.0
 
-    # ── Inject geographic note as first line of [HAZARD STATUS] ──
-    # The LLM cannot reliably order this correctly — it conflates the USGS
-    # place name with the reported incident location. Injected deterministically:
-    # - Co-located / regional: prepended as context
-    # - Unverified (>50 km): must be FIRST — truthfulness requires leading with
-    #   "no verified activity at reported location" before any event details.
-    import re as _re
-    usgs_live = bridge_data.get("usgs_live", {})
-    geographic_note = usgs_live.get("geographic_note")
-    if geographic_note:
-        def _prepend_geo_note(m):
-            header  = "**[HAZARD STATUS]**"
-            content = m.group(1).strip()
-            # Strip any duplicate geographic note the LLM may have included
-            content = _re.sub(
-                r"(?:Co-located|Nearest regional event|No USGS-verified)[^.]*\.",
-                "",
-                content,
-            ).strip()
-            if geographic_note.startswith("No USGS-verified"):
-                # Unverified: note goes FIRST — do not lead with event details
-                return f"{header} {geographic_note} {content}"
-            else:
-                # Co-located / regional: append note after event description
-                return f"{header} {content} {geographic_note}"
+    # ── Replace [HAZARD STATUS] and [DEMOGRAPHIC RISK (SVI)] with facts ──
+    # Same rule the routing table already follows. The model conflated the USGS
+    # place name with the reported incident, and attached a county-level emPOWER
+    # count to a census tract, so it no longer gets to restate either. Composed in
+    # Python and inserted verbatim, after Overseer scoring so citation alignment
+    # is still measured against what the model actually wrote.
+    hazard_facts      = compose_hazard_facts(bridge_data, intent)
+    demographic_facts = compose_demographic_facts(bridge_data)
 
-        best_output = _re.sub(
-            r"\*?\*?\[HAZARD STATUS\]\*?\*?\s*(.*?)(?=\n\n|\*?\*?\[DEMOGRAPHIC)",
-            _prepend_geo_note,
-            best_output,
-            count=1,
-            flags=_re.DOTALL,
-        )
+    best_output = re.sub(
+        r"\*?\*?\[HAZARD STATUS\]\*?\*?.*?(?=\*?\*?\[DEMOGRAPHIC)",
+        lambda m: f"**[HAZARD STATUS]** {hazard_facts}\n\n",
+        best_output,
+        count=1,
+        flags=re.DOTALL,
+    )
+
+    def _demographic_repl(m):
+        # Keep the model's qualitative clause only when it states no figures of
+        # its own: anything numeric it wrote here was a restatement of a value
+        # composed above, which is exactly how the county/tract mixup happened.
+        prose = (m.group(1) or "").strip()
+        if not prose or re.search(r"\d", prose):
+            prose = ""
+        body = f"{demographic_facts} {prose}".strip()
+        return f"**[DEMOGRAPHIC RISK (SVI)]** {body}\n\n"
+
+    best_output = re.sub(
+        r"\*?\*?\[DEMOGRAPHIC RISK \(SVI\)\]\*?\*?(.*?)(?=\*?\*?\[INTER-AGENCY)",
+        _demographic_repl,
+        best_output,
+        count=1,
+        flags=re.DOTALL,
+    )
 
     # ── Replace [INTER-AGENCY ROUTING] with deterministic table ──
     # The LLM reliably truncates table rows. Generate from bridge data

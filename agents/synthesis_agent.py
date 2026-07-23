@@ -176,7 +176,12 @@ class SynthesisAgent:
         if empower_data.get("status") == "unavailable" or edep_count is None:
             empower_display = "emPOWER data unavailable"
         else:
-            empower_display = f"County: {edep_count} electricity-dependent Medicare beneficiaries"
+            # emPOWER is reported by county FIPS, never by tract. Carry that
+            # qualifier on the value itself so it cannot be silently dropped.
+            empower_display = (
+                f"{edep_count} electricity-dependent Medicare beneficiaries "
+                f"COUNTY-WIDE (county-level figure, not tract-level)"
+            )
 
         # EPA TRI — hazmat facilities
         if epa_tri.get("hazmat_detected"):
@@ -219,9 +224,8 @@ IMPERATIVE RULES FOR RESPONSE GENERATION:
 4. CITATION REQUIREMENT: You must cite: {citation} where policy is referenced.
 5. Do NOT cite specific policy codes, regulation numbers, or document titles unless they appear verbatim in the retrieved context above. If no specific policy name is available, refer to 'applicable federal and state regulations' only.
 6. REGULATORY ACCURACY: The primary state agency to notify is {target_agency}. Use this exact name and acronym in the [INTER-AGENCY ROUTING] section.
-7. If the SVI lookup is available, explicitly name the census tract GEOID and overall SVI percentile in the [DEMOGRAPHIC RISK (SVI)] section. If the lookup is approximate, say so.
-8. If SVI > 0.75, describe it as HIGH or significant vulnerability. Never describe it as moderate.
-9. Express SVI as a decimal (for example 0.9575), not a percentage.
+7. DETERMINISTIC VALUES: Do NOT state census tract IDs, county names, place names, SVI percentiles, magnitudes, depths, distances, facility counts, or beneficiary counts. Every one of those is composed in code and injected verbatim after generation. Restating them is how a county-level count gets attached to a single census tract.
+8. Describe vulnerability qualitatively (for example HIGH or significant) in words only, never with a number.
 
 RETRIEVED POLICY/SVI CONTEXT:
 {context[:1500]}
@@ -253,7 +257,7 @@ OUTPUT ONLY THE RAW MARKDOWN. NO PREAMBLE. NO META-COMMENTARY. NO CODE BLOCKS.
 DO NOT add any other headings, clarifications, or parenthetical notes.
 DO NOT add any section before [HAZARD STATUS]. The first line of output must be **[HAZARD STATUS]** with no preceding text, bullets, or whitespace.
 Use only these three section headers and nothing else:
-**[HAZARD STATUS]** 1 sentence stating the USGS magnitude, depth, and place name exactly as it appears in the LIVE SEISMIC DATA above. Do NOT state that the event occurred at the reported incident location — only state the USGS place name. Do NOT include the geographic_note — it is injected separately. If no seismic event is detected, state "No seismic events detected in the regional scope." Include: {hazmat_note}.
-**[DEMOGRAPHIC RISK (SVI)]** 1 sentence detailing the vulnerability of the location based on retrieved context. If applicable, include: {svi_display}. {empower_display}. Tract: {svi_tract}.
+**[HAZARD STATUS]** 1 short sentence framing what the seismic and hazmat picture means for the dispatcher. The event facts (magnitude, depth, place name, distance to the reported incident) and the TRI facility list are composed in code and replace this line after generation, so state no figures and no place names here.
+**[DEMOGRAPHIC RISK (SVI)]** 1 short qualitative sentence, grounded in the retrieved context, on what the vulnerability means for response. State NO numbers, tract IDs, county names, percentiles, or counts: those are composed in code and injected. Context values for your understanding only, do not restate: {svi_display}; {empower_display}; tract {svi_tract}.
 **[INTER-AGENCY ROUTING]** List the primary regulatory agency and its immediate action. Do not list all agencies — the full routing table is appended automatically.
 """
