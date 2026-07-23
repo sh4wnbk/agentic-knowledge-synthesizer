@@ -161,40 +161,12 @@ class SynthesisAgent:
         # Extract the source-of-truth agency provided by the Orchestrator
         target_agency = intent.get('regulatory_agency', 'relevant state authorities')
 
-        svi_score = svi.get("svi_score")
-        svi_tract = svi.get("tract_name") or svi.get("tract_geoid", "")
-        if isinstance(svi_score, (int, float)):
-            if svi_score > 0.75:
-                svi_display = f"SVI percentile: {svi_score:.4f} (HIGH vulnerability — top quartile)"
-            else:
-                svi_display = f"SVI percentile: {svi_score:.4f}"
-        else:
-            svi_display = "SVI data unavailable"
-
-        # HHS emPOWER — electricity-dependent residents
-        edep_count = empower_data.get("electricity_dependent_count")
-        if empower_data.get("status") == "unavailable" or edep_count is None:
-            empower_display = "emPOWER data unavailable"
-        else:
-            # emPOWER is reported by county FIPS, never by tract. Carry that
-            # qualifier on the value itself so it cannot be silently dropped.
-            empower_display = (
-                f"{edep_count} electricity-dependent Medicare beneficiaries "
-                f"COUNTY-WIDE (county-level figure, not tract-level)"
-            )
-
-        # EPA TRI — hazmat facilities
-        if epa_tri.get("hazmat_detected"):
-            facility_names = ", ".join(
-                f.get("name", "Unknown") for f in epa_tri.get("facilities", [])[:5]
-            )
-            hazmat_note = (
-                f"COMPOUND RISK: {epa_tri['facility_count']} TRI-listed "
-                f"facilit{'ies' if epa_tri['facility_count'] != 1 else 'y'} "
-                f"within incident bbox: {facility_names}"
-            )
-        else:
-            hazmat_note = "No TRI-listed hazmat facilities detected in incident bbox"
+        # SVI, emPOWER and TRI values are no longer pre-formatted here. Every
+        # established value is composed once, in pipeline.compose_hazard_facts()
+        # and compose_demographic_facts(), and injected verbatim. A second
+        # formatter in this file would be duplicated logic free to drift. The raw
+        # JSON blocks below still give the model the context it needs to write the
+        # connective prose around those facts.
 
         def fmt_tier(agencies):
             if not agencies:
@@ -258,6 +230,6 @@ DO NOT add any other headings, clarifications, or parenthetical notes.
 DO NOT add any section before [HAZARD STATUS]. The first line of output must be **[HAZARD STATUS]** with no preceding text, bullets, or whitespace.
 Use only these three section headers and nothing else:
 **[HAZARD STATUS]** 1 short sentence framing what the seismic and hazmat picture means for the dispatcher. The event facts (magnitude, depth, place name, distance to the reported incident) and the TRI facility list are composed in code and replace this line after generation, so state no figures and no place names here.
-**[DEMOGRAPHIC RISK (SVI)]** 1 short qualitative sentence, grounded in the retrieved context, on what the vulnerability means for response. State NO numbers, tract IDs, county names, percentiles, or counts: those are composed in code and injected. Context values for your understanding only, do not restate: {svi_display}; {empower_display}; tract {svi_tract}.
+**[DEMOGRAPHIC RISK (SVI)]** 1 short qualitative sentence, grounded in the retrieved context, on what the vulnerability means for response. State NO numbers, tract IDs, county names, percentiles, or counts: those are composed in code and injected.
 **[INTER-AGENCY ROUTING]** List the primary regulatory agency and its immediate action. Do not list all agencies — the full routing table is appended automatically.
 """
