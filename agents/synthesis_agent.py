@@ -221,7 +221,7 @@ IMPERATIVE RULES FOR RESPONSE GENERATION:
 1. ZERO CONVERSATION: Do not use greetings, pleasantries, or conversational filler. 
 2. ROLE BOUNDARIES: Your sole job is to provide inter-agency intelligence (USGS, CDC SVI, state policies).
 3. STRICT FORMATTING: Use ONLY the exact markdown structure below. 
-4. CITATION REQUIREMENT: You must cite: {citation} where policy is referenced.
+4. CITATION SCOPE: {citation} supports the cluster routing inference only, that is, why this incident maps to this hazard model and this agency. Reference it only alongside policy or routing rationale. NEVER attach it to a seismic, facility, demographic, or beneficiary statement: those facts come from USGS, EPA TRI, CDC SVI and HHS emPOWER respectively, each is attributed to its own source, and all of them are injected after generation.
 5. Do NOT cite specific policy codes, regulation numbers, or document titles unless they appear verbatim in the retrieved context above. If no specific policy name is available, refer to 'applicable federal and state regulations' only.
 6. REGULATORY ACCURACY: The primary state agency to notify is {target_agency}. Use this exact name and acronym in the [INTER-AGENCY ROUTING] section.
 7. DETERMINISTIC VALUES: Do NOT state census tract IDs, county names, place names, SVI percentiles, magnitudes, depths, distances, facility counts, or beneficiary counts. Every one of those is composed in code and injected verbatim after generation. Restating them is how a county-level count gets attached to a single census tract.

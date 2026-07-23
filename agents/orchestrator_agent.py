@@ -97,6 +97,13 @@ class OrchestratorAgent:
         },
     }
 
+    # Scope: this chain supports the CLUSTER ROUTING INFERENCE only, that is, why
+    # this incident maps to this hazard model and this regulatory agency. It is
+    # not a source for any measured value. Attaching it to a sentence whose facts
+    # came from EPA TRI (or USGS, CDC, HHS) is a misattribution: each of those
+    # carries its own source on the fact it produced, composed in
+    # pipeline.compose_hazard_facts() and compose_demographic_facts(). Render this
+    # chain in the lineage block, never inline on a factual sentence.
     CITATION_CHAIN = {
         "reasoning_ohio": (
             "Blackman (2025) — Mapping Disparate Risk: Induced Seismicity and Social Vulnerability "
@@ -151,7 +158,12 @@ class OrchestratorAgent:
         return self.AGENCY_ROUTING.get(cluster, {})
 
     def get_citation_chain(self, cluster: str) -> str:
-        """Returns the scientific citation chain for downstream use."""
+        """
+        Citation for the cluster routing inference, for the lineage block.
+
+        Not a per-fact citation: measured values are attributed to the source that
+        produced them (USGS, EPA TRI, CDC SVI, HHS emPOWER) where they are composed.
+        """
         return self.CITATION_CHAIN.get(cluster, self.CITATION_CHAIN["default"])
 
     def build_query(self, intent: dict, cluster: str) -> str:
