@@ -29,6 +29,20 @@ from config                     import MAX_RETRIES
 # the source that produced it, so a citation is never stapled onto a fact it did
 # not support.
 
+def _county_label(name) -> str:
+    """
+    Normalize a county name to exactly one trailing "County".
+
+    The sources disagree: the CDC SVI COUNTY column already carries the word
+    ("Mahoning County") while the emPOWER NAME column does not ("Mahoning").
+    Appending unconditionally produced "Mahoning County County".
+    """
+    n = (name or "").strip()
+    if not n:
+        return ""
+    return n if n.lower().endswith("county") else f"{n} County"
+
+
 def _incident_place_label(bridge_data: dict, intent: dict) -> str:
     """Human label for the reported incident location, with county when known."""
     svi = bridge_data.get("svi_lookup") or {}
@@ -37,7 +51,7 @@ def _incident_place_label(bridge_data: dict, intent: dict) -> str:
     county = svi.get("county_name")
     state = svi.get("state_abbr") or svi.get("state_name")
     if county:
-        suffix = f"{county} County"
+        suffix = _county_label(county)
         # Avoid "Youngstown, OH (Mahoning County, OH)" when the label already
         # carries the state.
         if state and state.upper() not in label.upper():
@@ -63,7 +77,7 @@ def compose_hazard_facts(bridge_data: dict, intent: dict) -> str:
     dist  = usgs.get("distance_from_incident_km")
 
     if place and mag is not None:
-        depth_txt = f", depth {depth} km" if isinstance(depth, (int, float)) else ""
+        depth_txt = f", depth {depth:.1f} km" if isinstance(depth, (int, float)) else ""
         parts.append(f"Nearest catalogued seismic event: M{mag} {place}{depth_txt} (USGS).")
         if isinstance(dist, (int, float)):
             if dist < 30:
@@ -114,7 +128,7 @@ def compose_demographic_facts(bridge_data: dict) -> str:
     if tract:
         where = f"Census Tract {tract}"
         if county:
-            where += f", {county} County"
+            where += f", {_county_label(county)}"
         if state:
             where += f", {state}"
         parts.append(f"Location resolved to {where}{' (approximate match)' if approx else ''}.")
@@ -129,10 +143,10 @@ def compose_demographic_facts(bridge_data: dict) -> str:
     if emp.get("status") == "unavailable" or count is None:
         parts.append("County-level electricity-dependent beneficiary count unavailable (HHS emPOWER).")
     else:
-        emp_county = emp.get("county_name") or county or "the surrounding"
+        emp_county = _county_label(emp.get("county_name") or county) or "the reporting county"
         parts.append(
             f"COUNTY-LEVEL figure, not tract-level: {count} electricity-dependent Medicare "
-            f"beneficiaries across all of {emp_county} County (HHS emPOWER, reported by county)."
+            f"beneficiaries across all of {emp_county} (HHS emPOWER, reported by county)."
         )
 
     return " ".join(parts)
