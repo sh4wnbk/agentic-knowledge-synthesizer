@@ -22,10 +22,14 @@ class OpenAICompatProvider(LLMProvider):
     name = "openai"
 
     # Transient statuses worth retrying: rate limit + gateway/5xx. A throttled
-    # beam should back off and retry rather than drop, which on a rate-limited
-    # key would otherwise fail every beam and trip SynthesisUnavailable.
+    # beam gets ONE short retry to smooth a momentary blip. It is deliberately
+    # conservative: each request fans out to BEAM_WIDTH beams across up to
+    # MAX_RETRIES pipeline passes, and the service sits behind a ~60s gateway, so
+    # a long backoff would stack into a timeout. A per-minute rate limit cannot
+    # clear in seconds anyway, so sustained throttling should fail fast and loud.
     _RETRYABLE = {429, 500, 502, 503, 504}
-    _MAX_ATTEMPTS = 3
+    _MAX_ATTEMPTS = 2      # one retry
+    _MAX_BACKOFF = 2.0     # seconds; cap even when the server asks for more
 
     def __init__(self, api_key=None, base_url=None, model=None):
         from config import LLM_API_KEY, LLM_BASE_URL, LLM_MODEL
@@ -63,16 +67,14 @@ class OpenAICompatProvider(LLMProvider):
                 break
 
             if r.status_code in self._RETRYABLE and attempt < self._MAX_ATTEMPTS - 1:
-                # Respect Retry-After when the server sends it, else exponential
-                # backoff (2s, 4s), capped so a slow beam does not stall delivery.
+                # Cap the wait so a throttled beam never stalls delivery past the
+                # gateway timeout; do not honor a large Retry-After verbatim.
                 retry_after = r.headers.get("Retry-After")
                 try:
-                    wait = float(retry_after) if retry_after else 2.0 * (2 ** attempt)
+                    wait = min(float(retry_after), self._MAX_BACKOFF) if retry_after else 1.0
                 except ValueError:
-                    wait = 2.0 * (2 ** attempt)
-                wait = min(wait, 8.0)
-                print(f"[PROVIDER:openai] HTTP {r.status_code}, retrying in {wait:.1f}s "
-                      f"(attempt {attempt + 1}/{self._MAX_ATTEMPTS})")
+                    wait = 1.0
+                print(f"[PROVIDER:openai] HTTP {r.status_code}, one retry in {wait:.1f}s")
                 time.sleep(wait)
                 continue
 
