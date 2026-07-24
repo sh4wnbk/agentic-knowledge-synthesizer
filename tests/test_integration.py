@@ -98,4 +98,3 @@ def test_usgs_response_has_distance_field():
     usgs = bridge_data.get("usgs_live", {})
     # Field must be present (may be None if no USGS events in region, but key must exist)
     assert "distance_from_incident_km" in usgs
-    assert "geographic_note" in usgs

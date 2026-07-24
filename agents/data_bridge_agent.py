@@ -601,25 +601,17 @@ class DataBridgeAgent:
             coords   = features[0].get("geometry", {}).get("coordinates", [])
             event_id = features[0].get("id", "")
 
+            # Raw distance only. The prose describing what that distance means is
+            # composed once, in pipeline.compose_hazard_facts(), which is what the
+            # dispatcher reads. A second phrasing here had no consumer and was
+            # free to diverge from the one shown, on a safety-relevant claim.
             distance_km = None
-            geographic_note = None
             if incident_coords and len(coords) >= 2:
                 event_lon, event_lat = coords[0], coords[1]
                 distance_km = self._haversine_km(
                     incident_coords["lat"], incident_coords["lon"],
                     event_lat, event_lon,
                 )
-                if distance_km < 30:
-                    geographic_note = f"Co-located: nearest event {round(distance_km, 1)} km from incident"
-                elif distance_km < 50:
-                    geographic_note = f"Nearest regional event ({round(distance_km, 1)} km from incident)"
-                else:
-                    geographic_note = (
-                        f"No USGS-verified seismic activity at reported location. "
-                        f"Nearest catalogued event: {round(distance_km, 1)} km from incident. "
-                        f"Reported incident may precede USGS catalogue update "
-                        f"(typical lag: 5\u201315 min) or location may require correction."
-                    )
 
             return {
                 "status":                   "HAZARD DETECTED: SEISMIC EVENT CONFIRMED",
@@ -630,7 +622,6 @@ class DataBridgeAgent:
                 "event_count":              len(features),
                 "event_id":                 event_id,
                 "distance_from_incident_km": distance_km,
-                "geographic_note":          geographic_note,
                 "verification_url": (
                     f"https://earthquake.usgs.gov/earthquakes/eventpage/{event_id}/executive"
                     if event_id else None
