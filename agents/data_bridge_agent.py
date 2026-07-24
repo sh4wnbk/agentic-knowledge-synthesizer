@@ -65,6 +65,22 @@ CITY_CENTER_FALLBACKS = {
 }
 
 
+def normalize_county_name(value) -> str:
+    """
+    Canonical county shape for the payload: the bare name, no "County" suffix.
+
+    The federal sources disagree. The CDC SVI COUNTY column carries the word
+    ("Mahoning County"); the HHS emPOWER NAME column does not ("Mahoning").
+    Normalizing at ingestion gives every downstream reader one shape, and makes
+    the "Mahoning County County" class of bug structurally impossible: appending
+    a suffix for display can no longer double it.
+    """
+    name = str(value or "").strip()
+    if name.lower().endswith(" county"):
+        name = name[: -len(" county")].strip()
+    return name
+
+
 class DataBridgeAgent:
 
     def fetch(
@@ -280,7 +296,7 @@ class DataBridgeAgent:
             "coordinates": {"lat": lat, "lon": lon},
             "tract_geoid": tract_geoid,
             "county_fips": str(geo.get("COUNTY", "")),
-            "county_name": str(svi_row.get("COUNTY", "")),
+            "county_name": normalize_county_name(svi_row.get("COUNTY", "")),
             "state_abbr": str(svi_row.get("ST_ABBR", "")),
             "state_name": str(svi_row.get("STATE", "")),
             "location_label": str(svi_row.get("LOCATION", "")),
@@ -495,7 +511,7 @@ class DataBridgeAgent:
             }
         return {
             "county_fips":                county_fips,
-            "county_name":                row.get("NAME"),
+            "county_name":                normalize_county_name(row.get("NAME")),
             "electricity_dependent_count": row.get("Power_Dependent_Devices_DME"),
             "ventilator_count":            row.get("Power_De_1"),
             "oxygen_count":                row.get("O2_Services_Any_DME"),
