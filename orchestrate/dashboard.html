@@ -767,7 +767,7 @@
 
     <div class="status-card">
       <div class="sidebar-section-label">Pipeline Status</div>
-      <div id="status-badge" class="status-badge status-pending">AWAITING INPUT</div>
+      <div id="status-badge" class="status-badge"></div>
       <div class="metrics-grid">
         <div class="metric"><div class="metric-val" id="citation-val">—</div><div class="metric-label">Citation</div></div>
         <div class="metric"><div class="metric-val" id="confidence-val">—</div><div class="metric-label">Confidence</div></div>
@@ -1235,8 +1235,12 @@
   // neutral "pending" chip, rendering a dead provider as if nothing were wrong.
   // An unrecognized status maps to failure, not pending: a new or drifted status
   // is visibly wrong rather than silently neutral.
+  // The idle label lives here once and nowhere else: it keys the map below and is
+  // rendered on load through setStatus(), so the badge is never typed by hand in
+  // the markup.
+  const IDLE_STATUS = 'AWAITING INPUT';
   const STATUS_CLASS = {
-    'AWAITING INPUT':           'status-pending',
+    [IDLE_STATUS]:              'status-pending',
     'PROCESSING':               'status-pending',
     'CONFIRMED DELIVERY':       'status-success',
     'RETRY-CORRECTED DELIVERY': 'status-success',
@@ -1249,6 +1253,9 @@
     el.className = 'status-badge ' + (STATUS_CLASS[label] || 'status-failure');
     el.textContent = label;
   }
+  // Render the initial idle badge through the same path as every other state,
+  // so its text and class are not hand-written in the markup.
+  setStatus(IDLE_STATUS);
 
   // ── Sidebar result panels ──
   const CITATION_URLS = {
