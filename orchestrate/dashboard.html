@@ -245,9 +245,13 @@
       margin-bottom: 12px;
     }
     .status-pending  { background: var(--surface-2); color: var(--text-muted); border: 1px solid var(--border); }
-    .status-confirmed{ background: var(--green-bg);  color: var(--green);      border: 1px solid var(--green-border); }
-    .status-retry    { background: var(--yellow-bg); color: var(--yellow);     border: 1px solid var(--yellow-border); }
-    .status-fallback { background: var(--red-bg);    color: var(--red);        border: 1px solid var(--red-border); }
+    /* Three terminal treatments. Success = delivered. Caution = governed refusal
+       (HONEST FALLBACK: the system working as intended, not a malfunction).
+       Failure = the pipeline could not run (SYNTHESIS UNAVAILABLE / PIPELINE
+       ERROR). Existing tokens, no new colors. */
+    .status-success  { background: var(--green-bg);  color: var(--green);      border: 1px solid var(--green-border); }
+    .status-caution  { background: var(--yellow-bg); color: var(--yellow);     border: 1px solid var(--yellow-border); }
+    .status-failure  { background: var(--red-bg);    color: var(--red);        border: 1px solid var(--red-border); }
 
     .metrics-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
     .metric { text-align: center; padding: 10px 8px; background: var(--surface); border: 1px solid var(--border-2); border-radius: 6px; }
@@ -1212,13 +1216,24 @@
     btn.textContent = 'Run Pipeline';
   }
 
+  // Exact-value badge treatment, keyed on the statuses the API can emit
+  // (skill_server.STATE_LABELS) plus the transient UI states. Substring matching
+  // let SYNTHESIS UNAVAILABLE match none of the branches and fall through to the
+  // neutral "pending" chip, rendering a dead provider as if nothing were wrong.
+  // An unrecognized status maps to failure, not pending: a new or drifted status
+  // is visibly wrong rather than silently neutral.
+  const STATUS_CLASS = {
+    'AWAITING INPUT':           'status-pending',
+    'PROCESSING':               'status-pending',
+    'CONFIRMED DELIVERY':       'status-success',
+    'RETRY-CORRECTED DELIVERY': 'status-success',
+    'HONEST FALLBACK':          'status-caution',
+    'SYNTHESIS UNAVAILABLE':    'status-failure',
+    'PIPELINE ERROR':           'status-failure',
+  };
   function setStatus(label) {
     const el = document.getElementById('status-badge');
-    el.className = 'status-badge';
-    if      (label.includes('CONFIRMED')) el.classList.add('status-confirmed');
-    else if (label.includes('RETRY'))     el.classList.add('status-retry');
-    else if (label.includes('FALLBACK') || label.includes('ERROR')) el.classList.add('status-fallback');
-    else                                  el.classList.add('status-pending');
+    el.className = 'status-badge ' + (STATUS_CLASS[label] || 'status-failure');
     el.textContent = label;
   }
 
