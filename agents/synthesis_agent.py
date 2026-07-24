@@ -118,11 +118,25 @@ class SynthesisAgent:
 
     @staticmethod
     def _normalize_section_headers(text: str) -> str:
-        """Force the three dispatch section headers into a consistent markdown form."""
+        """
+        Force the three dispatch section headers into a consistent markdown form.
+
+        Anchors on the bare [SECTION NAME] and absorbs whatever asterisks surround
+        it, including none. The previous form required at least one asterisk on
+        each side, so a bare or half-asterisked header was left unnormalized and
+        reached the dashboard as literal "[HAZARD STATUS]**".
+
+        This does not loosen the structural contract the Overseer enforces:
+        overseer_agent.REQUIRED_SECTIONS holds the plain bracket strings and
+        _has_required_sections() tests them with a substring check, which is
+        independent of surrounding asterisks. Normalizing more header forms only
+        makes the delivered markdown more consistent; it never removes the bracket
+        text that check looks for.
+        """
         replacements = {
-            r"^\*\*?\[HAZARD STATUS\]\*\*?": "**[HAZARD STATUS]**",
-            r"^\*\*?\[DEMOGRAPHIC RISK \(SVI\)\]\*\*?": "**[DEMOGRAPHIC RISK (SVI)]**",
-            r"^\*\*?\[INTER-AGENCY ROUTING\]\*\*?": "**[INTER-AGENCY ROUTING]**",
+            r"^\**\[HAZARD STATUS\]\**": "**[HAZARD STATUS]**",
+            r"^\**\[DEMOGRAPHIC RISK \(SVI\)\]\**": "**[DEMOGRAPHIC RISK (SVI)]**",
+            r"^\**\[INTER-AGENCY ROUTING\]\**": "**[INTER-AGENCY ROUTING]**",
         }
         lines = text.splitlines()
         normalized = []
