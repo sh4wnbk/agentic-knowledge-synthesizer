@@ -75,10 +75,17 @@ class IncidentReportRequest(BaseModel):
 
 # ── State label map (shared) ──────────────────────────────────
 
+# The complete set of statuses the incident-report endpoint can emit, declared
+# in one place. The first three map from pipeline OutputStates; the last two are
+# response-level failures raised (not returned) by the pipeline. Keeping all five
+# here is what stops a consumer (the dashboard badge) from drifting out of sync
+# with a status defined only as an inline literal.
 STATE_LABELS = {
     "confirmed_delivery":       "CONFIRMED DELIVERY",
     "retry_corrected_delivery": "RETRY-CORRECTED DELIVERY",
     "honest_fallback":          "HONEST FALLBACK",
+    "synthesis_unavailable":    "SYNTHESIS UNAVAILABLE",
+    "pipeline_error":           "PIPELINE ERROR",
 }
 
 
@@ -252,7 +259,7 @@ def incident_report(req: IncidentReportRequest) -> dict[str, Any]:
         print(f"[INCIDENT_REPORT] Synthesis unavailable: {exc}")
         return {
             "incident_id":   req.incident_id or "unknown",
-            "output_status": "SYNTHESIS UNAVAILABLE",
+            "output_status": STATE_LABELS["synthesis_unavailable"],
             "error":         str(exc),
             "detail":        ("The LLM provider returned no usable output. This is an "
                               "infrastructure failure, not an evidence-based fallback."),
@@ -262,7 +269,7 @@ def incident_report(req: IncidentReportRequest) -> dict[str, Any]:
         print(f"[INCIDENT_REPORT] Unhandled exception:\n{tb}")
         return {
             "incident_id":   req.incident_id or "unknown",
-            "output_status": "PIPELINE ERROR",
+            "output_status": STATE_LABELS["pipeline_error"],
             "error":         str(exc),
             "traceback":     tb,
         }
