@@ -183,6 +183,7 @@
     .resize-handle:hover, .resize-handle.dragging { background: var(--accent); opacity: 0.5; }
 
     .sidebar-section-label {
+      display: block;   /* block heading, used on both a div and a label-for element */
       font-size: 14px;
       font-weight: 700;
       letter-spacing: 0.8px;
@@ -210,6 +211,7 @@
 
     .chips { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 8px; }
     .chip {
+      font-family: inherit;   /* chips are button elements: keep the app font, not the UA default */
       font-size: 13px;
       padding: 4px 11px;
       background: var(--surface-2);
@@ -220,6 +222,17 @@
       transition: all 0.15s;
     }
     .chip:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-bg); }
+
+    /* Visible keyboard focus across interactive controls. Overrides the base
+       `outline: none` on keyboard focus only (:focus-visible), so mouse clicks
+       stay clean while Tab navigation is always followable. */
+    a:focus-visible,
+    button:focus-visible,
+    textarea:focus-visible,
+    [tabindex]:focus-visible {
+      outline: 2px solid var(--accent);
+      outline-offset: 2px;
+    }
 
     .btn-run {
       width: 100%;
@@ -733,13 +746,13 @@
     </div>
 
     <div>
-      <div class="sidebar-section-label">Incident Report</div>
+      <label class="sidebar-section-label" for="input">Incident Report</label>
       <textarea id="input" placeholder="Describe the incident, location, magnitude, observed effects..."></textarea>
       <div class="chips">
-        <span class="chip" onclick="setPrompt('Magnitude 2.8 earthquake near Youngstown, OH. Depth 5km. Reported shaking near downtown.')">Youngstown, OH</span>
-        <span class="chip" onclick="setPrompt('M2.5 event near Niles, OH. Residents reporting minor shaking.')">Niles, OH</span>
-        <span class="chip" onclick="setPrompt('Magnitude 3.1 earthquake near Cushing, OK. Near pipeline infrastructure.')">Cushing, OK</span>
-        <span class="chip" onclick="setPrompt('Ground shaking near Pawnee, OK. M2.8 event. Possible induced seismicity near disposal well operations.')">Pawnee, OK</span>
+        <button type="button" class="chip" onclick="setPrompt('Magnitude 2.8 earthquake near Youngstown, OH. Depth 5km. Reported shaking near downtown.')">Youngstown, OH</button>
+        <button type="button" class="chip" onclick="setPrompt('M2.5 event near Niles, OH. Residents reporting minor shaking.')">Niles, OH</button>
+        <button type="button" class="chip" onclick="setPrompt('Magnitude 3.1 earthquake near Cushing, OK. Near pipeline infrastructure.')">Cushing, OK</button>
+        <button type="button" class="chip" onclick="setPrompt('Ground shaking near Pawnee, OK. M2.8 event. Possible induced seismicity near disposal well operations.')">Pawnee, OK</button>
       </div>
       <button class="btn-run" id="submit" onclick="runPipeline()" style="margin-top:12px">Run Pipeline</button>
       <div class="privacy-badge" style="margin-top:10px">
