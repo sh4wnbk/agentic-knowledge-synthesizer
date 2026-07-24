@@ -239,7 +239,7 @@ agentic-knowledge-synthesizer/
 │       └── agency_response_operations.txt  # ODNR · OCC · FEMA operational protocols
 │
 └── tests/
-    └── test_units.py              # 52 pure unit tests · no network · no LLM
+    └── test_units.py              # 46 pure unit tests · no network · no LLM
 ```
 
 ---
@@ -290,7 +290,7 @@ uvicorn orchestrate.skill_server:app --reload  # the service Cloud Run runs
 
 ```bash
 pytest tests/test_units.py -v
-# 52 tests · no network required · no LLM required
+# 46 tests · no network required · no LLM required
 ```
 
 ---

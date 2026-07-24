@@ -68,7 +68,7 @@ suite runs from a bare clone.
 ```bash
 source aegis/bin/activate          # venv is named for the project, not .venv
 
-python -m pytest tests/test_units.py -q        # 52 tests, offline, ~0.4s
+python -m pytest tests/test_units.py -q        # 46 tests, offline, ~0.3s
 python -m pytest tests/test_integration.py -q  # makes real API calls
 
 python main.py                     # CLI validation run
@@ -88,10 +88,12 @@ The `Dockerfile` already does this in the right order. Local setup docs do not.
 
 ## Invariants
 
-- **The 52 unit tests must stay green and must stay offline.** No network, no
-  API key, no data preparation, no virtualenv required. That zero-setup property
-  is deliberate and is the repo's strongest asset. Do not add a test to
-  `tests/test_units.py` that needs any of those.
+- **The unit suite must stay green and stay offline.** No network, no API key, no
+  data preparation, no virtualenv required. That zero-setup property is
+  deliberate and is the repo's strongest asset. Do not add a test to
+  `tests/test_units.py` that needs any of those. The rule is the property, not a
+  test count: counts quoted elsewhere are informational and will drift, but this
+  invariant holds whatever the number is.
 - **Never weaken a test to make it pass.** Report the failure instead.
 - **Never let a broken dependency masquerade as an honest fallback.** If the
   provider fails to authenticate or the request is rejected, that must surface
