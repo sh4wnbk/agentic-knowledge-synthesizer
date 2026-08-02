@@ -120,6 +120,22 @@
     }
     .icon-btn:hover { color: var(--text); border-color: var(--accent); }
 
+    /* Persistent view switch (console ⇄ about) */
+    .header-link {
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      color: var(--text-muted);
+      font-family: inherit;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      padding: 0 12px;
+      height: 36px;
+      transition: color 0.2s, border-color 0.2s;
+    }
+    .header-link:hover { color: var(--accent); border-color: var(--accent); }
+
     /* ── Hamburger nav ── */
     #nav-menu {
       display: none;
@@ -280,6 +296,20 @@
       line-height: 1.5;
     }
     .privacy-badge svg { flex-shrink: 0; margin-top: 1px; }
+
+    /* ── About / How-it-works view ── */
+    .about-view { max-width: 1100px; margin: 0 auto; padding: 24px; display: flex; flex-direction: column; gap: 20px; }
+    .about-hero { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+    .about-hero-title { font-size: 24px; font-weight: 800; color: var(--text); letter-spacing: 0.3px; }
+    .about-hero-sub { font-size: 14px; color: var(--text-muted); margin-top: 6px; max-width: 640px; line-height: 1.6; }
+    .btn-back {
+      background: var(--accent-bg); border: 1px solid var(--accent-dim); border-radius: 6px;
+      color: var(--accent); font-family: inherit; font-size: 14px; font-weight: 700;
+      cursor: pointer; padding: 10px 16px; white-space: nowrap; transition: all 0.2s;
+    }
+    .btn-back:hover { background: var(--accent-dim); color: #fff; }
+    /* The bio card is full-width in the about view, not a narrow sidebar card */
+    .about-view .about-block { padding: 18px 20px; }
 
     .about-block {
       background: var(--surface); border: 1px solid var(--border); border-radius: 8px;
@@ -704,13 +734,14 @@
       <button class="fs-btn" data-fs="l"  aria-label="Large text">A</button>
       <button class="fs-btn" data-fs="xl" aria-label="Extra large text">A</button>
     </div>
+    <button type="button" class="header-link" id="view-toggle" onclick="toggleView()">How it works</button>
     <button class="icon-btn" onclick="toggleTheme()" title="Toggle theme">☀</button>
     <button class="icon-btn" onclick="toggleNav()" title="Navigation">☰</button>
 
     <div id="nav-menu">
-      <a class="nav-item" href="#section-brief" onclick="closeNav()">Routing Brief <span>Generated dispatch intelligence</span></a>
-      <a class="nav-item" href="#section-arch" onclick="closeNav()">Agentic Architecture <span>Six agents · hybrid archetypes</span></a>
-      <a class="nav-item" href="#section-gov" onclick="closeNav()">Governance &amp; Trust <span>Five governance pillars</span></a>
+      <a class="nav-item" href="/"      onclick="return goView(event,'console')">Routing Brief <span>Live incident console</span></a>
+      <a class="nav-item" href="/about" onclick="return goView(event,'about','section-arch')">Agentic Architecture <span>Six agents · hybrid archetypes</span></a>
+      <a class="nav-item" href="/about" onclick="return goView(event,'about','section-gov')">Governance &amp; Trust <span>Five governance pillars</span></a>
     </div>
   </div>
 </header>
@@ -722,28 +753,10 @@
   <a href="https://status.cloud.google.com" target="_blank" rel="noopener noreferrer">Status page →</a>
 </div>
 
-<div class="layout">
+<div class="layout" id="view-console">
 
   <!-- Sidebar -->
   <aside id="sidebar">
-
-    <div id="about-block" class="about-block">
-      <div class="about-name">Shawn Blackman</div>
-      <div class="about-tags">
-        <span class="about-tag">Remote Sensing</span>
-        <span class="about-tag">GIS</span>
-        <span class="about-tag">AI · ML · Deep Learning</span>
-        <span class="about-tag">Agentic Engineering</span>
-        <span class="about-tag">Neural Networks</span>
-        <span class="about-tag">Python · C++</span>
-        <span class="about-tag">Quantum Computing</span>
-        <span class="about-tag">Art · Music</span>
-      </div>
-      <div class="about-body">
-        <p>AEGIS is an agentic AI pipeline for emergency routing intelligence. Six specialized agents (intake, orchestration, RAG retrieval, live data bridging, governance, and synthesis) work in sequence to turn a plain-language incident report into a validated inter-agency dispatch brief.</p>
-        <p>This portfolio project showcases an AI architecture for public-sector emergency response, featuring a provider-agnostic LLM synthesis layer, retrieval-augmented grounding, and a governance layer that prioritizes refusal over fabrication.</p>
-      </div>
-    </div>
 
     <div>
       <label class="sidebar-section-label" for="input">Incident Report</label>
@@ -830,6 +843,39 @@
         <div id="brief-output" class="brief-output">
           <div class="empty-state">Submit an incident report to generate a routing brief.</div>
         </div>
+      </div>
+    </div>
+
+
+  </main>
+</div>
+
+
+<!-- About / How-it-works view -->
+<div id="view-about" style="display:none">
+  <div class="about-view">
+    <div class="about-hero">
+      <div>
+        <div class="about-hero-title">How AEGIS works</div>
+        <div class="about-hero-sub">Architecture, governance, and the person behind the project. The console has the live pipeline.</div>
+      </div>
+      <button type="button" class="btn-back" onclick="showView('console', {push:true})">← Back to console</button>
+    </div>
+    <div id="about-block" class="about-block">
+      <div class="about-name">Shawn Blackman</div>
+      <div class="about-tags">
+        <span class="about-tag">Remote Sensing</span>
+        <span class="about-tag">GIS</span>
+        <span class="about-tag">AI · ML · Deep Learning</span>
+        <span class="about-tag">Agentic Engineering</span>
+        <span class="about-tag">Neural Networks</span>
+        <span class="about-tag">Python · C++</span>
+        <span class="about-tag">Quantum Computing</span>
+        <span class="about-tag">Art · Music</span>
+      </div>
+      <div class="about-body">
+        <p>AEGIS is an agentic AI pipeline for emergency routing intelligence. Six specialized agents (intake, orchestration, RAG retrieval, live data bridging, governance, and synthesis) work in sequence to turn a plain-language incident report into a validated inter-agency dispatch brief.</p>
+        <p>This portfolio project showcases an AI architecture for public-sector emergency response, featuring a provider-agnostic LLM synthesis layer, retrieval-augmented grounding, and a governance layer that prioritizes refusal over fabrication.</p>
       </div>
     </div>
 
@@ -965,8 +1011,7 @@
         </div>
       </div>
     </div>
-
-  </main>
+  </div>
 </div>
 
 <!-- Scroll to top -->
@@ -999,6 +1044,41 @@
   document.addEventListener('click', e => {
     if (!e.target.closest('.header-right')) closeNav();
   });
+
+  // ── View routing (console ⇄ about) ──
+  // Two real URLs, /  and  /about, both served by skill_server from this one
+  // file (Firebase rewrites ** to Cloud Run, so a deep link to /about resolves).
+  // Only one view is ever displayed, so the operational console is never diluted
+  // by the explainer content. History API keeps the back button honest.
+  function showView(name, opts) {
+    opts = opts || {};
+    const about = name === 'about';
+    document.getElementById('view-console').style.display = about ? 'none' : 'flex';
+    document.getElementById('view-about').style.display   = about ? 'block' : 'none';
+    document.getElementById('view-toggle').textContent    = about ? '← Console' : 'How it works';
+    if (opts.push) history.pushState({ view: name }, '', about ? '/about' : '/');
+    if (opts.scrollId) {
+      const el = document.getElementById(opts.scrollId);
+      if (el) { el.scrollIntoView(); return; }
+    }
+    window.scrollTo(0, 0);
+  }
+  function toggleView() {
+    const onAbout = document.getElementById('view-about').style.display !== 'none';
+    showView(onAbout ? 'console' : 'about', { push: true });
+  }
+  // Hamburger link handler: switch view (and optionally scroll to a section)
+  // without a full page load, while keeping the href for middle-click / new-tab.
+  function goView(event, name, scrollId) {
+    event.preventDefault();
+    closeNav();
+    showView(name, { push: true, scrollId: scrollId });
+    return false;
+  }
+  // Deep link and back/forward both resolve from the path.
+  function viewFromPath() { return location.pathname.replace(/\/+$/, '') === '/about' ? 'about' : 'console'; }
+  window.addEventListener('popstate', () => showView(viewFromPath()));
+  showView(viewFromPath());
 
   // ── Scroll to top ──
   const scrollBtn = document.getElementById('scroll-top');

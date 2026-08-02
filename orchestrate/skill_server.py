@@ -92,7 +92,13 @@ STATE_LABELS = {
 # ── Dashboard ─────────────────────────────────────────────────
 
 @app.get("/")
+@app.get("/about")
 def dashboard():
+    # Both routes serve the same single-page dashboard; the client picks the
+    # console or the about view from location.pathname. One file, two real URLs,
+    # so the explainer content has its own shareable link without duplicating the
+    # header, token system, or theme controls. Firebase rewrites ** to Cloud Run,
+    # so a direct hit or reload on /about reaches this handler.
     html_path = os.path.join(os.path.dirname(__file__), "dashboard.html")
     return FileResponse(html_path, media_type="text/html")
 
