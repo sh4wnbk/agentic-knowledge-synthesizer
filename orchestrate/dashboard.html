@@ -357,6 +357,12 @@
     .tier-3 { color: var(--text-muted); }
     .tier-agency { font-size: 13px; color: var(--text); font-weight: 600; }
     .tier-role { font-size: 12px; color: var(--text-muted); margin-top: 1px; line-height: 1.4; }
+    /* Direct contact, shown only where the deterministic routing data carries one.
+       Agencies with no line on file get an explicit muted note, never a made-up number. */
+    .tier-contact { font-size: 12px; margin-top: 3px; line-height: 1.4; }
+    .tier-contact a { color: var(--accent); text-decoration: none; font-weight: 600; }
+    .tier-contact a:hover { text-decoration: underline; }
+    .tier-contact.none { color: var(--text-dim); font-style: italic; }
 
     .citation-primary { background: var(--accent-bg); border: 1px solid var(--accent-dim); border-radius: 6px; padding: 10px 12px; margin-bottom: 10px; }
     .citation-primary-label { font-size: 10px; font-weight: 800; letter-spacing: 1px; text-transform: uppercase; color: var(--accent); margin-bottom: 4px; }
@@ -1441,20 +1447,47 @@
       document.getElementById('verify-list').innerHTML = '<div style="font-size:13px;color:var(--text-dim)">No links available.</div>';
     }
 
-    // Agency routing
+    // Agency routing.
+    // The API sends the deterministic routing matrix as an object keyed by role
+    // (primary_regulatory, federal_emergency, ...), each entry carrying an
+    // integer tier and, where one exists, a real hotline. (The previous code
+    // read tier_1_immediate/tier_2_within_hour/tier_3_as_warranted keys that
+    // this payload never has, so the panel silently rendered nothing.)
+    // Contact info is shown ONLY where the source data carries it; no number is
+    // ever synthesized. A fabricated emergency contact is the worst failure this
+    // tool can produce, so a missing one is stated plainly instead of guessed.
     const routing = d.agency_routing_baseline || {};
-    const tiers = [
-      { key: 'tier_1_immediate',    label: 'Tier 1: Immediate',    cls: 'tier-1' },
-      { key: 'tier_2_within_hour',  label: 'Tier 2: Within Hour',  cls: 'tier-2' },
-      { key: 'tier_3_as_warranted', label: 'Tier 3: As Warranted', cls: 'tier-3' },
-    ];
+    let agencies = [];
+    if (Array.isArray(routing.tier_1_immediate) ||
+        Array.isArray(routing.tier_2_within_hour) ||
+        Array.isArray(routing.tier_3_as_warranted)) {
+      // Tolerate a pre-tiered payload too, so this survives a backend change.
+      const push = (arr, tier) => (arr || []).forEach(a => agencies.push({ ...a, tier }));
+      push(routing.tier_1_immediate, 1);
+      push(routing.tier_2_within_hour, 2);
+      push(routing.tier_3_as_warranted, 3);
+    } else {
+      agencies = Object.values(routing)
+        .filter(a => a && a.name)
+        .map(a => ({ ...a, tier: a.tier || 3 }));
+    }
+    const TIER_META = {
+      1: { label: 'Tier 1: Immediate',    cls: 'tier-1' },
+      2: { label: 'Tier 2: Within Hour',  cls: 'tier-2' },
+      3: { label: 'Tier 3: As Warranted', cls: 'tier-3' },
+    };
     let agencyHtml = '';
-    tiers.forEach(t => {
-      (routing[t.key] || []).forEach(a => {
+    [1, 2, 3].forEach(tier => {
+      agencies.filter(a => (a.tier || 3) === tier).forEach(a => {
+        const meta = TIER_META[tier];
+        const contact = a.hotline
+          ? `<div class="tier-contact">☎ <a href="tel:${a.hotline}">${a.hotline}</a></div>`
+          : `<div class="tier-contact none">No direct line in routing data</div>`;
         agencyHtml += `<div class="tier-row">
-          <div class="tier-label ${t.cls}">${t.label}</div>
+          <div class="tier-label ${meta.cls}">${meta.label}</div>
           <div class="tier-agency">${a.name}</div>
           ${a.role ? `<div class="tier-role">${a.role}</div>` : ''}
+          ${contact}
         </div>`;
       });
     });
