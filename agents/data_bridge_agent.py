@@ -213,8 +213,11 @@ class DataBridgeAgent:
                 "name": agency.get("name"),
                 "role": agency.get("role"),
             }
-            if agency.get("hotline"):
-                entry["hotline"] = agency.get("hotline")
+            # Carry any contact fields through untouched so the brief-table builder
+            # can render them. Absent fields stay absent: no fabricated defaults.
+            for _field in ("hotline", "phone", "email"):
+                if agency.get(_field):
+                    entry[_field] = agency[_field]
 
             if tier == 1:
                 tier1.append(entry)

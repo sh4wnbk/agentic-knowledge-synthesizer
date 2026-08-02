@@ -1480,8 +1480,16 @@
     [1, 2, 3].forEach(tier => {
       agencies.filter(a => (a.tier || 3) === tier).forEach(a => {
         const meta = TIER_META[tier];
-        const contact = a.hotline
-          ? `<div class="tier-contact">☎ <a href="tel:${a.hotline}">${a.hotline}</a></div>`
+        // Build real DOM anchors from the bare data (tel: for phone/hotline,
+        // mailto: for email), keeping the phone glyph. Never emit a Markdown
+        // string here: this panel is written via innerHTML, so a "[num](tel:num)"
+        // string would show as literal bracketed text, not a link.
+        const contactBits = [];
+        const tel = a.phone || a.hotline;
+        if (tel)     contactBits.push(`☎ <a href="tel:${tel}">${tel}</a>`);
+        if (a.email) contactBits.push(`✉ <a href="mailto:${a.email}">${a.email}</a>`);
+        const contact = contactBits.length
+          ? `<div class="tier-contact">${contactBits.join(' · ')}</div>`
           : `<div class="tier-contact none">No direct line in routing data</div>`;
         agencyHtml += `<div class="tier-row">
           <div class="tier-label ${meta.cls}">${meta.label}</div>

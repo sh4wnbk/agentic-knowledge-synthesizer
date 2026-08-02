@@ -28,32 +28,44 @@ class OrchestratorAgent:
         "default":             "Local Emergency Management"
     }
 
+    # Optional per-agency contact fields (phone / email / hotline) are stored here
+    # as bare values, and only where a real, verified number exists. Callers build
+    # the tel:/mailto: link at render time. The Ohio cluster carries verified
+    # contacts; the Oklahoma cluster does not yet, and its entries are left without
+    # one on purpose rather than filled with a guess. A missing field means "no
+    # line on file," never a number to fabricate.
     AGENCY_ROUTING = {
         "reasoning_ohio": {
             "primary_regulatory": {
                 "name": "Ohio Department of Natural Resources (ODNR)",
                 "role": "Disposal well operational status; TLS monitoring trigger",
                 "tier": 1,
+                "phone": "1-844-642-2551",
             },
             "federal_emergency": {
-                "name": "Federal Emergency Management Agency (FEMA)",
+                "name": "Federal Emergency Management Agency (FEMA) Region 5",
                 "role": "Federal disaster coordination; aid eligibility assessment",
                 "tier": 2,
+                "phone": "312-408-5500",
+                "email": "fema-r5-info@fema.dhs.gov",
             },
             "state_emergency": {
                 "name": "Ohio Emergency Management Agency (Ohio EMA)",
                 "role": "County-level coordination; shelter activation",
                 "tier": 2,
+                "phone": "614-889-7150",
             },
             "environmental": {
                 "name": "Ohio Environmental Protection Agency (Ohio EPA)",
                 "role": "Groundwater contamination assessment; well-water cloudiness",
                 "tier": 2,
+                "phone": "1-800-282-9378",
             },
             "local_emergency": {
                 "name": "Local Fire and Law Enforcement",
                 "role": "Structural assessment; gas leak evaluation; scene safety",
                 "tier": 1,
+                "phone": "911",
             },
             "ngo": {
                 "name": "American Red Cross",

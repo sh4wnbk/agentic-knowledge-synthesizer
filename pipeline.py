@@ -355,18 +355,27 @@ def run_pipeline(
     if agency_brief and any(
         agency_brief.get(k) for k in ("tier_1_immediate", "tier_2_within_hour", "tier_3_as_warranted")
     ):
-        table_rows = ["| Tier | Agency | Role |", "|---|---|---|"]
+        # Contact renders as a real Markdown link so the dashboard's Markdown pass
+        # turns it into a clickable tel:/mailto: anchor rather than literal text.
+        # (The old code appended the bare hotline to the role cell, so it showed as
+        # unclickable plain text.) Numbers are the bare, verified values from
+        # AGENCY_ROUTING; an agency with none gets a dash placeholder, never a guess.
+        def _contact_cell(agency):
+            bits = []
+            tel = agency.get("phone") or agency.get("hotline")
+            if tel:
+                bits.append(f"[{tel}](tel:{tel})")
+            if agency.get("email"):
+                bits.append(f"[{agency['email']}](mailto:{agency['email']})")
+            return " · ".join(bits) if bits else "—"
+
+        table_rows = ["| Tier | Agency | Role | Contact |", "|---|---|---|---|"]
         for agency in agency_brief.get("tier_1_immediate", []):
-            role = agency.get("role", "")
-            table_rows.append(f"| 1 — IMMEDIATE | {agency['name']} | {role} |")
+            table_rows.append(f"| 1 — IMMEDIATE | {agency['name']} | {agency.get('role','')} | {_contact_cell(agency)} |")
         for agency in agency_brief.get("tier_2_within_hour", []):
-            role = agency.get("role", "")
-            table_rows.append(f"| 2 — WITHIN HOUR | {agency['name']} | {role} |")
+            table_rows.append(f"| 2 — WITHIN HOUR | {agency['name']} | {agency.get('role','')} | {_contact_cell(agency)} |")
         for agency in agency_brief.get("tier_3_as_warranted", []):
-            role = agency.get("role", "")
-            if agency.get("hotline"):
-                role += f" · {agency['hotline']}"
-            table_rows.append(f"| 3 — AS WARRANTED | {agency['name']} | {role} |")
+            table_rows.append(f"| 3 — AS WARRANTED | {agency['name']} | {agency.get('role','')} | {_contact_cell(agency)} |")
         routing_table = "\n".join(table_rows)
 
         # Strip whatever the LLM generated for [INTER-AGENCY ROUTING] and replace it
