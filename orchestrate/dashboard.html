@@ -177,13 +177,21 @@
       background: var(--surface);
       border-right: 1px solid var(--border);
       padding: 18px 14px;
-      position: sticky;
-      top: 68px;
-      height: calc(100vh - 68px);
       overflow-y: auto;
       display: flex;
       flex-direction: column;
       gap: 14px;
+      /* Desktop: fill the shared column height via flex stretch (align-items on
+         .layout is the default stretch) so the sidebar's top aligns with the main
+         column and it grows with the column instead of a fixed viewport height.
+         The old rule set position:sticky;top:68px, but the position:relative below
+         overrode the sticky, leaving top:68px to push the sidebar down and break
+         the shared top line. min-height:0 lets this flex item shrink below its
+         content so the existing overflow scroll fills the column and scrolls
+         internally. position:relative is the positioning context for the absolute
+         resize handle. The 768 media query resets height/position for the stacked
+         layout, so none of this height-linking carries into the mobile view. */
+      min-height: 0;
       position: relative;
     }
 
