@@ -721,6 +721,48 @@
     .ps-step.ps-active   .ps-label { color: var(--accent); }
     .ps-step.ps-complete .ps-label { color: var(--green); }
 
+    /* Desktop only (>=769px): render the INCIDENT REPORT label as a full-bleed
+       panel-header band that matches the ROUTING BRIEF header, aligned to the same
+       top and bottom so the sub-header strip and its separator line read
+       continuously across the viewport. The sidebar background goes transparent
+       here so the gap above the band matches the page background on the right (one
+       continuous dark separation under the app header). Scoped above the 768
+       breakpoint so the stacked layout is unchanged; min-height:0 internal scroll
+       from the base aside rule is untouched. */
+    @media (min-width: 769px) {
+      /* Draw the column divider as a pseudo-element rather than aside's border-right,
+         so it starts at the band top instead of running up into the dark gap above
+         the band (which left a stray line sticking up). */
+      aside#sidebar { background: transparent; padding-top: 0; border-right: none; }
+      aside#sidebar::after {
+        content: '';
+        position: absolute;
+        top: 32px;          /* band margin-top (24) + corner radius (8): the divider begins
+                               where the band's rounded corner ends, continuing its right
+                               border straight down without poking past the curve */
+        right: 0;
+        bottom: 0;
+        width: 1px;
+        background: var(--border);
+      }
+      aside#sidebar label.sidebar-section-label[for="input"] {
+        /* full-bleed to both sidebar edges (-14 cancels the sidebar padding) so the
+           band keeps its full length up to the divider. Top + right borders with an
+           8px top-right radius make the inner corner identical to the Routing Brief
+           card's top-left corner; the ::after divider continues that right border
+           down the column. */
+        margin: 24px -14px 14px -14px;
+        padding: 13px 18px;              /* same as .panel-header */
+        background: var(--surface-2);
+        border-top: 1px solid var(--border);
+        border-right: 1px solid var(--border);
+        border-bottom: 1px solid var(--border);
+        border-top-right-radius: 8px;    /* mirror of Routing Brief's rounded top-left corner */
+        font-size: 13px;
+        color: var(--text-muted);
+      }
+    }
+
     /* ── Responsive ── */
     @media (max-width: 768px) {
       .layout { flex-direction: column; }
