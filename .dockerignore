@@ -7,6 +7,10 @@ __pycache__/
 .venv/
 venv/
 env/
+# This repo's venv is named for the project, not .venv, so the generic
+# patterns above miss it. Without this line COPY . . bakes 1.8 GB of local
+# site-packages into the image.
+aegis/
 .DS_Store
 orchestrate/logs/
 orchestrate/generated_audio/
