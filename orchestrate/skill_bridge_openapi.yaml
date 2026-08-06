@@ -32,7 +32,7 @@ paths:
         Run the AEGIS full-pipeline crisis workflow and return a validated
         inter-agency routing brief for the EOC dispatcher.
       description: >
-        Accepts a free-text incident report from an emergency manager and runs
+        Accepts a free-text incident report from a dispatcher and runs
         the complete 6-agent AEGIS pipeline: intake parsing → orchestrator routing
         → RAG retrieval → data bridge (live USGS and Census; bundled CDC SVI, HHS emPOWER, EPA TRI)
         → LLM synthesis (configurable provider) → Overseer governance validation.
@@ -67,7 +67,7 @@ components:
         raw_input:
           type: string
           description: >
-            Free-text incident description from the emergency manager or dispatcher.
+            Free-text incident description from the dispatcher.
             Example: "M3.1 earthquake reported near Cushing, Oklahoma. Multiple calls
             reporting structure damage."
         incident_id:

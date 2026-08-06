@@ -20,7 +20,7 @@ Manual cross-referencing. Disconnected APIs. Cognitive overload.
 
 ## The Solution
 
-**AEGIS** is a six-agent AI pipeline that acts as an invisible coordinator for Emergency Operations Center supervisors managing induced seismicity events. A dispatcher submits a free-text incident report. AEGIS fuses live and bundled federal data, runs the output through three governance checkpoints, and returns a validated inter-agency routing brief in under 30 seconds.
+**AEGIS** is a six-agent AI pipeline that acts as an invisible coordinator for Emergency Operations Center dispatchers managing induced seismicity events. A dispatcher submits a free-text incident report. AEGIS fuses live and bundled federal data, runs the output through three governance checkpoints, and returns a validated inter-agency routing brief in under 30 seconds.
 
 The brief contains exactly three sections, always:
 

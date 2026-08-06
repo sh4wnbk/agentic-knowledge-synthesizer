@@ -2,7 +2,7 @@
 orchestrate/skill_server.py
 Thin API surface for registering existing Python agents as Orchestrate skills.
 
-User: Emergency manager / EOC supervisor reviewing incident reports.
+User: EOC dispatcher reviewing incident reports.
 Not a 911 call-taker tool — no citizen-facing audio or voice reassurance.
 """
 
@@ -230,7 +230,7 @@ def crisis_brief(req: PipelineRequest) -> dict[str, Any]:
 @app.post("/workflow/incident-report")
 def incident_report(req: IncidentReportRequest) -> dict[str, Any]:
     """
-    Primary EOC endpoint. Accepts an incident report from an emergency manager
+    Primary EOC endpoint. Accepts an incident report from a dispatcher
     and returns a validated inter-agency routing brief.
     """
     import traceback
