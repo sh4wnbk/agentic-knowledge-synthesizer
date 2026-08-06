@@ -20,7 +20,7 @@ Manual cross-referencing. Disconnected APIs. Cognitive overload.
 
 ## The Solution
 
-**AEGIS** is a six-agent AI pipeline that acts as an invisible coordinator for Emergency Operations Center supervisors managing induced seismicity events. A dispatcher submits a free-text incident report. AEGIS fuses live federal data, runs the output through three governance checkpoints, and returns a validated inter-agency routing brief in under 30 seconds.
+**AEGIS** is a six-agent AI pipeline that acts as an invisible coordinator for Emergency Operations Center supervisors managing induced seismicity events. A dispatcher submits a free-text incident report. AEGIS fuses live and bundled federal data, runs the output through three governance checkpoints, and returns a validated inter-agency routing brief in under 30 seconds.
 
 The brief contains exactly three sections, always:
 
@@ -312,8 +312,8 @@ pytest tests/test_units.py -v
 ## Known Limitations
 
 - **Live USGS lag**: seismic events appear in the USGS catalogue 5–15 minutes after occurrence. The geographic distance note explicitly flags when no verified activity exists at the reported location.
-- **emPOWER and TRI are local snapshots**: fetched at project time, not real-time. Production would call live APIs on each request.
-- **FEMA and IFRC**: verification links only; no live disaster declaration data is ingested.
+- **SVI, emPOWER and TRI are local snapshots**: CDC SVI, HHS emPOWER and EPA TRI are bundled with the repo and read from disk, not fetched per request. Production would call live APIs on each request.
+- **FEMA and IFRC are fetched live**: both are queried on every request and merged into a ranked operational picture by `governance/external_harmonization.py`. If either call fails, the merge degrades to `status: unavailable` rather than blocking the brief.
 - **Citation alignment threshold**: 0.55 is calibrated for the local `all-MiniLM-L6-v2` model against the Ohio/Oklahoma-weighted knowledge base. A higher-capacity embedding model would raise this to 0.65+.
 
 ---

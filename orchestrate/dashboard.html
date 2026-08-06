@@ -830,7 +830,7 @@
       </div>
       <div class="privacy-badge" style="margin-top:6px">
         <svg width="11" height="11" viewBox="0 0 16 16" fill="currentColor"><path d="M8 3.5a.5.5 0 0 0-1 0V9a.5.5 0 0 0 .252.434l3.5 2a.5.5 0 0 0 .496-.868L8 8.71V3.5z"/><path d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zm7-8A7 7 0 1 1 1 8a7 7 0 0 1 14 0z"/></svg>
-        Response time typically 60–180 s, live API calls (USGS, CDC, HHS, EPA) and LLM inference run on each request.
+        Response time typically 60–180 s. Live queries to USGS, Census, FEMA and IFRC, plus LLM inference, run on each request; CDC, HHS and EPA come from bundled federal datasets.
       </div>
     </div>
 
@@ -974,7 +974,7 @@
             <div class="agent-card-top"><div class="agent-step" id="step-4">4</div></div>
             <div class="agent-name">Data Bridge Agent</div>
             <div class="agent-role">Live Data Fetch</div>
-            <div class="agent-desc">Queries four live APIs in sequence: USGS real-time seismic feed, CDC Social Vulnerability Index by census tract, HHS emPOWER electricity-dependent beneficiaries, and EPA TRI hazmat facilities. Promotes EPA to Tier 1 if hazmat is detected.</div>
+            <div class="agent-desc">Queries USGS for real-time seismic events and the Census geocoder for the incident tract, then reads CDC Social Vulnerability Index, HHS emPOWER electricity-dependent beneficiaries, and EPA TRI hazmat facilities from bundled federal datasets. Promotes EPA to Tier 1 if hazmat is detected.</div>
             <div class="agent-output">→ usgs_live · svi_lookup · empower_data · epa_tri · agency_routing</div>
           </div>
 

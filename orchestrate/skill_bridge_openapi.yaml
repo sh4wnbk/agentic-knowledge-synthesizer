@@ -34,7 +34,7 @@ paths:
       description: >
         Accepts a free-text incident report from an emergency manager and runs
         the complete 6-agent AEGIS pipeline: intake parsing → orchestrator routing
-        → RAG retrieval → live data bridge (USGS, CDC SVI, HHS emPOWER, EPA TRI)
+        → RAG retrieval → data bridge (live USGS and Census; bundled CDC SVI, HHS emPOWER, EPA TRI)
         → LLM synthesis (configurable provider) → Overseer governance validation.
 
         Returns one of three output states:
