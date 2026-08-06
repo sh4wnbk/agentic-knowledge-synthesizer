@@ -118,7 +118,7 @@ self-contained (baked at build time via `RUN python -m rag.ingest`).
 
 ## Key config values
 
-In `config.py`: `BEAM_WIDTH` 4, `MAX_NEW_TOKENS` 700, `MAX_RETRIES` 2,
+In `config.py`: `BEAM_WIDTH` 4, `MAX_NEW_TOKENS` 2048 (env-configurable), `MAX_RETRIES` 2,
 `CONFIDENCE_THRESHOLD` 0.45, `CITATION_ALIGN_THRESHOLD` 0.55,
 `SEISMIC_MIN_MAGNITUDE` 1.5 (demo mode; 3.0 is the production value from the
 paper), `EMBEDDING_MODEL` all-MiniLM-L6-v2, `SVI_THRESHOLD` 0.75.
@@ -129,11 +129,6 @@ paper), `EMBEDDING_MODEL` all-MiniLM-L6-v2, `SVI_THRESHOLD` 0.75.
   reasoning before emitting content. `MAX_NEW_TOKENS` must be large enough to
   cover reasoning plus the brief, or the model returns empty content. It is now
   env-configurable (default 2048); tune it per model without a rebuild.
-- `_normalize_section_headers` in `synthesis_agent.py` only matches headers that
-  already carry an asterisk, so a model emitting a bare `[HAZARD STATUS]` is
-  left unnormalized. Validation still passes because the Overseer checks the
-  plain bracket strings. Cosmetic, but it matters more now that header style
-  varies by provider.
 - `test_usgs_response_has_distance_field` asserts `distance_from_incident_km`
   exists in `usgs_live`, but the `DataBridgeAgent` CLEAR branch (no recent
   events in region) omits the key entirely. The test outcome therefore depends
