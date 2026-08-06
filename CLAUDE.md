@@ -133,9 +133,19 @@ paper), `EMBEDDING_MODEL` all-MiniLM-L6-v2, `SVI_THRESHOLD` 0.75.
   exists in `usgs_live`, but the `DataBridgeAgent` CLEAR branch (no recent
   events in region) omits the key entirely. The test outcome therefore depends
   on real seismic activity at run time.
-- `governance/audit_log.py` writes the audit log locally and `rag/vector_store.py`
-  uses a local embedding model (`all-MiniLM-L6-v2`). Neither has a production
-  embedding or governance backend behind it; treat any such capability as absent.
+- `governance/audit_log.py` writes the audit log locally (`export()` dumps JSON
+  to disk) and `rag/vector_store.py` uses a local Chroma client with a local
+  embedding model (`all-MiniLM-L6-v2`). Neither has a production backend behind
+  it. Treat those two as absent.
+- Granite Guardian is the exception to the line above: implemented, not absent.
+  `OverseerAgent._granite_guardian_check` (`agents/overseer_agent.py:92`) makes a
+  real watsonx call, gated on `USE_GRANITE_GUARDIAN`, which defaults to false in
+  both `config.py` and `.env.example`. Two further limits when it is enabled: it
+  is skipped for `stage == "output"` by design, because it false-positives on
+  legitimate hazmat and infrastructure language, and a Guardian failure falls
+  back to heuristic moderation with `guardian_error` recorded rather than
+  passing silently. Off by default and not in the shipping path, but do not
+  describe it as missing.
 - The SVI CSV (`data/svi_2022_us_tract.csv`) is committed, all 61 MB of it,
   covering 72,837 US tracts when only Ohio and Oklahoma are used.
 
