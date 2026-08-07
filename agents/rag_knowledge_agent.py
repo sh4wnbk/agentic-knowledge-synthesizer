@@ -1,7 +1,7 @@
 """
 agents/rag_knowledge_agent.py
 Agent 3 — Memory & Knowledge Layer
-Retrieval before reasoning — always.
+Retrieval grounds generation, always. Routing is decided upstream.
 Queries ChromaDB semantic vector store.
 Key decision: sufficient confidence to proceed, or retry?
 """

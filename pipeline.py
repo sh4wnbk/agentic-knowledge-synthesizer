@@ -206,7 +206,7 @@ def run_pipeline(
     agency_routing = orchestrator.get_agency_routing(cluster)
     citation_chain = orchestrator.get_citation_chain(cluster)
 
-    # ── STEP 4: Retrieve — fires before reasoning ─────────────
+    # ── STEP 4: Retrieve. Grounds generation, not routing ─────
     retrieval      = rag.retrieve(query)
     retrieval_retry = 0
 
