@@ -15,7 +15,10 @@ call. That data is public and federal, but it lives in systems that do not talk
 to each other, so somebody currently assembles it by hand under pressure.
 
 Call that person the **dispatcher** everywhere. The code, the README and the
-slides currently disagree on this term; dispatcher is the one to converge on.
+API surface were converged on that term; the slides have not been checked.
+Comments in `agents/` and `rag/` still say "citizen" in a few places. One of
+those is deliberate: `skill_server.py` says "no citizen-facing audio" to mark
+what AEGIS is not, and converging it would invert the sentence.
 
 ## The governing principle
 
@@ -37,7 +40,7 @@ Six agents run in sequence, each owning exactly one decision:
 | 1 Perception | `agents/intake_agent.py` | Is this a valid incident, or must the dispatcher be prompted? |
 | 2 Reasoning | `agents/orchestrator_agent.py` | Which cluster and agency handle this? |
 | 3 Knowledge | `agents/rag_knowledge_agent.py` | Does retrieval clear the confidence threshold, or retry? |
-| 4 Tools | `agents/data_bridge_agent.py` | USGS, SVI, emPOWER, EPA TRI lookups |
+| 4 Tools | `agents/data_bridge_agent.py` | Seismic, demographic and hazmat lookups (see provenance below) |
 | 5 Governance | `agents/overseer_agent.py` | Is the output supported by its cited source? |
 | 6 Action | `agents/synthesis_agent.py` | Which of three output states does validation authorize? |
 
@@ -45,12 +48,28 @@ Six agents run in sequence, each owning exactly one decision:
 three terminal states: `CONFIRMED_DELIVERY`, `RETRY_CORRECTED_DELIVERY`,
 `HONEST_FALLBACK`.
 
-Retrieval happens before reasoning, and governance happens before delivery.
-Neither order is negotiable.
+**Data provenance.** Not every source is live, and UI copy has twice drifted
+into claiming they all are. Per request the bridge makes four uncached HTTP
+calls: USGS, the Census geocoder, FEMA OpenFEMA and IFRC GO. The last two fire
+unconditionally through `_build_external_operational_picture()`, which merges
+them via `governance/external_harmonization.py` and fails soft to
+`status: unavailable`. CDC SVI, HHS emPOWER and EPA TRI are files bundled in
+`data/`, read from disk behind `@lru_cache(maxsize=1)`. The unit suite runs
+offline; the app does not. Describe the split accurately in anything a
+dispatcher reads.
+
+Retrieval happens before generation, and governance happens before delivery.
+Neither order is negotiable. Note that the Orchestrator (layer 2) does run
+before the RAG agent (layer 3) in `pipeline.py`, so the slogan "retrieval before
+reasoning" in the README and in the `pipeline.py` step 4 comment is about the
+LLM, not about routing. What the code guarantees is that nothing reaches
+`synthesis.generate_candidates()` ungrounded.
 
 ## The provider layer
 
-`providers/` holds the LLM abstraction, added on `feat/provider-abstraction`.
+`providers/` holds the LLM abstraction (`anthropic`, `openai_compat`, `watsonx`).
+It was developed on `feat/provider-abstraction` and is merged; that branch still
+exists locally and on origin but is not where the work lives.
 `SynthesisAgent` asks for text and gets text; it does not know or care which
 model answered. `get_provider()` resolves from `LLM_PROVIDER` in `.env`, or
 auto-detects from whichever credentials are present.
@@ -109,8 +128,13 @@ The `Dockerfile` already does this in the right order. Local setup docs do not.
 
 Google Cloud Run runs `orchestrate.skill_server:app` via uvicorn, per the
 `Dockerfile` CMD. **`orchestrate/` is live production code, not competition
-leftovers.** The front end is Firebase Hosting (`firebase.json`, `public/`),
-at aegis-synthesizer.web.app.
+leftovers.** It also serves the entire front end: `orchestrate/dashboard.html`,
+returned by `skill_server.py` at both `/` and `/about`.
+
+Firebase Hosting is only a front door. `public/` holds nothing but `.gitkeep`,
+and `firebase.json` rewrites `**` to the Cloud Run service, so a UI change ships
+on a Cloud Run deploy alone. Run `firebase deploy` only if the rewrites change.
+The public URL is aegis-synthesizer.web.app.
 
 Railway is gone. Any remaining comments or docs referencing it are stale.
 `chroma_db/` and `data/` are committed so the Cloud Run image build is
