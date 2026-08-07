@@ -138,8 +138,10 @@ graph LR
 
 ## Key Design Decisions
 
-### 1. Retrieval Before Reasoning
-The RAGKnowledgeAgent retrieves policy context and vulnerability data **before** the Orchestrator reasons about agency routing. The knowledge base constrains the reasoning. An agent that reasons first confirms its own assumptions. In an emergency context, confident-wrong is the worst failure mode.
+### 1. Retrieval Before Generation
+Routing is decided first and deterministically: `OrchestratorAgent.route()` takes only the parsed intent and dispatches on crisis type and state, never on retrieved text. That decision then builds the RAG query, so the route constrains retrieval rather than the reverse.
+
+What the pipeline guarantees is that nothing reaches the LLM ungrounded. Retrieval and the data bridge both complete before the first beam is generated, and Overseer Hook 2 halts the run if retrieval confidence stays below threshold through the retry budget. A model that generates first confirms its own assumptions. In an emergency context, confident-wrong is the worst failure mode.
 
 ### 2. Beam Search Over Greedy Decoding
 The SynthesisAgent generates `BEAM_WIDTH=4` candidate responses at temperatures 0.30, 0.45, 0.60, 0.75. The Overseer selects the candidate with the highest **citation alignment score**: semantic cosine similarity between the output and the retrieved source context, not the highest token probability.
